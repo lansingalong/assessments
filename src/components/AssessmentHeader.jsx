@@ -16,87 +16,62 @@ import AutosaveIndicator from './AutosaveIndicator'
 
 // ─── Circle indicators ──────────────────────────────────────────────────────
 
-// All circles share the same SVG canvas so layout never shifts
-const SIZE = 46        // outer SVG size (includes space for selection ring)
-const C = 23           // center point
-const SEL_R = 21       // selection ring radius
-const FILL_R = 18      // inner fill circle radius
-const ARC_R = 14       // progress arc radius
-const ARC_STROKE = 3
-const CIRC = 2 * Math.PI * ARC_R
+// Single-ring design: one arc ring shows progress, no separate selection ring
+// 10% larger than previous (46 → 51)
+const SIZE = 51
+const C = 25.5          // center
+const FILL_R = 20       // white/green fill radius
+const RING_R = 23       // single progress ring radius (sits outside fill)
+const RING_STROKE = 3.5
+const CIRC = 2 * Math.PI * RING_R
 
-const NUM_STYLE = { fontFamily: 'Roboto, system-ui, sans-serif', fontSize: '13', fontWeight: '500' }
+const NUM_STYLE = { fontFamily: 'Roboto, system-ui, sans-serif', fontSize: '14', fontWeight: '500' }
 
-// Green circle + checkmark + blue outer ring (current page, 100% complete)
-function CompletedSelected() {
+// Shared arc helper
+function Arc({ pct, color }) {
+  const offset = CIRC * (1 - Math.min(Math.max(pct, 0), 100) / 100)
   return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={SEL_R} stroke="#0080A3" strokeWidth="2.5" fill="none" />
-      <circle cx={C} cy={C} r={FILL_R} fill="#73BE5E" />
-      <path d="M16 24L21 29L30 18" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <circle cx={C} cy={C} r={RING_R} stroke={color} strokeWidth={RING_STROKE}
+      strokeLinecap="round" fill="none"
+      strokeDasharray={CIRC} strokeDashoffset={offset}
+      transform={`rotate(-90 ${C} ${C})`} />
   )
 }
 
-// Green circle + checkmark, no outer ring (not current, 100% complete)
+// Completed (100%): green fill + white checkmark + full blue ring
 function Completed() {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
       <circle cx={C} cy={C} r={FILL_R} fill="#73BE5E" />
-      <path d="M16 24L21 29L30 18" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={C} cy={C} r={RING_R} stroke="#0E98BE" strokeWidth={RING_STROKE} fill="none" />
+      <path d="M17.5 26.5L22.5 31.5L33 20" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
 
-// White circle + gray number + partial arc + blue outer ring (current page, partial)
-function PartialSelected({ pageNum, pct }) {
-  const offset = CIRC * (1 - Math.min(Math.max(pct, 0), 100) / 100)
-  return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={SEL_R} stroke="#0080A3" strokeWidth="2.5" fill="none" />
-      <circle cx={C} cy={C} r={FILL_R} fill="white" />
-      <circle cx={C} cy={C} r={ARC_R} stroke="#B0DEEA" strokeWidth={ARC_STROKE} fill="none" />
-      <circle cx={C} cy={C} r={ARC_R} stroke="#0E98BE" strokeWidth={ARC_STROKE} strokeLinecap="round"
-        fill="none" strokeDasharray={CIRC} strokeDashoffset={offset}
-        transform={`rotate(-90 ${C} ${C})`} />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
-    </svg>
-  )
-}
-
-// White circle + dark number + partial arc, no outer ring (not current, partial)
-function Partial({ pageNum, pct }) {
-  const offset = CIRC * (1 - Math.min(Math.max(pct, 0), 100) / 100)
-  return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={FILL_R} fill="white" />
-      <circle cx={C} cy={C} r={ARC_R} stroke="#B0DEEA" strokeWidth={ARC_STROKE} fill="none" />
-      <circle cx={C} cy={C} r={ARC_R} stroke="#0E98BE" strokeWidth={ARC_STROKE} strokeLinecap="round"
-        fill="none" strokeDasharray={CIRC} strokeDashoffset={offset}
-        transform={`rotate(-90 ${C} ${C})`} />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#282F35" {...NUM_STYLE}>{pageNum}</text>
-    </svg>
-  )
-}
-
-// Full solid blue ring — shown momentarily when a page just hits 100%
+// Full ring (just-completed animation): complete blue ring + number
 function FullRing({ pageNum }) {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
       <circle cx={C} cy={C} r={FILL_R} fill="white" />
-      <circle cx={C} cy={C} r={FILL_R} stroke="#0E98BE" strokeWidth="3" fill="none" />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
+      <circle cx={C} cy={C} r={RING_R} stroke="#0E98BE" strokeWidth={RING_STROKE} fill="none" />
+      <text x={C} y={C + 5.5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
     </svg>
   )
 }
 
-// Light ring + gray number (not current, 0% / not started)
-function Future({ pageNum }) {
+// Partial progress: track + filled arc + number
+// selected (current page) → gray number; unselected → dark number
+function ProgressCircle({ pageNum, pct, selected }) {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
       <circle cx={C} cy={C} r={FILL_R} fill="white" />
-      <circle cx={C} cy={C} r={FILL_R} stroke="#B0DEEA" strokeWidth="2" fill="none" />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
+      {/* track */}
+      <circle cx={C} cy={C} r={RING_R} stroke="#B0DEEA" strokeWidth={RING_STROKE} fill="none" />
+      {/* progress arc */}
+      {pct > 0 && <Arc pct={pct} color="#0E98BE" />}
+      <text x={C} y={C + 5.5} textAnchor="middle"
+        fill={selected ? '#78868E' : '#282F35'} {...NUM_STYLE}>{pageNum}</text>
     </svg>
   )
 }
@@ -106,12 +81,9 @@ function PageCircle({ index, currentPage, pageProgress, justCompleted }) {
   const pct = pageProgress?.[index] ?? 0
   const isCurrent = pageNum === currentPage
 
-  if (justCompleted.has(index))  return <FullRing pageNum={pageNum} />
-  if (pct === 100 && isCurrent)  return <CompletedSelected />
-  if (pct === 100)               return <Completed />
-  if (isCurrent)                 return <PartialSelected pageNum={pageNum} pct={pct} />
-  if (pct > 0)                   return <Partial pageNum={pageNum} pct={pct} />
-  return <Future pageNum={pageNum} />
+  if (justCompleted.has(index)) return <FullRing pageNum={pageNum} />
+  if (pct === 100)              return <Completed />
+  return <ProgressCircle pageNum={pageNum} pct={pct} selected={isCurrent} />
 }
 
 // ─── Buttons ────────────────────────────────────────────────────────────────
