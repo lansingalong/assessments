@@ -106,7 +106,7 @@ export default function Assessment() {
         pageProgress={allPageProgress}
         onSaveAndClose={() => setActiveModal('saveClose')}
         onSubmit={() => setActiveModal('submit')}
-        submitDisabled={!allDone}
+        submitDisabled={false}
         autosaveVisible={autosaveVisible}
         onPageSelect={(page) => { setCurrentPage(page); window.scrollTo(0, 0) }}
       />
@@ -158,15 +158,14 @@ export default function Assessment() {
               </button>
             ) : (
               <button
-                onClick={() => setSubmitted(true)}
-                disabled={!allDone}
+                onClick={() => setActiveModal('submit')}
                 style={{
                   fontFamily: sfPro, fontSize: 16, fontWeight: 500,
                   color: '#FFFFFF', background: '#0E98BE',
                   border: 'none', borderRadius: 30,
                   height: 51, flex: 1, letterSpacing: '-0.32px',
-                  opacity: allDone ? 1 : 0.4,
-                  cursor: allDone ? 'pointer' : 'not-allowed',
+                  opacity: 1,
+                  cursor: 'pointer',
                 }}
               >
                 Submit Assessment
