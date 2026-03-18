@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { sfPro } from './survey/shared'
 import AutosaveIndicator from './AutosaveIndicator'
 
@@ -78,8 +79,8 @@ function Partial({ pageNum, pct }) {
   )
 }
 
-// White circle + dark number + full solid blue ring (current page, 0% / not started)
-function CurrentEmpty({ pageNum }) {
+// Full solid blue ring — shown momentarily when a page just hits 100%
+function FullRing({ pageNum }) {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
       <circle cx={C} cy={C} r={FILL_R} fill="white" />
@@ -100,16 +101,16 @@ function Future({ pageNum }) {
   )
 }
 
-function PageCircle({ index, currentPage, pageProgress }) {
+function PageCircle({ index, currentPage, pageProgress, justCompleted }) {
   const pageNum = index + 1
   const pct = pageProgress?.[index] ?? 0
   const isCurrent = pageNum === currentPage
 
+  if (justCompleted.has(index))  return <FullRing pageNum={pageNum} />
   if (pct === 100 && isCurrent)  return <CompletedSelected />
-  if (pct === 100)                return <Completed />
-  if (pct > 0 && isCurrent)      return <PartialSelected pageNum={pageNum} pct={pct} />
+  if (pct === 100)               return <Completed />
+  if (isCurrent)                 return <PartialSelected pageNum={pageNum} pct={pct} />
   if (pct > 0)                   return <Partial pageNum={pageNum} pct={pct} />
-  if (isCurrent)                 return <CurrentEmpty pageNum={pageNum} />
   return <Future pageNum={pageNum} />
 }
 
@@ -143,6 +144,25 @@ export default function AssessmentHeader({
   onPageSelect,
   autosaveVisible = false,
 }) {
+  const [justCompleted, setJustCompleted] = useState(new Set())
+  const prevProgress = useRef([])
+
+  useEffect(() => {
+    pageProgress.forEach((pct, i) => {
+      if (pct === 100 && (prevProgress.current[i] ?? 0) < 100) {
+        setJustCompleted(prev => new Set([...prev, i]))
+        setTimeout(() => {
+          setJustCompleted(prev => {
+            const next = new Set(prev)
+            next.delete(i)
+            return next
+          })
+        }, 700)
+      }
+    })
+    prevProgress.current = pageProgress
+  }, [pageProgress])
+
   return (
     <div
       style={{
@@ -186,6 +206,7 @@ export default function AssessmentHeader({
               index={i}
               currentPage={currentPage}
               pageProgress={pageProgress}
+              justCompleted={justCompleted}
             />
           </button>
         ))}
