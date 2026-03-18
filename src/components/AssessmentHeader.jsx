@@ -15,64 +15,87 @@ import AutosaveIndicator from './AutosaveIndicator'
 
 // ─── Circle indicators ──────────────────────────────────────────────────────
 
-const SIZE = 40       // circle diameter
-const C = SIZE / 2    // center point
-const R = 17          // arc radius (leaves ~3px for stroke on each side)
-const CIRC = 2 * Math.PI * R
+// All circles share the same SVG canvas so layout never shifts
+const SIZE = 46        // outer SVG size (includes space for selection ring)
+const C = 23           // center point
+const SEL_R = 21       // selection ring radius
+const FILL_R = 18      // inner fill circle radius
+const ARC_R = 14       // progress arc radius
+const ARC_STROKE = 3
+const CIRC = 2 * Math.PI * ARC_R
 
-function CompletedCircle() {
+const NUM_STYLE = { fontFamily: 'Roboto, system-ui, sans-serif', fontSize: '13', fontWeight: '500' }
+
+// Green circle + checkmark + blue outer ring (current page, 100% complete)
+function CompletedSelected() {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={C} fill="#73BE5E" />
-      <path
-        d="M13 21L17.5 25.5L27 15"
-        stroke="white"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <circle cx={C} cy={C} r={SEL_R} stroke="#0080A3" strokeWidth="2.5" fill="none" />
+      <circle cx={C} cy={C} r={FILL_R} fill="#73BE5E" />
+      <path d="M16 24L21 29L30 18" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
 
-function CurrentCircle({ pageNum }) {
+// Green circle + checkmark, no outer ring (not current, 100% complete)
+function Completed() {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={C} fill="#0E98BE" />
-      <text x={C} y={C + 5} textAnchor="middle" fill="white" fontSize="15" fontWeight="500" fontFamily="system-ui, sans-serif">{pageNum}</text>
+      <circle cx={C} cy={C} r={FILL_R} fill="#73BE5E" />
+      <path d="M16 24L21 29L30 18" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
 
-function FutureCircle({ pageNum }) {
-  return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={C} fill="#D9E3E7" />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" fontSize="15" fontWeight="500" fontFamily="system-ui, sans-serif">{pageNum}</text>
-    </svg>
-  )
-}
-
-function PartialCircle({ pageNum, pct }) {
+// White circle + gray number + partial arc + blue outer ring (current page, partial)
+function PartialSelected({ pageNum, pct }) {
   const offset = CIRC * (1 - Math.min(Math.max(pct, 0), 100) / 100)
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      {/* filled background */}
-      <circle cx={C} cy={C} r={C} fill="#EEF5F7" />
-      {/* track */}
-      <circle cx={C} cy={C} r={R} stroke="#D9E3E7" strokeWidth="3" fill="none" />
-      {/* progress arc */}
-      <circle
-        cx={C} cy={C} r={R}
-        stroke="#0E98BE"
-        strokeWidth="3"
-        strokeLinecap="round"
-        fill="none"
-        strokeDasharray={CIRC}
-        strokeDashoffset={offset}
-        transform={`rotate(-90 ${C} ${C})`}
-      />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#0E98BE" fontSize="15" fontWeight="500" fontFamily="system-ui, sans-serif">{pageNum}</text>
+      <circle cx={C} cy={C} r={SEL_R} stroke="#0080A3" strokeWidth="2.5" fill="none" />
+      <circle cx={C} cy={C} r={FILL_R} fill="white" />
+      <circle cx={C} cy={C} r={ARC_R} stroke="#B0DEEA" strokeWidth={ARC_STROKE} fill="none" />
+      <circle cx={C} cy={C} r={ARC_R} stroke="#0E98BE" strokeWidth={ARC_STROKE} strokeLinecap="round"
+        fill="none" strokeDasharray={CIRC} strokeDashoffset={offset}
+        transform={`rotate(-90 ${C} ${C})`} />
+      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
+    </svg>
+  )
+}
+
+// White circle + dark number + partial arc, no outer ring (not current, partial)
+function Partial({ pageNum, pct }) {
+  const offset = CIRC * (1 - Math.min(Math.max(pct, 0), 100) / 100)
+  return (
+    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
+      <circle cx={C} cy={C} r={FILL_R} fill="white" />
+      <circle cx={C} cy={C} r={ARC_R} stroke="#B0DEEA" strokeWidth={ARC_STROKE} fill="none" />
+      <circle cx={C} cy={C} r={ARC_R} stroke="#0E98BE" strokeWidth={ARC_STROKE} strokeLinecap="round"
+        fill="none" strokeDasharray={CIRC} strokeDashoffset={offset}
+        transform={`rotate(-90 ${C} ${C})`} />
+      <text x={C} y={C + 5} textAnchor="middle" fill="#282F35" {...NUM_STYLE}>{pageNum}</text>
+    </svg>
+  )
+}
+
+// White circle + dark number + full solid blue ring (current page, 0% / not started)
+function CurrentEmpty({ pageNum }) {
+  return (
+    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
+      <circle cx={C} cy={C} r={FILL_R} fill="white" />
+      <circle cx={C} cy={C} r={FILL_R} stroke="#0E98BE" strokeWidth="3" fill="none" />
+      <text x={C} y={C + 5} textAnchor="middle" fill="#282F35" {...NUM_STYLE}>{pageNum}</text>
+    </svg>
+  )
+}
+
+// Light ring + gray number (not current, 0% / not started)
+function Future({ pageNum }) {
+  return (
+    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
+      <circle cx={C} cy={C} r={FILL_R} fill="white" />
+      <circle cx={C} cy={C} r={FILL_R} stroke="#B0DEEA" strokeWidth="2" fill="none" />
+      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
     </svg>
   )
 }
@@ -80,11 +103,14 @@ function PartialCircle({ pageNum, pct }) {
 function PageCircle({ index, currentPage, pageProgress }) {
   const pageNum = index + 1
   const pct = pageProgress?.[index] ?? 0
+  const isCurrent = pageNum === currentPage
 
-  if (pct === 100) return <CompletedCircle />
-  if (pageNum === currentPage) return <CurrentCircle pageNum={pageNum} />
-  if (pct > 0) return <PartialCircle pageNum={pageNum} pct={pct} />
-  return <FutureCircle pageNum={pageNum} />
+  if (pct === 100 && isCurrent)  return <CompletedSelected />
+  if (pct === 100)                return <Completed />
+  if (pct > 0 && isCurrent)      return <PartialSelected pageNum={pageNum} pct={pct} />
+  if (pct > 0)                   return <Partial pageNum={pageNum} pct={pct} />
+  if (isCurrent)                 return <CurrentEmpty pageNum={pageNum} />
+  return <Future pageNum={pageNum} />
 }
 
 // ─── Buttons ────────────────────────────────────────────────────────────────
