@@ -28,7 +28,7 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
       }, 300)
     }
   }
-  const sharedProps = { onSubmit: handleSubmit }
+  const sharedProps = { onSubmit: handleSubmit, required: q.required }
 
   const label = (
     <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 0 }}>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { sfPro, cardStyle, questionStyle } from './shared'
+import { sfPro, cardStyle, QuestionLabel } from './shared'
 
 function RadioOption({ label, selected, onClick }) {
   return (
@@ -19,7 +19,7 @@ function RadioOption({ label, selected, onClick }) {
   )
 }
 
-export default function SingleSelect({ question, options = [], onSubmit, answer = null }) {
+export default function SingleSelect({ question, options = [], onSubmit, answer = null, required }) {
   const [selected, setSelected] = useState(answer)
 
   const handleSelect = (opt) => {
@@ -29,7 +29,7 @@ export default function SingleSelect({ question, options = [], onSubmit, answer 
 
   return (
     <div style={cardStyle}>
-      <p style={questionStyle}>{question}</p>
+      <QuestionLabel text={question} required={required} />
       <div className="flex flex-col gap-[6px]">
         {options.map(opt => (
           <RadioOption key={opt} label={opt} selected={selected === opt} onClick={() => handleSelect(opt)} />

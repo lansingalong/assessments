@@ -9,7 +9,7 @@ export const PAGES = [
     title: 'General Health',
     questions: [
       {
-        id: 1, number: 1, type: 'single',
+        id: 1, number: 1, type: 'single', required: true,
         question: 'In general, how would you rate your overall health?',
         options: ['Excellent', 'Very good', 'Good', 'Fair', 'Poor'],
       },
@@ -34,7 +34,7 @@ export const PAGES = [
         options: ['None', '1–5 days', '6–10 days', '11–20 days', 'More than 20 days'],
       },
       {
-        id: 6, number: 6, type: 'single',
+        id: 6, number: 6, type: 'single', required: true,
         question: 'How many hours of sleep do you get on a typical night?',
         options: ['Less than 5 hours', '5–6 hours', '7–8 hours', '9 or more hours'],
       },
@@ -64,7 +64,7 @@ export const PAGES = [
     title: 'Chronic Conditions & Medications',
     questions: [
       {
-        id: 11, number: 11, type: 'multi',
+        id: 11, number: 11, type: 'multi', required: true,
         question: 'Have you ever been told by a doctor or health professional that you have any of the following conditions?',
         options: ['High blood pressure', 'High cholesterol', 'Diabetes or pre-diabetes', 'Heart disease or heart attack', 'Asthma or COPD', 'Arthritis', 'Chronic kidney disease', 'Cancer (current or past)', 'Obesity', 'None of the above'],
       },
@@ -79,7 +79,7 @@ export const PAGES = [
         ],
       },
       {
-        id: 13, number: 13, type: 'single',
+        id: 13, number: 13, type: 'single', required: true,
         question: 'Do you currently take any prescription medications?',
         options: ['Yes, one or more daily', 'Yes, but only as needed', 'No'],
       },
@@ -124,7 +124,7 @@ export const PAGES = [
     title: 'Mental & Behavioral Health',
     questions: [
       {
-        id: 21, number: 21, type: 'sub',
+        id: 21, number: 21, type: 'sub', required: true,
         question: 'Over the last 2 weeks, how often have you been bothered by any of the following problems? (PHQ-4)',
         subQuestions: [
           { id: '21a', label: 'Little interest or pleasure in doing things',  options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
@@ -174,7 +174,7 @@ export const PAGES = [
         options: ['Never', 'Monthly or less', '2–4 times per month', '2–3 times per week', '4 or more times per week'],
       },
       {
-        id: 29, number: 29, type: 'single',
+        id: 29, number: 29, type: 'single', required: true,
         question: 'Do you currently use tobacco products (cigarettes, cigars, chewing tobacco, e-cigarettes)?',
         options: ['Yes, daily', 'Yes, occasionally', 'No, I quit within the last year', 'No, I quit more than a year ago', 'Never used'],
       },
@@ -190,7 +190,7 @@ export const PAGES = [
     title: 'Lifestyle & Prevention',
     questions: [
       {
-        id: 31, number: 31, type: 'single',
+        id: 31, number: 31, type: 'single', required: true,
         question: 'On average, how many days per week do you engage in moderate or vigorous physical activity (e.g., brisk walking, jogging, cycling) for at least 30 minutes?',
         options: ['0 days', '1–2 days', '3–4 days', '5–6 days', 'Every day'],
       },
@@ -265,7 +265,7 @@ export const PAGES = [
         options: ['Yes, definitely', 'Yes, somewhat', 'Not sure', 'No'],
       },
       {
-        id: 43, number: 43, type: 'multi',
+        id: 43, number: 43, type: 'multi', required: true,
         question: 'In the past year, have any of the following made it hard for you to take care of your health? (Select all that apply)',
         options: ['I didn\'t have enough money for food', 'I didn\'t have enough money for medications', 'I had trouble getting transportation to appointments', 'I didn\'t have stable housing', 'I was unable to take time off work or school', 'Language or communication barriers', 'None of the above'],
       },

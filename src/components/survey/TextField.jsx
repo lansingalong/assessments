@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { sfPro, cardStyle, questionStyle, ctaStyle } from './shared'
+import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
-export default function TextField({ question, placeholder = 'Type your answer here…', multiline = true, onSubmit, answer = '' }) {
+export default function TextField({ question, placeholder = 'Type your answer here…', multiline = true, onSubmit, answer = '', required }) {
   const [value, setValue] = useState(answer)
   const filled = value.trim().length > 0
 
@@ -21,7 +21,7 @@ export default function TextField({ question, placeholder = 'Type your answer he
 
   return (
     <div style={cardStyle}>
-      <p style={questionStyle}>{question}</p>
+      <QuestionLabel text={question} required={required} />
       {multiline ? (
         <textarea
           rows={4}

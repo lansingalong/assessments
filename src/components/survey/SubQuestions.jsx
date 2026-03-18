@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { sfPro, cardStyle, questionStyle, ctaStyle } from './shared'
+import { sfPro, cardStyle, questionStyle, QuestionLabel, ctaStyle } from './shared'
 
 function RadioOption({ label, selected, onClick }) {
   return (
@@ -26,7 +26,7 @@ function RadioOption({ label, selected, onClick }) {
  * Each sub-question is a single-select inside the parent card.
  * The CTA unlocks once all sub-questions are answered.
  */
-export default function SubQuestions({ question, questions = [], onSubmit, answer }) {
+export default function SubQuestions({ question, questions = [], onSubmit, answer, required }) {
   const [answers, setAnswers] = useState(answer ?? {})
 
   const allAnswered = questions.length > 0 && questions.every(q => answers[q.id] !== undefined)
@@ -37,7 +37,7 @@ export default function SubQuestions({ question, questions = [], onSubmit, answe
   return (
     <div style={cardStyle}>
       {/* Parent question */}
-      <p style={questionStyle}>{question}</p>
+      <QuestionLabel text={question} required={required} />
 
       {/* Sub-questions */}
       <div className="flex flex-col gap-4 mb-5">

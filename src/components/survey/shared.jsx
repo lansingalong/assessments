@@ -17,6 +17,15 @@ export const questionStyle = {
   marginBottom: 16,
 }
 
+export function QuestionLabel({ text, required }) {
+  return (
+    <p style={questionStyle}>
+      {text}
+      {required && <span style={{ color: '#F05B60' }}> *</span>}
+    </p>
+  )
+}
+
 export const ctaStyle = (enabled) => ({
   fontFamily: sfPro,
   fontSize: 16,

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { sfPro, cardStyle, questionStyle, ctaStyle } from './shared'
+import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
 function CheckOption({ label, checked, onClick }) {
   return (
@@ -27,7 +27,7 @@ function CheckOption({ label, checked, onClick }) {
   )
 }
 
-export default function MultiSelect({ question, options = [], onSubmit, answer }) {
+export default function MultiSelect({ question, options = [], onSubmit, answer, required }) {
   const [selected, setSelected] = useState(() => answer ? new Set(answer) : new Set())
 
   const toggle = (opt) => {
@@ -40,7 +40,7 @@ export default function MultiSelect({ question, options = [], onSubmit, answer }
 
   return (
     <div style={cardStyle}>
-      <p style={questionStyle}>{question}</p>
+      <QuestionLabel text={question} required={required} />
       <div className="flex flex-col gap-[6px] mb-5">
         {options.map(opt => (
           <CheckOption key={opt} label={opt} checked={selected.has(opt)} onClick={() => toggle(opt)} />

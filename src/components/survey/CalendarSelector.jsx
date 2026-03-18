@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { sfPro, cardStyle, questionStyle, ctaStyle } from './shared'
+import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
 const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
@@ -11,7 +11,7 @@ function firstDayOfMonth(year, month) {
   return new Date(year, month, 1).getDay()
 }
 
-export default function CalendarSelector({ question, onSubmit, answer }) {
+export default function CalendarSelector({ question, onSubmit, answer, required }) {
   const today = new Date()
   const initialSelected = answer ? (() => { const d = new Date(answer); return isNaN(d) ? null : { day: d.getDate(), month: d.getMonth(), year: d.getFullYear() } })() : null
   const [viewYear, setViewYear] = useState(initialSelected?.year ?? today.getFullYear())
@@ -50,7 +50,7 @@ export default function CalendarSelector({ question, onSubmit, answer }) {
 
   return (
     <div style={cardStyle}>
-      <p style={questionStyle}>{question}</p>
+      <QuestionLabel text={question} required={required} />
 
       {/* Month navigation */}
       <div className="flex items-center justify-between mb-4">
