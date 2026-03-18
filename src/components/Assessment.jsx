@@ -84,7 +84,7 @@ export default function Assessment() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#F8FAFB] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[#F2F8FA] flex items-center justify-center p-6">
         <div style={{ textAlign: 'center', fontFamily: sfPro }}>
           <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#73BE5E', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -99,7 +99,7 @@ export default function Assessment() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFB] flex flex-col">
+    <div className="min-h-screen bg-[#F2F8FA] flex flex-col">
       <AssessmentHeader
         currentPage={currentPage}
         totalPages={totalPages}
