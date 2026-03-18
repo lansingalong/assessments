@@ -25,7 +25,7 @@ const RING_R = 23       // single progress ring radius (sits outside fill)
 const RING_STROKE = 3.5
 const CIRC = 2 * Math.PI * RING_R
 
-const NUM_STYLE = { fontFamily: 'Roboto, system-ui, sans-serif', fontSize: '15.4', fontWeight: '500' }
+const NUM_STYLE = { fontFamily: 'Roboto, system-ui, sans-serif', fontSize: '18', fontWeight: '500' }
 
 // Shared arc helper
 function Arc({ pct, color }) {
