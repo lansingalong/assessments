@@ -41,9 +41,6 @@ export default function MultiSelect({ question, options = [], onSubmit, answer }
   return (
     <div style={cardStyle}>
       <p style={questionStyle}>{question}</p>
-      <p style={{ fontFamily: sfPro, fontSize: 13, color: '#78868E', marginBottom: 12 }}>
-        Select all that apply
-      </p>
       <div className="flex flex-col gap-[6px] mb-5">
         {options.map(opt => (
           <CheckOption key={opt} label={opt} checked={selected.has(opt)} onClick={() => toggle(opt)} />
