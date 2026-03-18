@@ -84,7 +84,7 @@ function CurrentEmpty({ pageNum }) {
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
       <circle cx={C} cy={C} r={FILL_R} fill="white" />
       <circle cx={C} cy={C} r={FILL_R} stroke="#0E98BE" strokeWidth="3" fill="none" />
-      <text x={C} y={C + 5} textAnchor="middle" fill="#282F35" {...NUM_STYLE}>{pageNum}</text>
+      <text x={C} y={C + 5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
     </svg>
   )
 }
