@@ -13,10 +13,18 @@ function firstDayOfMonth(year, month) {
 
 export default function CalendarSelector({ question, onSubmit, answer, required }) {
   const today = new Date()
-  const initialSelected = answer ? (() => { const d = new Date(answer); return isNaN(d) ? null : { day: d.getDate(), month: d.getMonth(), year: d.getFullYear() } })() : null
-  const [viewYear, setViewYear] = useState(initialSelected?.year ?? today.getFullYear())
-  const [viewMonth, setViewMonth] = useState(initialSelected?.month ?? today.getMonth())
-  const [selected, setSelected] = useState(initialSelected)
+  const [viewYear, setViewYear] = useState(() => {
+    if (!answer) return today.getFullYear()
+    const d = new Date(answer); return isNaN(d) ? today.getFullYear() : d.getFullYear()
+  })
+  const [viewMonth, setViewMonth] = useState(() => {
+    if (!answer) return today.getMonth()
+    const d = new Date(answer); return isNaN(d) ? today.getMonth() : d.getMonth()
+  })
+  const [selected, setSelected] = useState(() => {
+    if (!answer) return null
+    const d = new Date(answer); return isNaN(d) ? null : { day: d.getDate(), month: d.getMonth(), year: d.getFullYear() }
+  })
 
   const prevMonth = () => {
     if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) }
@@ -46,6 +54,11 @@ export default function CalendarSelector({ question, onSubmit, answer, required 
 
   const selectedLabel = selected
     ? `${MONTHS[selected.month]} ${selected.day}, ${selected.year}`
+    : null
+
+  // Store as ISO 8601 for cross-browser safety; display locale label to user
+  const selectedISO = selected
+    ? `${selected.year}-${String(selected.month + 1).padStart(2, '0')}-${String(selected.day).padStart(2, '0')}`
     : null
 
   return (
@@ -112,8 +125,9 @@ export default function CalendarSelector({ question, onSubmit, answer, required 
       </div>
 
       <button
+        disabled={!selected}
         style={ctaStyle(!!selected)}
-        onClick={() => selected && onSubmit?.(selectedLabel)}
+        onClick={() => selected && onSubmit?.(selectedISO)}
       >
         {selected ? `Confirm — ${selectedLabel}` : 'Select a date'}
       </button>

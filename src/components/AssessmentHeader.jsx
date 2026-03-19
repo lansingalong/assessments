@@ -118,22 +118,26 @@ export default function AssessmentHeader({
 }) {
   const [justCompleted, setJustCompleted] = useState(new Set())
   const prevProgress = useRef([])
+  const timers = useRef([])
 
   useEffect(() => {
     pageProgress.forEach((pct, i) => {
       if (pct === 100 && (prevProgress.current[i] ?? 0) < 100) {
         setJustCompleted(prev => new Set([...prev, i]))
-        setTimeout(() => {
+        const id = setTimeout(() => {
           setJustCompleted(prev => {
             const next = new Set(prev)
             next.delete(i)
             return next
           })
         }, 700)
+        timers.current.push(id)
       }
     })
     prevProgress.current = pageProgress
   }, [pageProgress])
+
+  useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
   return (
     <div

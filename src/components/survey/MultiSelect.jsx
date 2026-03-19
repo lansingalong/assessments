@@ -47,6 +47,7 @@ export default function MultiSelect({ question, options = [], onSubmit, answer, 
         ))}
       </div>
       <button
+        disabled={selected.size === 0}
         style={ctaStyle(selected.size > 0)}
         onClick={() => selected.size > 0 && onSubmit?.([...selected])}
       >

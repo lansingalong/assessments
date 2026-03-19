@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { sfPro, cardStyle, questionStyle, QuestionLabel, ctaStyle } from './shared'
 
 function RadioOption({ label, selected, onClick }) {
@@ -67,6 +67,7 @@ export default function SubQuestions({ question, questions = [], onSubmit, answe
       </div>
 
       <button
+        disabled={!allAnswered}
         style={ctaStyle(allAnswered)}
         onClick={() => allAnswered && onSubmit?.(answers)}
       >

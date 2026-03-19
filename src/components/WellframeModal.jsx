@@ -1,7 +1,9 @@
+import { sfPro } from './survey/shared'
+
 const fonts = {
   title:  "Merriweather, Georgia, serif",
   body:   "Roboto, system-ui, sans-serif",
-  button: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif",
+  button: sfPro,
 }
 
 function WarningIcon() {

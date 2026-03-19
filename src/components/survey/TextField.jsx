@@ -44,6 +44,7 @@ export default function TextField({ question, placeholder = 'Type your answer he
         />
       )}
       <button
+        disabled={!filled}
         style={ctaStyle(filled)}
         onClick={() => filled && onSubmit?.(value.trim())}
       >

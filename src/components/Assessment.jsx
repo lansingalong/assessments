@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import { PAGES } from '../data/questions'
 import AssessmentHeader from './AssessmentHeader'
 import SingleSelect from './survey/SingleSelect'
@@ -30,16 +30,7 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
   }
   const sharedProps = { onSubmit: handleSubmit, required: q.required }
 
-  const label = (
-    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 0 }}>
-      <span style={{ fontFamily: sfPro, fontSize: 12, fontWeight: 600, color: '#0080A3', minWidth: 28, flexShrink: 0 }}>
-        Q{q.number}
-      </span>
-    </div>
-  )
-
-  // Inject the question number prefix into the question string for each component
-  const questionWithNum = `Q${q.number}. ${q.question}`
+  const questionWithNum = `${q.number}. ${q.question}`
 
   switch (q.type) {
     case 'single':
@@ -68,9 +59,13 @@ export default function Assessment() {
   const totalPages = PAGES.length
   const page = PAGES[currentPage - 1]
 
-  const allPageProgress = PAGES.map(p => pageProgress(p.questions, answers))
-  const currentPageDone = allPageProgress[currentPage - 1] === 100
-  const allDone = allPageProgress.every(p => p === 100)
+  const allPageProgress = useMemo(
+    () => PAGES.map(p => pageProgress(p.questions, answers)),
+    [answers]
+  )
+
+  // Clear autosave timer on unmount
+  useEffect(() => () => clearTimeout(autosaveHide.current), [])
 
   const setAnswer = (qId, val) => {
     setAnswers(prev => ({ ...prev, [qId]: val }))
@@ -79,8 +74,8 @@ export default function Assessment() {
     autosaveHide.current = setTimeout(() => setAutosaveVisible(false), 2000)
   }
 
-  const goNext = () => { if (currentPage < totalPages) setCurrentPage(p => p + 1); window.scrollTo(0, 0) }
-  const goPrev = () => { if (currentPage > 1) setCurrentPage(p => p - 1); window.scrollTo(0, 0) }
+  const goNext = () => { if (currentPage < totalPages) { setCurrentPage(p => p + 1); window.scrollTo(0, 0) } }
+  const goPrev = () => { if (currentPage > 1) { setCurrentPage(p => p - 1); window.scrollTo(0, 0) } }
 
   if (submitted) {
     return (
@@ -182,7 +177,7 @@ export default function Assessment() {
         primaryLabel="Keep going"
         onPrimaryPress={() => setActiveModal(null)}
         secondaryLabel="Close assessment"
-        onSecondaryPress={() => setActiveModal(null)}
+        onSecondaryPress={() => { setActiveModal(null); window.history.back() }}
         onClose={() => setActiveModal(null)}
       />
 
