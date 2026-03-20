@@ -3,7 +3,7 @@ import { sfPro } from './survey/shared'
 import loginBg from '../assets/login-bg.png'
 
 // ── Mock valid credentials ──────────────────────────────────────────────────
-const VALID = { firstName: 'Jane', lastName: 'Doe', dob: '01/15/1985' }
+const VALID = { firstName: 'Jane', lastName: 'Doe', dob: '01/01/1980' }
 
 // ── Validation ──────────────────────────────────────────────────────────────
 function validateName(val, label) {
