@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { sfPro } from './survey/shared'
+import loginBg from '../assets/login-bg.png'
 
 // ── Mock valid credentials ──────────────────────────────────────────────────
 const VALID = { firstName: 'Jane', lastName: 'Doe', dob: '01/15/1985' }
@@ -267,12 +268,15 @@ export default function AuthModal({ onSuccess, onBack }) {
     <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
 
       {/* Illustration background */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-        <HealthIllustration />
-      </div>
+      <div style={{
+        position: 'absolute', inset: 0, overflow: 'hidden',
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center bottom',
+      }} />
 
-      {/* Subtle overlay to lift modal */}
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15, 53, 65, 0.08)' }} />
+      {/* Overlay to ensure modal readability */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15, 53, 65, 0.15)' }} />
 
       {/* Modal card */}
       <div style={{
