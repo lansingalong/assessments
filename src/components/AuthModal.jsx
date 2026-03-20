@@ -235,7 +235,7 @@ export default function AuthModal({ onSuccess, onBack }) {
             width: '100%',
             height: 52,
             marginTop: 32,
-            background: !allFilled || loading ? '#C5D8DF' : '#8BBFD0',
+            background: !allFilled || loading ? '#86CBDF' : '#0E98BE',
             border: 'none',
             borderRadius: 30,
             fontSize: 17,

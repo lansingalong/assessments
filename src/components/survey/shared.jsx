@@ -32,12 +32,11 @@ export const ctaStyle = (enabled) => ({
   fontSize: 16,
   fontWeight: 500,
   color: '#FFFFFF',
-  background: '#0E98BE',
+  background: enabled ? '#0E98BE' : '#86CBDF',
   borderRadius: 30,
   height: 51,
   width: '100%',
   border: 'none',
   cursor: enabled ? 'pointer' : 'not-allowed',
-  opacity: enabled ? 1 : 0.4,
   letterSpacing: '-0.32px',
 })

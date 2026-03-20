@@ -205,7 +205,7 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
           fontWeight: 500,
           fontFamily: 'Roboto, system-ui, sans-serif',
           color: '#fff',
-          background: canProceed ? '#8BBFD0' : '#C5D8DF',
+          background: canProceed ? '#0E98BE' : '#86CBDF',
           cursor: canProceed ? 'pointer' : 'not-allowed',
           transition: 'background 0.2s',
         }}
