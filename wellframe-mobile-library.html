@@ -1,0 +1,1777 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"/> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/> <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"/> <style> * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafb; color: #161B1F; }  /* Nav */ .nav { background: #fff; border-bottom: 1px solid #e8edf0; padding: 0 28px; display: flex; gap: 4px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; } .nav-brand { padding: 14px 16px 14px 0; font-size: 14px; font-weight: 700; color: #161B1F; } .nav-btn { padding: 14px 16px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: none; color: #78868E; border-bottom: 2px solid transparent; } .nav-btn.active { color: #0080A3; border-bottom-color: #0080A3; }  /* Panels */ .panel { display: none; padding: 32px 28px 64px; } .panel.active { display: block; } .panel-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; } .panel-sub { font-size: 13px; color: #4E5961; margin-bottom: 32px; }  /* Segment control */ .seg { display: inline-flex; gap: 3px; background: #e8edf0; border-radius: 8px; padding: 3px; margin-bottom: 28px; } .seg-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: #4E5961; } .seg-btn.active { background: #fff; color: #0080A3; box-shadow: 0 1px 3px rgba(0,0,0,.1); }  /* Section headers */ .section-label { font-size: 13px; font-weight: 700; color: #0080A3; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px; } .section-desc { font-size: 12px; color: #78868E; margin-bottom: 16px; margin-top: -8px; }  /* Toast */ .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #161B1F; color: #fff; font-size: 13px; padding: 8px 18px; border-radius: 20px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 100; } .toast.show { opacity: 1; }  /* ── COLORS ── */ .color-section { margin-bottom: 36px; } .swatch-grid { display: flex; flex-wrap: wrap; gap: 16px; } .swatch-card { background: #fff; border: 1px solid #f0f4f5; border-radius: 16px; padding: 16px; width: 200px; box-shadow: 0 0 0.5px rgba(66,71,76,.32), 0 4px 8px rgba(66,71,76,.05); cursor: pointer; } .swatch-card:hover { border-color: #0080A3; } .swatch-block { height: 100px; border-radius: 8px; margin-bottom: 12px; } .swatch-name { font-size: 14px; font-weight: 600; color: #161B1F; margin-bottom: 4px; } .swatch-hex { font-size: 11px; color: #78868E; font-family: monospace; }  /* ── TYPOGRAPHY ── */ .type-section { background: #F2F8FA; border-radius: 10px; padding: 24px 28px; margin-bottom: 24px; } .type-row { display: flex; align-items: baseline; gap: 20px; padding: 10px 0; border-bottom: 1px solid #e0eaed; } .type-row:last-child { border-bottom: none; } .type-sample { min-width: 280px; flex-shrink: 0; color: #282F35; } .type-meta { display: flex; gap: 8px; flex-wrap: wrap; } .meta-pill { font-size: 10px; background: #e0eaed; color: #4E5961; border-radius: 4px; padding: 2px 7px; font-family: monospace; }  /* ── ICONS ── */ .icon-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; } .ifbtn { padding: 4px 11px; border-radius: 14px; font-size: 11px; font-weight: 500; cursor: pointer; border: none; background: #e8edf0; color: #4E5961; } .ifbtn.active { background: #0080A3; color: #fff; } .icon-group { margin-bottom: 32px; } .icon-gtitle { font-size: 13px; font-weight: 700; color: #0080A3; text-transform: uppercase; letter-spacing: .05em; } .icon-gdesc { font-size: 12px; color: #78868E; margin-top: 2px; margin-bottom: 12px; } .icon-grid { display: flex; flex-wrap: wrap; gap: 10px; } .icon-card { background: #fff; border: 1px solid #e8edf0; border-radius: 12px; padding: 14px 12px 12px; width: 160px; display: flex; flex-direction: column; gap: 10px; } .plabel { font-size: 9px; color: #78868E; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; } .swatches { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; } .iswatch { border-radius: 8px; width: 40px; height: 40px; background: #f2f8fa; display: flex; align-items: center; justify-content: center; border: 1px solid #e8edf0; flex-shrink: 0; overflow: hidden; } .iswatch.dark { background: #4E5961; border-color: #4E5961; } .material-icons { font-size: 22px !important; line-height: 1; user-select: none; } .cbtn { background: #f8fafb; border: 1px solid #e0eaed; border-radius: 5px; padding: 4px 7px; cursor: pointer; width: 100%; text-align: left; } .cbtn.copied { background: #e6f4f7; } .cbtn-label { font-size: 10px; color: #161B1F; font-family: monospace; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; } .cbtn.copied .cbtn-label { color: #0080A3; } .icon-footer { border-top: 1px solid #f0f4f5; padding-top: 8px; } .icon-name { font-size: 12px; font-weight: 600; color: #161B1F; margin-bottom: 2px; } .icon-figma { font-size: 9px; color: #A6B4BA; font-family: monospace; line-height: 1.4; margin-bottom: 4px; } .chips { display: flex; gap: 3px; flex-wrap: wrap; } .chip { font-size: 9px; background: #f2f8fa; color: #78868E; border-radius: 3px; padding: 1px 5px; }  /* ── NOTIFICATIONS ── */ .notif-grid { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; margin-bottom: 24px; } .notif-col  { display: flex; flex-direction: column; gap: 8px; }  /* Modal — both platforms */ .wf-modal { width: 328px; background: #fff; border-radius: 4px; display: flex; flex-direction: column; box-shadow: 0 11px 15px rgba(0,0,0,.2), 0 9px 46px rgba(0,0,0,.12), 0 24px 38px rgba(0,0,0,.14); overflow: hidden; } .wf-modal.ios { border-radius: 10px; } .modal-top { display: flex; align-items: center; gap: 8px; padding: 20px 24px 16px; } .modal-header-text { flex: 1; font-size: 28px; line-height: 34px; color: transparent; font-family: system-ui, -apple-system, sans-serif; } .modal-close { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; color: #4E5961; } .modal-icon-row { display: flex; justify-content: center; padding: 8px 24px 0; background: #fff; } .modal-body { padding: 16px 24px 20px; background: #fff; display: flex; flex-direction: column; gap: 12px; } .modal-title { font-family: Merriweather, Georgia, serif; font-weight: 300; font-size: 20px; line-height: 25px; color: #0080A3; text-align: center; } .modal-body-text { font-size: 16px; line-height: 21px; color: #4F4F4F; text-align: center; } .modal-body-text.android { font-family: Roboto, system-ui, sans-serif; } .modal-body-text.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .modal-link { font-size: 15px; line-height: 20px; color: #0080A3; font-weight: 500; text-align: center; cursor: pointer; } .modal-link.android { font-family: Roboto, system-ui, sans-serif; } .modal-link.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.24px; } .modal-footer { padding: 8px 24px 17px; background: #fff; display: flex; flex-direction: column; gap: 12px; } .modal-btn-primary { background: #0E98BE; border-radius: 30px; height: 51px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 500; cursor: pointer; font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .modal-btn-secondary { border: 1px solid #0E98BE; border-radius: 30px; height: 51px; display: flex; align-items: center; justify-content: center; color: #0E98BE; font-size: 16px; font-weight: 500; cursor: pointer; font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .modal-warning-icon { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }  /* Android Alert Dialog */ .wf-alert { width: 343px; border-radius: 10px; background: #FAFAFA; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 38px rgba(0,0,0,.14), 0 9px 46px rgba(0,0,0,.12), 0 11px 15px rgba(0,0,0,.2); } .wf-alert.rounded4 { border-radius: 4px; } .alert-header { background: #fff; padding: 24px; } .alert-title { font-family: Roboto, system-ui, sans-serif; font-weight: 500; font-size: 20px; line-height: 25px; color: #0080A3; } .alert-body { background: #fff; padding: 0 24px 24px; } .alert-body-text { font-family: Roboto, system-ui, sans-serif; font-size: 16px; line-height: 21px; color: #282F35; } .alert-input { background: #fff; padding: 0 24px 16px; } .alert-placeholder { font-family: Roboto, system-ui, sans-serif; font-size: 16px; line-height: 18px; color: rgba(0,0,0,.42); padding-bottom: 6px; border-bottom: 1px solid rgba(0,0,0,.42); } .alert-options { background: #fff; padding: 0 24px 16px; display: flex; flex-direction: column; gap: 0; } .alert-radio-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; } .alert-radio-label { font-family: Roboto, system-ui, sans-serif; font-size: 16px; line-height: 21px; color: #282F35; } .alert-footer { background: #fff; padding: 16px 24px; display: flex; justify-content: flex-end; gap: 8px; } .alert-btn { font-family: Roboto, system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 24px; letter-spacing: 0.16px; text-transform: uppercase; padding: 4px 8px; cursor: pointer; border: none; background: none; } .alert-btn.cancel { color: #4E5961; } .alert-btn.confirm { color: #0080A3; } .alert-btn.destruct { color: #923133; }  /* Toast */ .wf-toast { background: #0F3541; color: #fff; padding: 9px 24px; width: 360px; } .wf-toast.ios { border-radius: 10px; } .wf-toast-text { font-size: 12px; font-weight: 500; line-height: 16px; color: #fff; } .wf-toast-text.android { font-family: Roboto, system-ui, sans-serif; } .wf-toast-text.ios { font-family: system-ui, -apple-system, sans-serif; } .wf-toast.bottom { display: flex; align-items: center; justify-content: center; height: 32px; border-radius: 10px; padding: 0 24px; } .wf-toast.bottom .wf-toast-text { text-align: center; }   .card-section { margin-bottom: 40px; } .cards-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; margin-bottom: 20px; } .card-col { display: flex; flex-direction: column; gap: 8px; }  /* Base card shell */ .wf-card { background: #fff; position: relative; overflow: hidden; } .wf-card.android { border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.18); } .wf-card.ios     { border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.18); } .wf-card.completed { opacity: 0.5; }  /* Checklist / reminder task card */ .task-card { width: 330px; padding: 14px; display: flex; flex-direction: column; gap: 10px; } .task-card.ios { width: 350px; } .task-header { display: flex; align-items: center; gap: 10px; } .task-type-label { font-size: 15px; line-height: 20px; color: #0080A3; font-weight: 400; } .task-type-label.android { font-family: Roboto, system-ui, sans-serif; } .task-type-label.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.24px; } .task-main { display: flex; align-items: center; gap: 8px; } .task-title { font-size: 16px; line-height: 21px; color: #282F35; flex: 1; } .task-title.android { font-family: Roboto, system-ui, sans-serif; } .task-title.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .task-chevron { color: #282F35; font-size: 15px; } .care-tag { display: inline-flex; align-items: center; gap: 6px; background: #F0F4F5; border-radius: 20px; padding: 6px 10px; } .care-tag-text { font-size: 11px; line-height: 13px; color: #4E5961; font-weight: 500; } .care-tag-text.android { font-family: Roboto, system-ui, sans-serif; } .care-tag-text.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: 0.06px; } .checkmark-icon { color: #73BE5E; font-size: 20px; }  /* Step count task card */ .step-card { width: 350px; } .step-card.android { width: 330px; } .step-card-header { display: flex; align-items: center; gap: 12px; padding: 4px 7px 4px 20px; background: #fff; } .step-card-title { font-size: 16px; line-height: 21px; color: #282F35; flex: 1; } .step-card-title.android { font-family: Roboto, system-ui, sans-serif; } .step-card-title.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .step-progress-bar { height: 8px; background: #D9E3E7; border-radius: 0 0 4px 4px; overflow: hidden; } .step-progress-fill { height: 100%; background: linear-gradient(to right, #0E98BE, #0080A3); border-radius: 0 0 4px 4px; width: 41%; } .step-progress-fill.full { width: 100%; border-radius: 0 0 4px 4px; }  /* Add button */ .add-btn { display: inline-flex; align-items: center; justify-content: flex-end; padding: 12px; background: #fff; gap: 4px; } .add-btn.android { border-radius: 4px; box-shadow: 0 1px 3px #D9E3E7; } .add-btn.ios     { border-radius: 10px; box-shadow: 0 1px 3px #D9E3E7; } .add-btn-text { font-size: 16px; line-height: 21px; color: #0080A3; font-weight: 500; } .add-btn-text.android { font-family: Roboto, system-ui, sans-serif; } .add-btn-text.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; }  /* Encouragement card */ .enc-card { padding: 24px; } .enc-title { font-family: Merriweather, Georgia, serif; font-weight: 300; font-size: 20px; line-height: 24px; color: #0080A3; margin-bottom: 16px; } .enc-body  { font-size: 14px; line-height: 20px; color: #161B1F; } .enc-body.ios { font-size: 15px; }  /* Survey card */ .survey-card { padding: 24px 24px 20px; } .survey-q { font-family: Merriweather, Georgia, serif; font-weight: 300; font-size: 16px; line-height: 22px; color: #161B1F; margin-bottom: 16px; } .survey-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; } .survey-opt { display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 21px; color: #282F35; } .survey-opt.android { font-family: Roboto, system-ui, sans-serif; } .survey-opt.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .submit-btn { display: flex; align-items: center; justify-content: center; background: #0E98BE; border-radius: 30px; height: 51px; font-size: 16px; font-weight: 500; color: #fff; font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; cursor: pointer; }  /* Resource library card */ .lib-card { display: flex; flex-direction: column; width: 154px; overflow: hidden; } .lib-card.ios { width: 166px; } .lib-img { height: 115px; background: #D9E3E7; overflow: hidden; flex-shrink: 0; } .lib-img img { width: 100%; height: 100%; object-fit: cover; } .lib-body { padding: 0 12px; height: 75px; display: flex; align-items: center; } .lib-title { font-size: 15px; line-height: 20px; color: #000; } .lib-title.android { font-family: Roboto, system-ui, sans-serif; } .lib-title.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.24px; }  /* Benefits card */ .benefits-card { display: flex; flex-direction: column; width: 154px; overflow: hidden; } .benefits-img { height: 84px; background: #D9E3E7; overflow: hidden; flex-shrink: 0; } .benefits-img img { width: 100%; height: 100%; object-fit: cover; } .benefits-body { padding: 0 12px; height: 60px; display: flex; align-items: center; } .benefits-title { font-size: 16px; line-height: 21px; color: #000; } .benefits-title.android { font-family: Roboto, system-ui, sans-serif; } .benefits-title.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; }  /* Article card */ .article-card { overflow: hidden; width: 329px; height: 160px; position: relative; } .article-card.ios { width: 350px; } .article-img { position: absolute; top: 0; left: 0; right: 0; bottom: 37.5%; overflow: hidden; } .article-img img { width: 100%; height: 100%; object-fit: cover; } .article-title { position: absolute; bottom: 12px; left: 16px; right: 16px; font-size: 16px; line-height: 21px; color: #282F35; } .article-title.android { font-family: Roboto, system-ui, sans-serif; } .article-title.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; }  /* Medication reminder card */ .med-card { padding: 14px; display: flex; flex-direction: column; gap: 10px; width: 330px; } .med-card.ios { width: 350px; }  /* Care program card */ .cp-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; width: 330px; } .cp-card.ios { width: 350px; } .cp-title { font-family: Merriweather, Georgia, serif; font-weight: 700; font-size: 18px; line-height: 22px; color: #0080A3; } .cp-body  { font-size: 14px; line-height: 20px; color: #282F35; } .cp-body.android { font-family: Roboto, system-ui, sans-serif; } .cp-body.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; } .cp-tag { display: inline-flex; align-items: center; gap: 6px; background: #F2F8FA; border-radius: 16px; padding: 6px 12px; font-size: 12px; color: #4E5961; }   .ctrl-section { margin-bottom: 40px; } .ctrl-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 20px; } .ctrl-item { display: flex; flex-direction: column; gap: 8px; } .ctrl-label { font-size: 10px; color: #A6B4BA; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; }  /* Android Segmented Control */ .wf-seg-android { background: #D9E3E7; height: 36px; border-radius: 10px; overflow: hidden; position: relative; width: 328px; display: flex; } .wf-seg-android .seg-opt { flex: 1; display: flex; align-items: center; justify-content: center; font-family: Roboto, system-ui, sans-serif; font-size: 14px; font-weight: 500; color: #4E5961; cursor: pointer; border-radius: 10px; position: relative; z-index: 1; } .wf-seg-android .seg-opt.active { background: #0080A3; color: #fff; }  /* iOS Segmented Control */ .wf-seg-ios { background: #D9E3E7; height: 32px; border-radius: 8px; overflow: hidden; padding: 2px; display: flex; gap: 0; position: relative; width: 343px; } .wf-seg-ios .seg-opt { flex: 1; display: flex; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; color: #282F35; cursor: pointer; border-radius: 7px; letter-spacing: -0.08px; position: relative; } .wf-seg-ios .seg-opt.active { background: #0080A3; color: #fff; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04); } .wf-seg-ios .seg-opt:not(.active):not(:last-child)::after { content: ''; position: absolute; right: 0; top: 21%; bottom: 21%; width: 0.5px; background: rgba(60,60,67,.36); border-radius: 0.5px; } .wf-seg-ios .seg-opt.active + .seg-opt::after { display: none; }  /* Android Tab Menu */ .wf-tabs-android { height: 48px; width: 360px; background: #fff; display: flex; border-bottom: 1px solid #D9E3E7; } .wf-tabs-android .tab-opt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: Roboto, system-ui, sans-serif; font-size: 15px; font-weight: 400; color: #161B1F; cursor: pointer; position: relative; padding-bottom: 0; } .wf-tabs-android .tab-opt.active { color: #0080A3; } .wf-tabs-android .tab-opt .tab-line { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0080A3; } .wf-tabs-android .tab-opt.inactive .tab-line { display: none; } .wf-tabs-android .tab-opt .tab-separator { position: absolute; right: 0; top: 8px; bottom: 8px; width: 1px; background: #D9E3E7; }  /* iOS Tab Menu */ .wf-tabs-ios { height: 48px; width: 390px; background: #fff; display: flex; } .wf-tabs-ios .tab-opt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; font-family: system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 400; color: #161B1F; cursor: pointer; position: relative; padding-top: 14px; letter-spacing: -0.24px; } .wf-tabs-ios .tab-opt.active { color: #0080A3; } .wf-tabs-ios .tab-opt .tab-line { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0080A3; } .wf-tabs-ios .tab-opt.inactive .tab-line { background: #D9E3E7; height: 1px; }  /* Progress Bar */ .wf-progress-wrap { display: flex; flex-direction: column; gap: 12px; } .wf-progress { height: 8px; border-radius: 10px; background: #D9E3E7; position: relative; overflow: hidden; width: 328px; } .wf-progress-ios { width: 343px; } .wf-progress-fill { height: 100%; background: linear-gradient(to right, #0E98BE, #0080A3); border-radius: 10px; }  /* Onboarding progress */ .wf-onboarding { display: flex; align-items: center; gap: 12px; background: #fff; padding: 12px 0; width: 360px; } .wf-onboarding-ios { width: 390px; } .wf-onboarding .back-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; } .wf-onboarding .back-btn.disabled { opacity: 0.5; } .wf-onboarding .progress-track { flex: 1; height: 8px; border-radius: 10px; background: #D9E3E7; overflow: hidden; } .wf-onboarding .progress-track .wf-progress-fill { height: 100%; }   .lv-section { margin-bottom: 40px; } .lv-grid { display: flex; flex-direction: column; gap: 0; border-radius: 12px; overflow: hidden; border: 1px solid #e8edf0; width: 360px; } .lv-row { background: #fff; border-bottom: 1px solid #D9E3E7; position: relative; display: flex; align-items: center; padding: 0 16px; min-height: 56px; font-family: Roboto, system-ui, sans-serif; } .lv-row:last-child { border-bottom: none; } .lv-row.ios { font-family: system-ui, -apple-system, sans-serif; } .lv-row.tall { min-height: 72px; } .lv-row.taller { min-height: 84px; } .lv-row.tallest { min-height: 106px; } .lv-row.step { min-height: 84px; }  /* Text styles */ .lv-main { font-size: 16px; line-height: 21px; color: #282F35; font-weight: 400; flex: 1; } .lv-main.ios { color: #161B1F; letter-spacing: -0.32px; } .lv-main.link { color: #0080A3; font-weight: 500; } .lv-main.link.ios { font-weight: 600; } .lv-main.destruct { color: #923133; font-weight: 500; } .lv-main.destruct.ios { font-weight: 600; } .lv-secondary { font-size: 14px; line-height: 18px; color: #4E5961; font-weight: 400; } .lv-secondary.ios { font-size: 13px; letter-spacing: -0.078px; } .lv-date-start { font-size: 14px; line-height: 18px; color: #317A20; font-weight: 500; } .lv-date-end   { font-size: 14px; line-height: 18px; color: #923133; font-weight: 500; } .lv-date-start.ios { font-size: 13px; letter-spacing: -0.078px; font-weight: 600; } .lv-date-end.ios   { font-size: 13px; letter-spacing: -0.078px; font-weight: 600; } .lv-right-text { font-size: 16px; line-height: 21px; color: #4E5961; text-align: right; } .lv-right-text.ios { letter-spacing: -0.32px; }  /* Layout helpers */ .lv-content { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 14px 0; } .lv-icon { width: 24px; height: 24px; flex-shrink: 0; margin-right: 16px; display: flex; align-items: center; justify-content: center; } .lv-right { margin-left: auto; flex-shrink: 0; display: flex; align-items: center; gap: 4px; } .lv-chevron { color: #4E5961; font-size: 18px; }  /* Step counter */ .lv-step-count { font-size: 28px; line-height: 34px; color: #0E98BE; font-weight: 700; } .lv-step-label { font-size: 16px; line-height: 21px; color: #282F35; } .lv-step-label.ios { color: #161B1F; letter-spacing: -0.32px; } .lv-progress { height: 8px; background: #D9E3E7; border-radius: 4px; width: 280px; margin-top: 6px; overflow: hidden; } .lv-progress-fill { height: 100%; background: linear-gradient(to right, #0E98BE, #0080A3); border-radius: 4px; width: 60%; }  /* Toggle — Android */ .lv-toggle-android { width: 43px; height: 24px; background: #0E98BE; border-radius: 12px; position: relative; flex-shrink: 0; } .lv-toggle-android::after { content: ''; position: absolute; right: 3px; top: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.3); }  /* Toggle — iOS */ .lv-toggle-ios { width: 51px; height: 31px; background: #34C759; border-radius: 16px; position: relative; flex-shrink: 0; } .lv-toggle-ios::after { content: ''; position: absolute; right: 2px; top: 2px; width: 27px; height: 27px; background: #fff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,.2); }  /* Checkmark */ .lv-checkmark { color: #73BE5E; font-size: 20px; }  /* Two-column layout */ .lv-pair { display: flex; gap: 24px; align-items: flex-start; margin-bottom: 20px; } .lv-pair-col { display: flex; flex-direction: column; gap: 4px; } .lv-pair-label { font-size: 10px; color: #A6B4BA; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; margin-bottom: 4px; }   .tf-section { margin-bottom: 40px; } .tf-grid { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; } .tf-item { display: flex; flex-direction: column; gap: 6px; } .tf-item-label { font-size: 10px; color: #78868E; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; } .tf-plat-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 8px; } .tf-plat-col { display: flex; flex-direction: column; gap: 4px; } .tf-plat-name { font-size: 10px; color: #A6B4BA; }  /* Android field — filled box style */ .wf-field-android { position: relative; width: 280px; font-family: Roboto, system-ui, sans-serif; } .wf-field-android .field-wrap { position: relative; background: #D9E3E7; border-radius: 4px 4px 0 0; height: 56px; } .wf-field-android.has-helper .field-wrap { border-radius: 4px 4px 0 0; } .wf-field-android .field-wrap.is-disabled { background: #A6B4BA; opacity: 0.6; } .wf-field-android .bottom-line { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: #4E5961; } .wf-field-android .bottom-line.is-focus { background: #0080A3; height: 2px; } .wf-field-android .bottom-line.is-error { background: #923133; } .wf-field-android .field-label { position: absolute; top: 8px; left: 16px; font-size: 12px; line-height: 16px; color: #4E5961; } .wf-field-android .field-label.is-focus { color: #0080A3; } .wf-field-android .field-label.is-error { color: #923133; } .wf-field-android .field-input { position: absolute; bottom: 10px; left: 16px; right: 48px; font-size: 16px; line-height: 21px; color: #282F35; } .wf-field-android .field-input.no-label { top: 50%; transform: translateY(-50%); bottom: auto; } .wf-field-android .field-input.is-placeholder { color: #4E5961; } .wf-field-android .field-input.is-error { color: #923133; } .wf-field-android .field-cursor { color: #0080A3; } .wf-field-android .field-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #4E5961; font-size: 20px; } .wf-field-android .field-helper { font-size: 12px; line-height: 16px; color: #4E5961; padding: 4px 16px 0; } .wf-field-android .field-helper.is-error { color: #923133; }  /* iOS field — outlined border style */ .wf-field-ios { position: relative; width: 280px; font-family: Roboto, system-ui, sans-serif; } .wf-field-ios .field-wrap { position: relative; border: 1px solid #282F35; border-radius: 2px; height: 56px; } .wf-field-ios.has-helper .field-wrap { border-radius: 2px 2px 0 0; } .wf-field-ios .field-wrap.is-focus { border-color: #0080A3; } .wf-field-ios .field-wrap.is-error { border-color: #923133; } .wf-field-ios .field-wrap.is-disabled { border-color: #4E5961; opacity: 0.6; } .wf-field-ios .focus-bar { position: absolute; bottom: -1px; left: 0; right: 0; height: 4px; background: #0080A3; border-radius: 0 0 2px 2px; } .wf-field-ios .focus-bar.is-error { background: #923133; } .wf-field-ios .field-label { position: absolute; top: 8px; left: 16px; font-size: 12px; line-height: 16px; color: #4E5961; opacity: 0.87; } .wf-field-ios .field-label.is-error { color: #923133; } .wf-field-ios .field-input { position: absolute; bottom: 10px; left: 16px; right: 48px; font-size: 16px; line-height: 21px; color: #282F35; } .wf-field-ios .field-input.no-label { top: 50%; transform: translateY(-50%); bottom: auto; } .wf-field-ios .field-input.is-placeholder { color: #4E5961; } .wf-field-ios .field-cursor { color: #0080A3; } .wf-field-ios .field-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #4E5961; font-size: 20px; } .wf-field-ios .field-helper { font-size: 12px; line-height: 16px; color: #4E5961; padding: 4px 16px 0; } .wf-field-ios .field-helper.is-error { color: #923133; }  /* Password checklist */ .pw-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; } .pw-item { display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 16px; color: #4E5961; } .pw-icon { font-size: 15px; } .pw-icon.ok { color: #73BE5E; } .pw-icon.err { color: #F05B60; }   .btn-section { margin-bottom: 40px; } .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 14px; } .btn-row-label { font-size: 11px; color: #A6B4BA; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; min-width: 90px; flex-shrink: 0; } .btn-plat-label { font-size: 10px; color: #A6B4BA; margin-right: 4px; } .dark-bg { background: #19566A; padding: 12px 16px; border-radius: 12px; display: inline-flex; } .spec-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; } .spec-card { background: #fff; border: 1px solid #e8edf0; border-radius: 10px; padding: 12px 14px; font-size: 11px; color: #4E5961; line-height: 1.6; min-width: 180px; } .spec-card strong { color: #161B1F; font-weight: 600; } .btn-divider { border: none; border-top: 1px solid #e8edf0; margin: 28px 0; }  /* Wellframe button styles */ .wf-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 30px; padding: 15px 24px; font-size: 16px; line-height: 21px; letter-spacing: -0.32px; font-weight: 500; font-family: system-ui, -apple-system, sans-serif; white-space: nowrap; } .wf-btn.is-android { letter-spacing: 0; border-radius: 100px; font-family: Roboto, system-ui, sans-serif; } .wf-btn.is-tertiary { border-radius: 100px; padding: 9px 15px; font-size: 15px; line-height: 20px; letter-spacing: -0.24px; } .wf-btn.is-android.is-tertiary { letter-spacing: 0; } .wf-btn.is-disabled { opacity: 0.5; } .wf-btn.p-default  { background: #0E98BE; color: #fff; } .wf-btn.p-shade1   { background: #19566A; color: #fff; } .wf-btn.p-shade2   { background: #0F3541; color: #fff; } .wf-btn.p-white    { background: #fff;    color: #0E98BE; } .wf-btn.s-default  { background: transparent; border: 1px solid #0E98BE; color: #0E98BE; } .wf-btn.s-shade1   { background: transparent; border: 1px solid #19566A; color: #19566A; } .wf-btn.s-white    { background: transparent; border: 1px solid #fff;    color: #fff; } .wf-btn.s-destruct { background: transparent; border: 1px solid #923133; color: #923133; } .wf-btn.t-default  { background: #D9E3E7; color: #19566A; }
+
+
+
+
+
+/* Date-based program card */
+.date-card { height: 80px; background: #fff; display: flex; align-items: center; padding: 0 14px; box-shadow: 0 1px 4px rgba(0,0,0,.18); position: relative; }
+.date-card.ios { border-radius: 10px; width: 335px; }
+.date-card.android { border-radius: 4px; width: 325px; }
+.date-card-icon { color: #0E98BE; font-size: 22px; flex-shrink: 0; margin-right: 12px; }
+.date-card-title { font-size: 16px; color: #282F35; flex: 1; }
+.date-card-title.ios { font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; }
+.date-card-title.android { font-family: Roboto, system-ui, sans-serif; }
+.date-card-badge { width: 20px; height: 20px; border-radius: 50%; background: #F05B60; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; }
+.date-card-badge span { font-size: 12px; font-weight: 700; color: #fff; font-family: system-ui, -apple-system, sans-serif; line-height: 1; }
+.date-card-chevron { color: #4E5961; font-size: 20px; flex-shrink: 0; }
+
+/* ── ANDROID MODAL ── */
+.modal-wrap { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; margin-bottom: 32px; }
+.modal-card { width: 328px; background: #fff; border-radius: 4px; display: flex; flex-direction: column; box-shadow: 0 11px 15px rgba(0,0,0,.2), 0 9px 46px rgba(0,0,0,.12), 0 24px 38px rgba(0,0,0,.14); overflow: hidden; flex-shrink: 0; }
+.modal-top-bar { display: flex; align-items: center; gap: 8px; padding: 0 24px; height: 50px; background: #fff; }
+.modal-header-spacer { flex: 1; }
+.modal-close-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #4E5961; flex-shrink: 0; }
+.modal-icon-zone { background: #fff; display: flex; justify-content: center; padding: 8px 24px 0; }
+.modal-warning-wrap { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+.modal-body-zone { background: #fff; display: flex; flex-direction: column; gap: 16px; padding: 16px 24px 20px; text-align: center; }
+.modal-title-text { font-family: Merriweather, Georgia, serif; font-weight: 300; font-size: 20px; line-height: 25px; color: #0080A3; }
+.modal-body-text { font-family: Roboto, system-ui, sans-serif; font-weight: 400; font-size: 16px; line-height: 21px; color: #4F4F4F; }
+.modal-link-text { font-family: Roboto, system-ui, sans-serif; font-weight: 500; font-size: 15px; line-height: 20px; color: #0080A3; cursor: pointer; }
+.modal-footer-zone { background: #fff; display: flex; flex-direction: column; gap: 16px; align-items: center; padding: 0 24px 17px; }
+.modal-btn-primary { background: #0E98BE; border-radius: 30px; height: 56px; display: flex; align-items: center; justify-content: center; width: 100%; cursor: pointer; }
+.modal-btn-primary span { font-family: system-ui,-apple-system,sans-serif; font-weight: 500; font-size: 16px; letter-spacing: -0.32px; color: #fff; }
+.modal-btn-secondary { border: 1px solid #0E98BE; border-radius: 30px; height: 56px; display: flex; align-items: center; justify-content: center; width: 100%; cursor: pointer; background: transparent; }
+.modal-btn-secondary span { font-family: system-ui,-apple-system,sans-serif; font-weight: 500; font-size: 16px; letter-spacing: -0.32px; color: #0E98BE; }
+.modal-variant-label { font-size: 10px; color: #A6B4BA; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; margin-bottom: 8px; }
+
+/* Warning triangle icon (SVG inline) */
+.warning-triangle { width: 38px; height: 38px; }
+
+/* ── CHAT ATTACHMENTS ── */
+.chat-section { margin-bottom: 40px; }
+.chat-scenario-grid { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; margin-bottom: 24px; }
+.chat-scenario-col { display: flex; flex-direction: column; gap: 8px; min-width: 200px; }
+.chat-scenario-label { font-size: 10px; color: #A6B4BA; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; margin-bottom: 6px; }
+
+/* Simulated chat screen shell */
+.chat-screen { width: 375px; background: #F2F8FA; border-radius: 12px; overflow: hidden; border: 1px solid #D9E3E7; font-family: system-ui, -apple-system, sans-serif; }
+.chat-screen-header { background: #0080A3; padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+.chat-screen-title { color: #fff; font-size: 17px; font-weight: 600; flex: 1; text-align: center; letter-spacing: -0.32px; }
+.chat-screen-icon { color: rgba(255,255,255,0.8); font-size: 22px; }
+.chat-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 200px; }
+.chat-input-bar { background: #fff; border-top: 1px solid #D9E3E7; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+.chat-input-field { flex: 1; background: #F2F8FA; border-radius: 20px; padding: 8px 14px; font-size: 16px; color: #4E5961; font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.32px; }
+.chat-send-btn { color: #0080A3; font-size: 22px; }
+.chat-attach-btn { color: #4E5961; font-size: 22px; }
+
+/* Bubbles */
+.bubble-wrap { display: flex; flex-direction: column; gap: 4px; }
+.bubble-wrap.user { align-items: flex-end; }
+.bubble-wrap.care { align-items: flex-start; }
+
+/* Image attachment bubble */
+.attach-bubble { position: relative; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12); max-width: 220px; }
+.attach-bubble.user { border-bottom-right-radius: 4px; }
+.attach-img { width: 220px; height: 160px; object-fit: cover; display: block; }
+.attach-img-placeholder { width: 220px; height: 160px; background: linear-gradient(135deg, #B0DEEA 0%, #D9E3E7 100%); display: flex; align-items: center; justify-content: center; }
+.attach-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.attach-overlay.sending { background: rgba(255,255,255,0.5); }
+.attach-overlay.error { background: rgba(255,255,255,0.5); }
+.sending-spinner { width: 36px; height: 36px; border: 3px solid #D9E3E7; border-top-color: #0080A3; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* PDF attachment bubble */
+.pdf-bubble { background: #fff; border-radius: 12px; border: 1px solid #D9E3E7; padding: 12px 14px; display: flex; align-items: center; gap: 10px; max-width: 260px; box-shadow: 0 1px 3px rgba(0,0,0,.1); position: relative; }
+.pdf-bubble.user { border-bottom-right-radius: 4px; }
+.pdf-bubble.sending { opacity: 0.5; }
+.pdf-bubble.error { opacity: 0.5; }
+.pdf-icon { width: 36px; height: 36px; background: #F05B60; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 18px; }
+.pdf-info { flex: 1; min-width: 0; }
+.pdf-name { font-size: 13px; font-weight: 500; color: #161B1F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.08px; }
+.pdf-size { font-size: 11px; color: #78868E; margin-top: 2px; }
+
+/* Error / retry row */
+.error-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; justify-content: flex-end; }
+.error-text { font-size: 12px; color: #F05B60; letter-spacing: -0.08px; }
+.retry-icon { color: #F05B60; font-size: 16px; }
+
+/* Action sheet */
+.action-sheet { background: #fff; border-radius: 12px; border: 1px solid #D9E3E7; overflow: hidden; width: 220px; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
+.action-sheet-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #F0F4F5; cursor: pointer; }
+.action-sheet-row:last-child { border-bottom: none; }
+.action-sheet-text { font-size: 16px; color: #161B1F; letter-spacing: -0.32px; }
+.action-sheet-text.destruct { color: #923133; }
+.action-sheet-icon { font-size: 20px; color: #4E5961; }
+.action-sheet-icon.destruct { color: #923133; }
+
+/* Removed message tombstone */
+.removed-bubble { background: #F0F4F5; border-radius: 10px; padding: 10px 14px; max-width: 280px; }
+.removed-bubble.user { align-self: flex-end; }
+.removed-row { display: flex; align-items: center; gap: 8px; }
+.removed-icon { color: #923133; font-size: 18px; }
+.removed-text { font-size: 14px; color: #4E5961; line-height: 1.4; letter-spacing: -0.08px; font-style: italic; }
+.removed-text strong { font-style: normal; color: #282F35; }
+.bubble-timestamp { font-size: 11px; color: #A6B4BA; margin-top: 2px; letter-spacing: -0.08px; }
+.bubble-timestamp.right { text-align: right; }
+
+/* Security error bubble */
+.security-bubble { background: #FFF3F3; border: 1px solid #F05B60; border-radius: 10px; padding: 10px 14px; max-width: 280px; }
+.security-row { display: flex; align-items: flex-start; gap: 8px; }
+.security-icon { color: #F05B60; font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.security-text { font-size: 13px; color: #923133; line-height: 1.4; letter-spacing: -0.08px; font-weight: 500; }
+
+</style> </head> <body>  <div class="toast" id="toast">Copied!</div>  <nav class="nav">   <div class="nav-brand">Wellframe Mobile</div>   <button class="nav-btn active" data-tab="colors">Colors</button>   <button class="nav-btn" data-tab="typography">Typography</button>   <button class="nav-btn" data-tab="icons">Icons</button>   <button class="nav-btn" data-tab="notifications">Notifications</button>   <button class="nav-btn" data-tab="cards">Cards</button>   <button class="nav-btn" data-tab="stepcount">Step Count</button>   <button class="nav-btn" data-tab="controls">Controls</button>   <button class="nav-btn" data-tab="listviews">List Views</button>   <button class="nav-btn" data-tab="textfields">Text Fields</button>   <button class="nav-btn" data-tab="buttons">Buttons</button>   <button class="nav-btn" data-tab="chatattachments">Chat Attachments</button>
+</nav>
+
+<!-- COLORS --> <div class="panel active" id="panel-colors">   <div class="panel-title">Color Tokens</div>   <p class="panel-sub">Wellframe Mobile color palette. Click any swatch to copy the hex value.</p>   <div class="color-section"><div class="section-label">Brand Primary &amp; Backgrounds</div><div class="swatch-grid" id="sg-brand"></div></div>   <div class="color-section"><div class="section-label">Utility — Error &amp; Success</div><div class="swatch-grid" id="sg-utility"></div></div>   <div class="color-section"><div class="section-label">Neutrals</div><div class="swatch-grid" id="sg-neutral"></div></div> </div>
+
+<!-- TYPOGRAPHY --> <div class="panel" id="panel-typography">   <div class="panel-title">Typography</div>   <p class="panel-sub">SF Pro Text &amp; Display (iOS) · Roboto (Android) · Merriweather (both platforms)</p>   <div class="seg" id="type-seg">     <button class="seg-btn active" data-typetab="ios">iOS — SF Pro</button>     <button class="seg-btn" data-typetab="android">Android — Roboto</button>     <button class="seg-btn" data-typetab="serif">Both — Merriweather</button>   </div>   <div id="type-content"></div> </div>
+
+<!-- ICONS --> <div class="panel" id="panel-icons">   <div class="panel-title">Icon Library</div>   <p class="panel-sub">Material Icons render live · SF Symbol names shown as text · Click any name to copy</p>   <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">     <input id="icon-search" placeholder="Search by name or symbol..." style="padding:7px 12px;border-radius:8px;border:1px solid #d9e3e7;font-size:13px;outline:none;width:220px"/>     <div class="seg" id="icon-plat-seg">       <button class="seg-btn active" data-iplatform="all">Both</button>       <button class="seg-btn" data-iplatform="ios">iOS only</button>       <button class="seg-btn" data-iplatform="android">Android only</button>     </div>   </div>   <div class="icon-filters" id="icon-filters"></div>   <div id="icon-content"></div> </div>
+
+<!-- NOTIFICATIONS --> <div class="panel" id="panel-notifications">   <div class="panel-title">In-App Notifications</div>   <p class="panel-sub">Modals · Android Native Alerts · Toasts · Both platforms</p>   <div class="icon-filters" id="notif-filter"></div>   <div id="notif-content"></div> </div>
+
+<div class="panel" id="panel-cards">   <div class="panel-title">Card Components</div>   <p class="panel-sub">Checklist · Resources · Reminders · Care Programs · Medication Reminders · Survey · Encouragement</p>   <div class="seg" id="cards-plat-seg">     <button class="seg-btn active" data-cardplat="both">Both</button>     <button class="seg-btn" data-cardplat="android">Android</button>     <button class="seg-btn" data-cardplat="ios">iOS</button>   </div>   <div class="icon-filters" id="cards-filter"></div>   <div id="cards-content"></div> </div>
+
+<div class="panel" id="panel-stepcount">   <div class="panel-title">Step Count</div>   <p class="panel-sub">Circular progress widget used in the Me Tab · Black background · Gradient arc · Both platforms share the same layout</p>   <div class="seg" id="sc-plat-seg">     <button class="seg-btn active" data-scplat="both">Both</button>     <button class="seg-btn" data-scplat="android">Android</button>     <button class="seg-btn" data-scplat="ios">iOS</button>   </div>   <div id="sc-content"></div> </div>
+
+<div class="panel" id="panel-controls">   <div class="panel-title">Controls</div>   <p class="panel-sub">Segmented Controls · Tab Menus · Progress Bars · Android and iOS variants</p>   <div class="seg" id="ctrl-plat-seg">     <button class="seg-btn active" data-ctrlplat="both">Both</button>     <button class="seg-btn" data-ctrlplat="android">Android</button>     <button class="seg-btn" data-ctrlplat="ios">iOS</button>   </div>   <div id="ctrl-content"></div> </div>
+
+<div class="panel" id="panel-listviews">   <div class="panel-title">List Views</div>   <p class="panel-sub">Used in Reminders, Resources, and Me Tab · Android uses Roboto · iOS uses SF Pro Text · Both share the same variant system</p>   <div class="seg" id="lv-plat-seg">     <button class="seg-btn active" data-lvplat="both">Both</button>     <button class="seg-btn" data-lvplat="android">Android</button>     <button class="seg-btn" data-lvplat="ios">iOS</button>   </div>   <div id="lv-content"></div> </div>
+
+<div class="panel" id="panel-textfields">   <div class="panel-title">Text Fields</div>   <p class="panel-sub">Android uses filled box style (gray bg + bottom border) · iOS uses outlined border style · Both share the same variant system</p>   <div class="seg" id="tf-plat-seg">     <button class="seg-btn active" data-tfplat="both">Both</button>     <button class="seg-btn" data-tfplat="android">Android</button>     <button class="seg-btn" data-tfplat="ios">iOS</button>   </div>   <div id="tf-content"></div> </div>
+
+<div class="panel" id="panel-buttons">   <div class="panel-title">Buttons</div>   <p class="panel-sub">Updated 2024 · Rounded style · Title-Case · iOS uses SF Pro Medium · Android uses Roboto Medium</p>   <div class="seg" id="btn-plat-seg">     <button class="seg-btn active" data-bplatform="both">Both</button>     <button class="seg-btn" data-bplatform="ios">iOS</button>     <button class="seg-btn" data-bplatform="android">Android</button>   </div>   <div id="btn-content"></div> </div>
+
+<!-- CHAT ATTACHMENTS -->
+<div class="panel" id="panel-chatattachments">
+  <div class="panel-title">Chat — Attachments</div>
+  <p class="panel-sub">iOS · Up to 10 items per send · HEIC, JPG, PNG, PDF · PDFs must be under 2 MB · Images auto-scaled · PDFs open in a scrollable preview window</p>
+  <div id="chat-attach-content"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+var activeTab     = "colors";
+var activeTypeTab = "ios";
+var iplatform     = "all";
+var iconGroup     = "All";
+var bplatform     = "both";
+var lastCopiedBtn = null;
+var toastTimer    = null;
+
+/* ══════════════════════════════════════════
+   DATA — COLORS
+══════════════════════════════════════════ */
+var colorData = {
+  brand: [
+    { name:"Medium Blue",    role:"Primary",   token:"--color-brand-primary",    hex:"#0080A3" },
+    { name:"Light Blue",     role:"Secondary", token:"--color-brand-secondary",  hex:"#0E98BE" },
+    { name:"Dark Blue",      role:"Shade1",    token:"--color-brand-shade-1",    hex:"#0F3541" },
+    { name:"Wellframe Blue", role:"Shade2",    token:"--color-brand-shade-2",    hex:"#19566A" },
+    { name:"Tint Blue",      role:"Tint",      token:"--color-brand-tint",       hex:"#B0DEEA" },
+    { name:"BG Primary",     role:"Gray1",     token:"--color-bg-primary",       hex:"#F2F8FA" },
+    { name:"BG Secondary",   role:"Gray3",     token:"--color-bg-secondary",     hex:"#D9E3E7" }
+  ],
+  utility: [
+    { name:"Error Icon",   role:"Red8",    token:"--color-error-icon",   hex:"#F05B60" },
+    { name:"Error Text",   role:"Red11",   token:"--color-error-text",   hex:"#923133" },
+    { name:"Success Icon", role:"Green7",  token:"--color-success-icon", hex:"#73BE5E" },
+    { name:"Success Text", role:"Green10", token:"--color-success-text", hex:"#317A20" }
+  ],
+  neutral: [
+    { name:"Neutral1", role:"Gray12", token:"--color-neutral-1", hex:"#161B1F" },
+    { name:"Neutral2", role:"Gray11", token:"--color-neutral-2", hex:"#282F35" },
+    { name:"Neutral3", role:"Gray9",  token:"--color-neutral-3", hex:"#4E5961" },
+    { name:"Neutral4", role:"Gray7",  token:"--color-neutral-4", hex:"#78868E" },
+    { name:"Neutral5", role:"Gray5",  token:"--color-neutral-5", hex:"#A6B4BA" },
+    { name:"White",    role:"",       token:"--color-white",     hex:"#FFFFFF", border:true }
+  ]
+};
+
+/* ══════════════════════════════════════════
+   DATA — TYPOGRAPHY
+══════════════════════════════════════════ */
+var typeData = {
+  ios: [
+    { name:"Navigation",         variant:"Regular", size:10, weight:400, lh:12,  ls:0.05,   family:"system-ui" },
+    { name:"Caption2",           variant:"Regular", size:11, weight:400, lh:13,  ls:0.06,   family:"system-ui" },
+    { name:"Caption2",           variant:"Medium",  size:11, weight:600, lh:13,  ls:0.06,   family:"system-ui" },
+    { name:"Caption1",           variant:"Regular", size:12, weight:400, lh:16,  ls:0,      family:"system-ui" },
+    { name:"Caption1",           variant:"Medium",  size:12, weight:600, lh:16,  ls:0,      family:"system-ui" },
+    { name:"Footnote",           variant:"Regular", size:13, weight:400, lh:18,  ls:-0.078, family:"system-ui" },
+    { name:"Footnote",           variant:"Medium",  size:13, weight:600, lh:18,  ls:-0.078, family:"system-ui" },
+    { name:"Subheadline",        variant:"Regular", size:15, weight:400, lh:20,  ls:-0.24,  family:"system-ui" },
+    { name:"Callout",            variant:"Regular", size:16, weight:400, lh:21,  ls:-0.32,  family:"system-ui" },
+    { name:"Callout",            variant:"Medium",  size:16, weight:600, lh:21,  ls:-0.32,  family:"system-ui" },
+    { name:"Body",               variant:"Medium",  size:17, weight:600, lh:21,  ls:0.34,   family:"system-ui" },
+    { name:"Title3",             variant:"Regular", size:20, weight:400, lh:25,  ls:0.38,   family:"system-ui" },
+    { name:"Title3",             variant:"Medium",  size:20, weight:600, lh:25,  ls:0.38,   family:"system-ui" },
+    { name:"Title1",             variant:"Medium",  size:28, weight:600, lh:34,  ls:0,      family:"system-ui" },
+    { name:"Extra Large Number", variant:"Light",   size:56, weight:300, lh:68,  ls:0,      family:"system-ui" }
+  ],
+  android: [
+    { name:"Navigation",         variant:"Regular", size:10, weight:400, lh:12,  ls:0,     family:"Roboto" },
+    { name:"Caption2",           variant:"Regular", size:11, weight:400, lh:13,  ls:0,     family:"Roboto" },
+    { name:"Caption2",           variant:"Medium",  size:11, weight:500, lh:13,  ls:0,     family:"Roboto" },
+    { name:"Caption1",           variant:"Regular", size:12, weight:400, lh:16,  ls:0,     family:"Roboto" },
+    { name:"Caption1",           variant:"Medium",  size:12, weight:500, lh:16,  ls:0,     family:"Roboto" },
+    { name:"Footnote",           variant:"Regular", size:14, weight:400, lh:18,  ls:0,     family:"Roboto" },
+    { name:"Footnote",           variant:"Medium",  size:14, weight:500, lh:18,  ls:0,     family:"Roboto" },
+    { name:"Subheadline",        variant:"Regular", size:15, weight:400, lh:20,  ls:0,     family:"Roboto" },
+    { name:"Callout",            variant:"Regular", size:16, weight:400, lh:21,  ls:0,     family:"Roboto" },
+    { name:"Callout",            variant:"Medium",  size:16, weight:500, lh:21,  ls:0,     family:"Roboto" },
+    { name:"Body",               variant:"Medium",  size:17, weight:500, lh:21,  ls:0.17,  family:"Roboto" },
+    { name:"Title3",             variant:"Regular", size:20, weight:400, lh:25,  ls:0,     family:"Roboto" },
+    { name:"Title3",             variant:"Medium",  size:20, weight:500, lh:25,  ls:0,     family:"Roboto" },
+    { name:"Title1",             variant:"Medium",  size:28, weight:500, lh:34,  ls:0,     family:"Roboto" },
+    { name:"Extra Large Number", variant:"Light",   size:56, weight:300, lh:68,  ls:-1,    family:"Roboto" }
+  ],
+  serif: [
+    { name:"Callout",  variant:"Light", size:16, weight:300, lh:25, ls:0, family:"Merriweather" },
+    { name:"Callout",  variant:"Bold",  size:16, weight:700, lh:25, ls:0, family:"Merriweather" },
+    { name:"Body",     variant:"Light", size:17, weight:300, lh:20, ls:0, family:"Merriweather" },
+    { name:"Headline", variant:"Bold",  size:18, weight:700, lh:22, ls:0, family:"Merriweather" },
+    { name:"Title3",   variant:"Light", size:20, weight:300, lh:25, ls:0, family:"Merriweather" },
+    { name:"Title2",   variant:"Light", size:24, weight:300, lh:28, ls:0, family:"Merriweather" },
+    { name:"Title1",   variant:"Light", size:28, weight:300, lh:34, ls:0, family:"Merriweather" }
+  ]
+};
+
+/* ══════════════════════════════════════════
+   DATA — ICONS
+══════════════════════════════════════════ */
+var Pc="#0080A3", Sc="#0E98BE", Tc="#B0DEEA", Nc="#4E5961", Wc="#FFFFFF", Ec="#F05B60", Gc="#73BE5E";
+
+var iconGroups = [
+  { name:"Tab Bar Navigation", desc:"Tab/Android/* and Tab/iOS/* - Active = brand primary, Inactive = Neutral3.", icons:[
+    { name:"Tab / Checklist",  figma:"Tab/Android/Checklist - Tab/iOS/Checklist",  ios:"checklist",     android:"checklist",           vs:[{l:"Active",c:Pc},{l:"Inactive",c:Nc}] },
+    { name:"Tab / Reminder",   figma:"Tab/Android/Reminder - Tab/iOS/Reminder",   ios:"bell",          android:"notifications",       vs:[{l:"Active",c:Pc},{l:"Inactive",c:Nc}] },
+    { name:"Tab / Me",         figma:"Tab/Android/Me - Tab/iOS/Me",               ios:"person",        android:"person",              vs:[{l:"Active",c:Pc},{l:"Inactive",c:Nc}] },
+    { name:"Tab / Chat",       figma:"Tab/Android/Chat - Tab/iOS/Chat",           ios:"message",       android:"chat_bubble_outline", vs:[{l:"Active",c:Pc},{l:"Inactive",c:Nc}] },
+    { name:"Tab / Resources",  figma:"Tab/Android/Resources - Tab/iOS/Resources", ios:"books.vertical",android:"menu_book",           vs:[{l:"Active",c:Pc},{l:"Inactive",c:Nc}] }
+  ]},
+  { name:"To-Dos", desc:"Active = brand secondary - Inactive = brand tint. Same icons on both platforms. Several are custom Wellframe SVGs.", icons:[
+    { name:"Step Count",    figma:"ToDo/Android/Step Count [custom]",         ios:"figure.walk",           android:"directions_walk",     vs:[{l:"Active",c:Sc},{l:"Inactive",c:Tc}] },
+    { name:"Survey",        figma:"ToDo/Android/Survey [custom grid]",        ios:"list.bullet.clipboard", android:"grid_view",           vs:[{l:"Active",c:Sc},{l:"Inactive",c:Tc}] },
+    { name:"Article",       figma:"ToDo/Android/Article [custom doc]",        ios:"doc.richtext",          android:"article",             vs:[{l:"Active",c:Sc},{l:"Inactive",c:Tc}] },
+    { name:"Encouragement", figma:"ToDo/Android/Encouragement [custom star]", ios:"star",                  android:"star_outline",        vs:[{l:"Active",c:Sc},{l:"Inactive",c:Tc}] },
+    { name:"Reminder",      figma:"ToDo/Android/Reminder [custom bell]",      ios:"bell",                  android:"notifications",       vs:[{l:"Active",c:Sc},{l:"Inactive",c:Tc}] },
+    { name:"Medication",    figma:"ToDo/Android/Medication [custom pill]",    ios:"cross.case",            android:"vaccines",            vs:[{l:"Active",c:Sc},{l:"Inactive",c:Tc}] },
+    { name:"Complete",      figma:"ToDo/Complete",                             ios:"checkmark.circle.fill", android:"check_circle",        vs:[{l:"Done",c:Gc}] }
+  ]},
+  { name:"Top Bar Navigation", desc:"Control/Search, Settings, Info, Help, Phone", icons:[
+    { name:"Search",   figma:"Control/Search [custom]",   ios:"magnifyingglass",     android:"search",       vs:[{l:"Brand",c:Pc},{l:"White",c:Wc}] },
+    { name:"Settings", figma:"Control/Settings [custom]", ios:"gearshape",           android:"settings",     vs:[{l:"Default",c:Wc}] },
+    { name:"Info",     figma:"Control/Info",              ios:"info.circle",         android:"info_outline", vs:[{l:"Default",c:Wc}] },
+    { name:"Help",     figma:"Control/Android/Help",      ios:"questionmark.circle", android:"help_outline", vs:[{l:"Default",c:Wc}] },
+    { name:"Phone",    figma:"Control/Android/Phone",     ios:"phone.fill",          android:"call",         vs:[{l:"Default",c:Wc}] }
+  ]},
+  { name:"Chevrons and Navigation", desc:"Android/nav/Chevron, close, back - iOS/Navigation", icons:[
+    { name:"Chevron Right", figma:"Android/nav/Chevron=Right", ios:"chevron.right", android:"chevron_right", vs:[{l:"Neutral",c:Nc},{l:"White",c:Wc}] },
+    { name:"Chevron Left",  figma:"Android/nav/Chevron=Left",  ios:"chevron.left",  android:"chevron_left",  vs:[{l:"Neutral",c:Nc},{l:"White",c:Wc}] },
+    { name:"Chevron Down",  figma:"Android/nav/Chevron=Down",  ios:"chevron.down",  android:"expand_more",   vs:[{l:"Neutral",c:Nc},{l:"White",c:Wc}] },
+    { name:"Chevron Up",    figma:"Android/nav/Chevron=Up",    ios:"chevron.up",    android:"expand_less",   vs:[{l:"Neutral",c:Nc},{l:"White",c:Wc}] },
+    { name:"Close",         figma:"Android/nav/close",         ios:"xmark",         android:"close",         vs:[{l:"Neutral",c:Nc},{l:"White",c:Wc}] },
+    { name:"Back",          figma:"Android/nav/back",          ios:"chevron.left",  android:"arrow_back",    vs:[{l:"Neutral",c:Nc},{l:"Primary",c:Pc},{l:"White",c:Wc}] }
+  ]},
+  { name:"Article Navigation", desc:"Control/Article/Share, Favorite", icons:[
+    { name:"Share",     figma:"Control/Article/Share",    ios:"square.and.arrow.up", android:"share",           vs:[{l:"Default",c:Nc}] },
+    { name:"Favorite",  figma:"Control/Article/Favorite", ios:"heart",               android:"favorite_border", vs:[{l:"Off",c:Nc}] },
+    { name:"Favorited", figma:"Control/Article/Favorite", ios:"heart.fill",          android:"favorite",        vs:[{l:"On",c:Pc}] }
+  ]},
+  { name:"Chat Tab", desc:"Chat/PDF, Camera, Document, Gallery, send, Remove Attachment, Warning, Retry Tap", icons:[
+    { name:"Send",              figma:"Chat/send",               ios:"paperplane.fill",               android:"send",           vs:[{l:"Active",c:Pc},{l:"Disabled",c:Tc}] },
+    { name:"Camera",            figma:"Chat/Camera",             ios:"camera.fill",                   android:"camera_alt",     vs:[{l:"Default",c:Nc}] },
+    { name:"Document",          figma:"Chat/Document",           ios:"paperclip",                     android:"attach_file",    vs:[{l:"Default",c:Nc}] },
+    { name:"Gallery",           figma:"Chat/Gallery",            ios:"photo.on.rectangle",            android:"photo_library",  vs:[{l:"Default",c:Nc}] },
+    { name:"PDF",               figma:"Chat/PDF [custom]",       ios:"doc.fill",                      android:"picture_as_pdf", vs:[{l:"Default",c:Nc}] },
+    { name:"Remove Attachment", figma:"Chat/Remove Attachment",  ios:"xmark.circle.fill",             android:"cancel",         vs:[{l:"Default",c:Nc}] },
+    { name:"Retry",             figma:"Chat/Retry Tap",          ios:"arrow.clockwise",               android:"refresh",        vs:[{l:"Default",c:Nc}] },
+    { name:"Warning",           figma:"Chat/Warning",            ios:"exclamationmark.triangle.fill", android:"warning_amber",  vs:[{l:"Error",c:Ec},{l:"White",c:Wc}] }
+  ]},
+  { name:"Me Tab", desc:"Me/Biometric, Calendar, status circle, blood sugar", icons:[
+    { name:"Calendar",      figma:"Me/Calendar",               ios:"calendar",    android:"calendar_today",         vs:[{l:"On",c:Pc},{l:"Error",c:Ec}] },
+    { name:"Biometric",     figma:"Me/Biometric",              ios:"faceid",      android:"fingerprint",            vs:[{l:"Active",c:Pc},{l:"Complete",c:Gc}] },
+    { name:"Blood Sugar",   figma:"Me/blood sugar [custom]",   ios:"drop.fill",   android:"water_drop",             vs:[{l:"Default",c:Pc}] },
+    { name:"Status Empty",  figma:"Me/status circle/unfilled", ios:"circle",      android:"radio_button_unchecked", vs:[{l:"Default",c:Nc}] },
+    { name:"Status Done",   figma:"Me/status circle/100%",     ios:"checkmark.circle.fill", android:"check_circle", vs:[{l:"Done",c:Gc}] }
+  ]},
+  { name:"Controls", desc:"View Password, Dropdown, Modal, TextField/Error, Password Checklist, External Link, Instructions", icons:[
+    { name:"Dropdown",           figma:"Control/Dropdown",                    ios:"chevron.up.chevron.down",       android:"unfold_more",    vs:[{l:"Default",c:Nc}] },
+    { name:"Show Password",      figma:"Control/View Password Show=False",    ios:"eye",                           android:"visibility",     vs:[{l:"Show",c:Nc}] },
+    { name:"Hide Password",      figma:"Control/View Password Show=True",     ios:"eye.slash",                     android:"visibility_off", vs:[{l:"Hide",c:Nc}] },
+    { name:"External Link",      figma:"Resource/External Link",              ios:"arrow.up.right.square",         android:"open_in_new",    vs:[{l:"Default",c:Pc}] },
+    { name:"Modal Close",        figma:"Control/Modal/Close",                 ios:"xmark.circle.fill",             android:"cancel",         vs:[{l:"Default",c:Nc}] },
+    { name:"Modal Warning",      figma:"Control/Modal/Warning",               ios:"exclamationmark.triangle.fill", android:"warning_amber",  vs:[{l:"Default",c:Ec}] },
+    { name:"Field Error",        figma:"Control/TextField/Error",             ios:"exclamationmark.circle.fill",   android:"error_outline",  vs:[{l:"Default",c:Ec}] },
+    { name:"Password OK",        figma:"Control/Password Checklist/Complete", ios:"checkmark.circle.fill",         android:"check_circle",   vs:[{l:"Pass",c:Gc}] },
+    { name:"Password Error",     figma:"Control/Password Checklist/Error",    ios:"xmark.circle.fill",             android:"cancel",         vs:[{l:"Fail",c:Ec}] },
+    { name:"Instructions",       figma:"Control/instructions [custom]",       ios:"info.circle",                   android:"info_outline",   vs:[{l:"Default",c:Nc}] }
+  ]}
+];
+
+/* ══════════════════════════════════════════
+   DATA — BUTTONS
+══════════════════════════════════════════ */
+var btnSections = [
+  {
+    title:"Primary Buttons",
+    desc:"Filled. Default = brand secondary (#0E98BE). Also Shade1, Shade2, White.",
+    rows:[
+      { label:"Default",  iosCls:"p-default",  andCls:"p-default",  text:"Primary Button" },
+      { label:"Shade 1",  iosCls:"p-shade1",   andCls:"p-shade1",   text:"Primary Button" },
+      { label:"Shade 2",  iosCls:"p-shade2",   andCls:"p-shade2",   text:"Primary Button" },
+      { label:"White",    iosCls:"p-white",    andCls:"p-white",    text:"Primary Button", darkBg:true },
+      { label:"Disabled", iosCls:"p-default",  andCls:"p-default",  text:"Primary Button", disabled:true }
+    ],
+    specs:[
+      { label:"Height",        value:"51px" },
+      { label:"Padding",       value:"15px 24px" },
+      { label:"Border radius", value:"30px (iOS) - 100px pill (Android)" },
+      { label:"Font iOS",      value:"SF Pro Text Medium 16pt" },
+      { label:"Font Android",  value:"Roboto Medium 16sp" }
+    ]
+  },
+  {
+    title:"Secondary Buttons",
+    desc:"Outlined. Transparent fill with colored border. Same color variants as Primary.",
+    rows:[
+      { label:"Default",     iosCls:"s-default",  andCls:"s-default",  text:"Secondary Button" },
+      { label:"Shade 1",     iosCls:"s-shade1",   andCls:"s-shade1",   text:"Secondary Button" },
+      { label:"White",       iosCls:"s-white",    andCls:"s-white",    text:"Secondary Button", darkBg:true },
+      { label:"Destructive", iosCls:"s-destruct", andCls:"s-destruct", text:"Delete" },
+      { label:"Disabled",    iosCls:"s-default",  andCls:"s-default",  text:"Secondary Button", disabled:true }
+    ],
+    specs:[
+      { label:"Height",        value:"51px" },
+      { label:"Padding",       value:"15px 24px" },
+      { label:"Border",        value:"1px solid (inherits button color)" },
+      { label:"Border radius", value:"30px (iOS) - 100px pill (Android)" }
+    ]
+  },
+  {
+    title:"Tertiary Buttons",
+    desc:"Smaller pill on gray background (#D9E3E7). Used for contextual actions like Add, Share, Help.",
+    rows:[
+      { label:"Default",   iosCls:"t-default", andCls:"t-default", text:"Add a Medication", tertiary:true },
+      { label:"With icon", iosCls:"t-default", andCls:"t-default", text:"Share",             tertiary:true, icon:"share" },
+      { label:"With icon", iosCls:"t-default", andCls:"t-default", text:"Help",              tertiary:true, icon:"help_outline" }
+    ],
+    specs:[
+      { label:"Height",     value:"38px (Android) - 36px (iOS)" },
+      { label:"Padding",    value:"9px 15px" },
+      { label:"Radius",     value:"100px pill" },
+      { label:"Background", value:"#D9E3E7 (BG Secondary)" },
+      { label:"Color",      value:"#19566A (Brand Shade 1)" },
+      { label:"Font size",  value:"15pt / 15sp" }
+    ]
+  },
+  {
+    title:"Buttons with Icons",
+    desc:"Icons appear before (First) or after (Last) the label at 19px.",
+    rows:[
+      { label:"Icon first",  iosCls:"p-default", andCls:"p-default", text:"Primary Button", icon:"chat_bubble_outline", iconFirst:true },
+      { label:"Icon last",   iosCls:"p-default", andCls:"p-default", text:"Primary Button", icon:"open_in_new" },
+      { label:"Shade1+icon", iosCls:"p-shade1",  andCls:"p-shade1",  text:"Primary Button", icon:"chat_bubble_outline", iconFirst:true },
+      { label:"Shade2+icon", iosCls:"p-shade2",  andCls:"p-shade2",  text:"Primary Button", icon:"chat_bubble_outline", iconFirst:true }
+    ],
+    specs:[
+      { label:"Icon size",  value:"19px" },
+      { label:"Gap",        value:"6px between icon and label" },
+      { label:"Icon color", value:"Inherits button text color" }
+    ]
+  }
+];
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show";
+  if (toastTimer) { clearTimeout(toastTimer); }
+  toastTimer = setTimeout(hideToast, 1500);
+}
+function hideToast() {
+  document.getElementById("toast").className = "toast";
+}
+function resetCopied() {
+  if (!lastCopiedBtn) { return; }
+  lastCopiedBtn.className = "cbtn";
+  lastCopiedBtn.querySelector(".cbtn-label").textContent = lastCopiedBtn.getAttribute("data-copy");
+  lastCopiedBtn = null;
+}
+
+/* ══════════════════════════════════════════
+   RENDER — COLORS
+══════════════════════════════════════════ */
+function buildColors(list, id) {
+  var el = document.getElementById(id);
+  var i, c, card, block, nm, val;
+  for (i = 0; i < list.length; i++) {
+    c = list[i];
+    card = document.createElement("div");
+    card.className = "swatch-card";
+    card.setAttribute("data-hex", c.hex);
+
+    block = document.createElement("div");
+    block.className = "swatch-block";
+    block.style.background = c.hex;
+    if (c.border) { block.style.border = "1px solid #bfcbd1"; }
+    card.appendChild(block);
+
+    nm = document.createElement("div");
+    nm.className = "swatch-name";
+    nm.textContent = c.name + (c.role ? " / " + c.role : "");
+    card.appendChild(nm);
+
+    val = document.createElement("div");
+    val.className = "swatch-hex";
+    val.textContent = c.hex + "  |  " + c.token;
+    card.appendChild(val);
+
+    el.appendChild(card);
+  }
+}
+buildColors(colorData.brand,   "sg-brand");
+buildColors(colorData.utility, "sg-utility");
+buildColors(colorData.neutral, "sg-neutral");
+
+/* ══════════════════════════════════════════
+   RENDER — TYPOGRAPHY
+══════════════════════════════════════════ */
+function renderType() {
+  var rows = typeData[activeTypeTab];
+  var unit = activeTypeTab === "android" ? "sp" : "pt";
+  var html = "<div class='type-section'>";
+  var i, r, label;
+  for (i = 0; i < rows.length; i++) {
+    r = rows[i];
+    label = r.name + " / " + r.family + " " + r.variant + " " + r.size + unit;
+    html += "<div class='type-row'>";
+    html += "<div class='type-sample' style='font-family:" + r.family + ",system-ui,sans-serif;font-size:" + Math.min(r.size,36) + "px;font-weight:" + r.weight + ";line-height:" + r.lh + "px;letter-spacing:" + r.ls + "px'>" + label + "</div>";
+    html += "<div class='type-meta'>";
+    html += "<span class='meta-pill'>" + r.size + unit + "</span>";
+    html += "<span class='meta-pill'>lh " + r.lh + "</span>";
+    html += "<span class='meta-pill'>w " + r.weight + "</span>";
+    if (r.ls !== 0) { html += "<span class='meta-pill'>ls " + r.ls + "</span>"; }
+    html += "</div></div>";
+  }
+  html += "</div>";
+  document.getElementById("type-content").innerHTML = html;
+}
+renderType();
+
+/* ══════════════════════════════════════════
+   SF SYMBOL SVG MAP
+══════════════════════════════════════════ */
+var sfSymbols = {
+  "bell": '<path d="M5.5 14.5L4 17h16l-1.5-2.5V9a6.5 6.5 0 1 0-13 0v5.5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>',
+  "person": '<circle cx="12" cy="7" r="3.5" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>',
+  "message": '<path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "books.vertical": '<rect x="4" y="4" width="6" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="12" y="4" width="8" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>',
+  "checklist": '<path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 6l1.5 1.5L7.5 5M4 12l1.5 1.5L7.5 10M4 18l1.5 1.5L7.5 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "figure.walk": '<circle cx="12" cy="4" r="1.5" fill="currentColor"/><path d="M9.5 8.5L7 17M9.5 8.5L11 12l3-1.5M14 10.5l2.5 6.5M10 20l1.5-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "list.bullet.clipboard": '<rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M9 2v1a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="8.5" cy="11" r="1" fill="currentColor"/><circle cx="8.5" cy="15" r="1" fill="currentColor"/><circle cx="8.5" cy="19" r="1" fill="currentColor"/><path d="M11 11h5M11 15h5M11 19h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  "doc.richtext": '<path d="M6 2h9l3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M15 2v3h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M8 9h8M8 12.5h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  "star": '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/>',
+  "cross.case": '<rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  "checkmark.circle.fill": '<circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7 12l3.5 3.5 6.5-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "magnifyingglass": '<circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  "gearshape": '<circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  "info.circle": '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/>',
+  "questionmark.circle": '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2.5 2.5V13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="12" cy="16.5" r="1" fill="currentColor"/>',
+  "phone.fill": '<path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="currentColor"/>',
+  "chevron.right": '<path d="M9 4l8 8-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "chevron.left": '<path d="M15 4l-8 8 8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "chevron.down": '<path d="M4 9l8 8 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "chevron.up": '<path d="M4 15l8-8 8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "xmark": '<path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  "square.and.arrow.up": '<path d="M8 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M12 12V22M8 16l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "heart": '<path d="M12 21C12 21 3 14.5 3 8.5a4.5 4.5 0 0 1 9-0.5 4.5 4.5 0 0 1 9 0.5C21 14.5 12 21 12 21z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "heart.fill": '<path d="M12 21C12 21 3 14.5 3 8.5a4.5 4.5 0 0 1 9-0.5 4.5 4.5 0 0 1 9 0.5C21 14.5 12 21 12 21z" fill="currentColor"/>',
+  "paperplane.fill": '<path d="M22 2L15 22 11 13 2 9l20-7z" fill="currentColor"/><path d="M22 2L11 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>',
+  "camera.fill": '<path d="M23 18a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l2-3h8l2 3h3a2 2 0 0 1 2 2z" fill="currentColor"/><circle cx="12" cy="13" r="3.5" fill="#fff"/>',
+  "paperclip": '<path d="M21.4 11.6l-9.5 9.5a6.5 6.5 0 0 1-9.2-9.2l9.5-9.5a4 4 0 0 1 5.7 5.7L8.4 17.6A1.5 1.5 0 0 1 6.3 15.5L15 6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>',
+  "photo.on.rectangle": '<rect x="2" y="6" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="8" cy="12" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M14 10l6 6H5.5l3.5-3.5 3 2.5z" fill="currentColor" opacity="0.5"/>',
+  "doc.fill": '<path d="M6 2h9l3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="currentColor"/><path d="M15 2v3h3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "xmark.circle.fill": '<circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+  "arrow.clockwise": '<path d="M21 12a9 9 0 1 1-2.1-5.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M21 3v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "exclamationmark.triangle.fill": '<path d="M12 2L2 21h20L12 2z" fill="currentColor"/><path d="M12 9v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.5" r="1" fill="#fff"/>',
+  "calendar": '<rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/><path d="M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 13.5h2M11 13.5h2M15 13.5h2M7 17h2M11 17h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  "faceid": '<path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 1-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 0-2 2h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="9" cy="11" r="1.5" fill="currentColor"/><circle cx="15" cy="11" r="1.5" fill="currentColor"/><path d="M9 15.5s1 1.5 3 1.5 3-1.5 3-1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>',
+  "drop.fill": '<path d="M12 3C12 3 5 11.5 5 15.5a7 7 0 0 0 14 0C19 11.5 12 3 12 3z" fill="currentColor"/>',
+  "circle": '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/>',
+  "chevron.up.chevron.down": '<path d="M5 9l7-5 7 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5 15l7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "eye": '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8" fill="none"/>',
+  "eye.slash": '<path d="M17.9 17.9A11 11 0 0 1 12 19C5 19 1 12 1 12a18 18 0 0 1 5.1-5.9M9.9 4.2A10 10 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.1 3.1M10.7 10.7a3 3 0 1 0 3.6 3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M2 2l20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  "arrow.up.right.square": '<rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M9 15l6-6M11 9h4v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  "exclamationmark.circle.fill": '<circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 7v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="#fff"/>',
+  "info.circle.fill": '<circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 11v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="#fff"/>'
+};
+
+function sfSvgHtml(symbolName, color) {
+  var paths = sfSymbols[symbolName];
+  if (!paths) return "<div style='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:7px;color:" + color + ";text-align:center;line-height:1.3;padding:3px;word-break:break-all'>" + symbolName + "</div>";
+  return "<svg width='22' height='22' viewBox='0 0 24 24' style='color:" + color + ";overflow:visible;display:block'>" + paths + "</svg>";
+}
+
+/* ══════════════════════════════════════════
+   RENDER — ICONS
+══════════════════════════════════════════ */
+function makeIconCard(icon) {
+  var html = "<div class='icon-card'>";
+  var i, v, dark;
+  if (iplatform === "all" || iplatform === "ios") {
+    html += "<div><div class='plabel'>iOS - SF Symbol</div><div class='swatches'>";
+    for (i = 0; i < icon.vs.length; i++) {
+      v = icon.vs[i]; dark = (v.c === Wc) ? " dark" : "";
+      html += "<div class='iswatch" + dark + "'>" + sfSvgHtml(icon.ios, v.c) + "</div>";
+    }
+    html += "</div><button class='cbtn' data-copy='" + icon.ios + "'><span class='cbtn-label'>" + icon.ios + "</span></button></div>";
+  }
+  if (iplatform === "all" || iplatform === "android") {
+    html += "<div><div class='plabel'>Android - Material</div><div class='swatches'>";
+    for (i = 0; i < icon.vs.length; i++) {
+      v = icon.vs[i]; dark = (v.c === Wc) ? " dark" : "";
+      html += "<div class='iswatch" + dark + "'><span class='material-icons' style='color:" + v.c + "'>" + icon.android + "</span></div>";
+    }
+    html += "</div><button class='cbtn' data-copy='" + icon.android + "'><span class='cbtn-label'>" + icon.android + "</span></button></div>";
+  }
+  html += "<div class='icon-footer'><div class='icon-name'>" + icon.name + "</div><div class='icon-figma'>" + icon.figma + "</div><div class='chips'>";
+  for (i = 0; i < icon.vs.length; i++) { html += "<span class='chip'>" + icon.vs[i].l + "</span>"; }
+  html += "</div></div></div>";
+  return html;
+}
+
+function renderIcons() {
+  var search = document.getElementById("icon-search").value.toLowerCase();
+  var content = document.getElementById("icon-content");
+  var html = "";
+  var g, i, m, group, ic, matched;
+  for (g = 0; g < iconGroups.length; g++) {
+    group = iconGroups[g];
+    if (iconGroup !== "All" && group.name !== iconGroup) { continue; }
+    matched = [];
+    for (i = 0; i < group.icons.length; i++) {
+      ic = group.icons[i];
+      if (ic.name.toLowerCase().indexOf(search) !== -1 || ic.ios.toLowerCase().indexOf(search) !== -1 || ic.android.toLowerCase().indexOf(search) !== -1) {
+        matched.push(ic);
+      }
+    }
+    if (matched.length === 0) { continue; }
+    html += "<div class='icon-group'><div class='icon-gtitle'>" + group.name + " (" + matched.length + ")</div><div class='icon-gdesc'>" + group.desc + "</div><div class='icon-grid'>";
+    for (m = 0; m < matched.length; m++) { html += makeIconCard(matched[m]); }
+    html += "</div></div>";
+  }
+  content.innerHTML = html || "<p style='color:#78868E;font-size:14px'>No icons found.</p>";
+}
+
+function buildIconFilters() {
+  var el = document.getElementById("icon-filters");
+  var names = ["All"];
+  var gi, fbtn;
+  for (gi = 0; gi < iconGroups.length; gi++) { names.push(iconGroups[gi].name); }
+  for (gi = 0; gi < names.length; gi++) {
+    fbtn = document.createElement("button");
+    fbtn.className = gi === 0 ? "ifbtn active" : "ifbtn";
+    fbtn.textContent = names[gi];
+    fbtn.setAttribute("data-igroup", names[gi]);
+    el.appendChild(fbtn);
+  }
+}
+buildIconFilters();
+renderIcons();
+
+/* ══════════════════════════════════════════
+   RENDER — CARDS
+══════════════════════════════════════════ */
+var cardPlatform = "both";
+var cardSection = "All";
+
+var cardSections = ["All","Checklist","Reminders","Resources","Care Programs","Medication Reminders","Surveys","Encouragement"];
+
+var imgBehavioral = "http://localhost:3845/assets/29c11d9d4d0d921e1798f86ea02ccded5acf67c8.png";
+var imgPhysical   = "http://localhost:3845/assets/d99495862f349f844a0ccd418a8ab3ad888fd82c.png";
+var imgMedication = "http://localhost:3845/assets/609a9148cff78d577cd15be9aa9b421e975d4dd5.png";
+var imgEmotional  = "http://localhost:3845/assets/2c508c350aea2ac6db3a726359690858108e5230.png";
+var imgCover0     = "http://localhost:3845/assets/f5daea7209310053111ca5e9ecddc1123bea52fc.png";
+var imgCover1     = "http://localhost:3845/assets/740f333b0ca908da50363024d6a7bcd4acb05f57.png";
+var imgCover2     = "http://localhost:3845/assets/be76c3743534f86ef1c0a25886fd2f6179e790d1.png";
+var imgCover3     = "http://localhost:3845/assets/b9960dd08763f655272c9f13627dc4dce65d2e75.png";
+
+function radioHtml() {
+  return "<div style='width:20px;height:20px;border-radius:50%;border:2px solid #0080A3;flex-shrink:0;display:flex;align-items:center;justify-content:center'></div>";
+}
+function radioSelectedHtml() {
+  return "<div style='width:20px;height:20px;border-radius:50%;border:2px solid #0080A3;flex-shrink:0;display:flex;align-items:center;justify-content:center'><div style='width:10px;height:10px;border-radius:50%;background:#0080A3'></div></div>";
+}
+function miHtml(name, color, size) {
+  return "<span class='material-icons' style='color:" + (color||"#0E98BE") + ";font-size:" + (size||"22") + "px;flex-shrink:0'>" + name + "</span>";
+}
+
+function taskCard(opts, isIos) {
+  var p = isIos ? "ios" : "android";
+  var shell = "wf-card " + p + (opts.completed ? " completed" : "");
+  var html = "<div class='" + shell + " task-card" + (isIos ? " ios" : "") + "'>";
+  html += "<div class='task-header'>" + miHtml(opts.icon, "#0E98BE", 22);
+  html += "<span class='task-type-label " + p + "'>" + opts.typeLabel + "</span></div>";
+  html += "<div class='task-main'>";
+  html += "<span class='task-title " + p + "'>" + opts.title + "</span>";
+  if (opts.completed) { html += "<span class='material-icons checkmark-icon'>check_circle</span>"; }
+  else if (isIos && !opts.completed) { html += "<span class='material-icons task-chevron'>chevron_right</span>"; }
+  html += "</div>";
+  if (opts.tag) {
+    html += "<div class='care-tag'>" + miHtml("circle", "#0080A3", 12);
+    html += "<span class='care-tag-text " + p + "'>" + opts.tag + "</span></div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+function stepCard(completed, isIos) {
+  var p = isIos ? "ios" : "android";
+  var shell = "wf-card " + p + (completed ? " completed" : "");
+  var html = "<div class='" + shell + " step-card" + (isIos ? " ios" : "") + "'>";
+  html += "<div class='step-card-header'>";
+  html += miHtml("directions_walk", "#0E98BE", 22);
+  html += "<span class='step-card-title " + p + "'>Step Count</span>";
+  html += miHtml("chevron_right", "#282F35", 20);
+  html += "</div>";
+  html += "<div class='step-progress-bar'><div class='step-progress-fill" + (completed ? " full" : "") + "'></div></div>";
+  html += "</div>";
+  return html;
+}
+
+function encCard(completed, isIos) {
+  var p = isIos ? "ios" : "android";
+  var shell = "wf-card " + p + (completed ? " completed" : "");
+  return "<div class='" + shell + " enc-card'>"
+    + "<div class='enc-title'>Encouragement title goes here</div>"
+    + "<div class='enc-body" + (isIos ? " ios" : "") + "'>Encouragement body copy goes here. This supports the member in their care journey.</div>"
+    + "</div>";
+}
+
+function surveyCard(isIos) {
+  var p = isIos ? "ios" : "android";
+  return "<div class='wf-card " + p + " survey-card'>"
+    + "<div class='survey-q'>Have you received a flu shot in the last year?</div>"
+    + "<div class='survey-options'>"
+    + "<div class='survey-opt " + p + "'>" + radioSelectedHtml() + "Yes</div>"
+    + "<div class='survey-opt " + p + "'>" + radioHtml() + "No</div>"
+    + "</div>"
+    + "<div class='submit-btn'>Submit Answer</div>"
+    + "</div>";
+}
+
+function medCard(completed, isIos) {
+  var p = isIos ? "ios" : "android";
+  var shell = "wf-card " + p + (completed ? " completed" : "");
+  return "<div class='" + shell + " task-card med-card" + (isIos ? " ios" : "") + "'>"
+    + "<div class='task-header'>" + miHtml("medication", "#0E98BE", 22)
+    + "<span class='task-type-label " + p + "'>Medication</span></div>"
+    + "<div class='task-main'>"
+    + "<span class='task-title " + p + "'>10:00 AM: Take Claritin</span>"
+    + (completed ? "<span class='material-icons checkmark-icon'>check_circle</span>" : (isIos ? "<span class='material-icons task-chevron'>chevron_right</span>" : ""))
+    + "</div></div>";
+}
+
+function reminderCard(completed, isIos) {
+  var p = isIos ? "ios" : "android";
+  var shell = "wf-card " + p + (completed ? " completed" : "");
+  return "<div class='" + shell + " task-card" + (isIos ? " ios" : "") + "'>"
+    + "<div class='task-header'>" + miHtml("notifications", "#0E98BE", 22)
+    + "<span class='task-type-label " + p + "'>Reminder</span></div>"
+    + "<div class='task-main'>"
+    + "<span class='task-title " + p + "'>10:00 AM: Take a walk</span>"
+    + (completed ? "<span class='material-icons checkmark-icon'>check_circle</span>" : (isIos ? "<span class='material-icons task-chevron'>chevron_right</span>" : ""))
+    + "</div></div>";
+}
+
+function cpCard(isIos) {
+  var p = isIos ? "ios" : "android";
+  return "<div class='wf-card " + p + " cp-card" + (isIos ? " ios" : "") + "'>"
+    + "<div class='cp-title'>Diabetes Management</div>"
+    + "<div class='cp-body " + p + "'>Personalized support and resources to help you manage your diabetes and live well.</div>"
+    + "<div style='display:flex;gap:8px;flex-wrap:wrap'>"
+    + "<div class='cp-tag'>" + miHtml("calendar_today","#0080A3",12) + " 12 weeks</div>"
+    + "<div class='cp-tag'>" + miHtml("assignment","#0080A3",12) + " 8 check-ins</div>"
+    + "</div></div>";
+}
+
+function libCard(title, img, isIos) {
+  var p = isIos ? "ios" : "android";
+  return "<div class='wf-card " + p + " lib-card" + (isIos ? " ios" : "") + "'>"
+    + "<div class='lib-img'><img src='" + img + "' alt=''/></div>"
+    + "<div class='lib-body'><span class='lib-title " + p + "'>" + title + "</span></div>"
+    + "</div>";
+}
+
+function benefitsCard(title, img, isIos) {
+  var p = isIos ? "ios" : "android";
+  return "<div class='wf-card " + p + " benefits-card'>"
+    + "<div class='benefits-img'><img src='" + img + "' alt=''/></div>"
+    + "<div class='benefits-body'><span class='benefits-title " + p + "'>" + title + "</span></div>"
+    + "</div>";
+}
+
+function articleCard(title, img, isIos) {
+  var p = isIos ? "ios" : "android";
+  return "<div class='wf-card " + p + " article-card" + (isIos ? " ios" : "") + "'>"
+    + "<div class='article-img'><img src='" + img + "' alt=''/></div>"
+    + "<div class='article-title " + p + "'>" + title + "</div>"
+    + "</div>";
+}
+
+function addBtn(isIos) {
+  var p = isIos ? "ios" : "android";
+  return "<div class='add-btn " + p + "'>"
+    + miHtml("add_circle_outline", "#0E98BE", 20)
+    + "<span class='add-btn-text " + p + "'>Add</span>"
+    + "</div>";
+}
+
+function platformPair(androidHtml, iosHtml) {
+  if (cardPlatform === "both") {
+    return "<div class='cards-row'>"
+      + "<div class='card-col'><div class='tf-plat-name'>Android</div>" + androidHtml + "</div>"
+      + "<div class='card-col'><div class='tf-plat-name'>iOS</div>" + iosHtml + "</div>"
+      + "</div>";
+  } else if (cardPlatform === "android") {
+    return "<div class='cards-row'><div class='card-col'>" + androidHtml + "</div></div>";
+  } else {
+    return "<div class='cards-row'><div class='card-col'>" + iosHtml + "</div></div>";
+  }
+}
+
+function cardSectionHtml(title, desc, bodyHtml, name) {
+  if (cardSection !== "All" && cardSection !== name) { return ""; }
+  return "<div class='card-section'>"
+    + "<div class='section-label'>" + title + "</div>"
+    + "<div class='section-desc'>" + desc + "</div>"
+    + bodyHtml
+    + "</div>";
+}
+
+function renderCards() {
+  var html = "";
+
+  html += cardSectionHtml("Checklist Cards", "Task cards shown in the Checklist tab. Completed state at 50% opacity. Care Program tag shown on Check-In, Article, Encouragement tasks.", (function() {
+    var b = "";
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Reminder — active</div>";
+    b += platformPair(reminderCard(false, false), reminderCard(false, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Reminder — completed</div>";
+    b += platformPair(reminderCard(true, false), reminderCard(true, true));
+    var checkIn = { icon:"assignment", typeLabel:"Check-In", title:"How are you feeling today?", tag:"Diabetes Management" };
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Check-In — active</div>";
+    b += platformPair(taskCard(checkIn, false), taskCard(checkIn, true));
+    var checkInDone = { icon:"assignment", typeLabel:"Check-In", title:"How are you feeling today?", tag:"Diabetes Management", completed:true };
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Check-In — completed</div>";
+    b += platformPair(taskCard(checkInDone, false), taskCard(checkInDone, true));
+    var article = { icon:"article", typeLabel:"Article", title:"About Your Meds", tag:"Diabetes Management" };
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Article — active</div>";
+    b += platformPair(taskCard(article, false), taskCard(article, true));
+    var enc = { icon:"star", typeLabel:"Encouragement", title:"Your Journey", tag:"Diabetes Management" };
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Encouragement — active</div>";
+    b += platformPair(taskCard(enc, false), taskCard(enc, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Step Count — in progress</div>";
+    b += platformPair(stepCard(false, false), stepCard(false, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Step Count — completed</div>";
+    b += platformPair(stepCard(true, false), stepCard(true, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Add Button</div>";
+    b += platformPair(addBtn(false), addBtn(true));
+    return b;
+  })(), "Checklist");
+
+  html += cardSectionHtml("Reminder Cards", "Used in the Reminders tab. Same structure as task cards but always shows a reminder bell icon.", (function() {
+    var b = "";
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Active</div>";
+    b += platformPair(reminderCard(false, false), reminderCard(false, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Completed</div>";
+    b += platformPair(reminderCard(true, false), reminderCard(true, true));
+    return b;
+  })(), "Reminders");
+
+  html += cardSectionHtml("Medication Reminder Cards", "Used in Reminders tab for medication todos. Shows medication pill icon.", (function() {
+    var b = "";
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Active</div>";
+    b += platformPair(medCard(false, false), medCard(false, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Completed</div>";
+    b += platformPair(medCard(true, false), medCard(true, true));
+    return b;
+  })(), "Medication Reminders");
+
+  html += cardSectionHtml("Care Program Cards", "Displayed on the Me Tab to show enrolled care programs.", (function() {
+    return platformPair(cpCard(false), cpCard(true));
+  })(), "Care Programs");
+
+  html += cardSectionHtml("Survey Cards", "Used in the Checklist tab for survey questions. Supports radio options, sliders, and free text.", (function() {
+    var b = "";
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>2-option radio survey</div>";
+    b += platformPair(surveyCard(false), surveyCard(true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Encouragement card (non-interactive)</div>";
+    b += platformPair(encCard(false, false), encCard(false, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Encouragement — completed</div>";
+    b += platformPair(encCard(true, false), encCard(true, true));
+    return b;
+  })(), "Surveys");
+
+  html += cardSectionHtml("Encouragement Cards", "Non-interactive motivational cards shown in the Checklist tab.", (function() {
+    var b = "";
+    b += platformPair(encCard(false, false), encCard(false, true));
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Completed (50% opacity)</div>";
+    b += platformPair(encCard(true, false), encCard(true, true));
+    return b;
+  })(), "Encouragement");
+
+  html += cardSectionHtml("Resource Cards", "Library cards, article cards, and benefits cards used in the Resources tab.", (function() {
+    var b = "";
+    b += "<div class='ctrl-label' style='margin-bottom:8px'>Library cards</div>";
+    b += "<div class='cards-row'>";
+    if (cardPlatform !== "ios") {
+      b += "<div class='card-col'><div class='tf-plat-name'>Android</div><div style='display:flex;gap:12px;flex-wrap:wrap'>";
+      b += libCard("Behavioral Health & Wellness Articles", imgBehavioral, false);
+      b += libCard("Making Physical Activity Work For You", imgPhysical, false);
+      b += "</div></div>";
+    }
+    if (cardPlatform !== "android") {
+      b += "<div class='card-col'><div class='tf-plat-name'>iOS</div><div style='display:flex;gap:12px;flex-wrap:wrap'>";
+      b += libCard("Behavioral Health & Wellness Articles", imgBehavioral, true);
+      b += libCard("Making Physical Activity Work For You", imgPhysical, true);
+      b += "</div></div>";
+    }
+    b += "</div>";
+    b += "<div class='ctrl-label' style='margin-bottom:8px;margin-top:20px'>Article cards</div>";
+    b += "<div class='cards-row'>";
+    if (cardPlatform !== "ios") {
+      b += "<div class='card-col'><div class='tf-plat-name'>Android</div><div style='display:flex;flex-direction:column;gap:12px'>";
+      b += articleCard("Managing Your Healthcare Articles", imgBehavioral, false);
+      b += "</div></div>";
+    }
+    if (cardPlatform !== "android") {
+      b += "<div class='card-col'><div class='tf-plat-name'>iOS</div><div style='display:flex;flex-direction:column;gap:12px'>";
+      b += articleCard("Managing Your Healthcare Articles", imgBehavioral, true);
+      b += "</div></div>";
+    }
+    b += "</div>";
+    return b;
+  })(), "Resources");
+
+  document.getElementById("cards-content").innerHTML = html || "<p style='color:#78868E'>No cards to show.</p>";
+}
+
+function buildCardFilters() {
+  var el = document.getElementById("cards-filter");
+  el.innerHTML = "";
+  var ci, fbtn;
+  for (ci = 0; ci < cardSections.length; ci++) {
+    fbtn = document.createElement("button");
+    fbtn.className = ci === 0 ? "ifbtn active" : "ifbtn";
+    fbtn.textContent = cardSections[ci];
+    fbtn.setAttribute("data-cardsection", cardSections[ci]);
+    el.appendChild(fbtn);
+  }
+}
+
+buildCardFilters();
+renderCards();
+
+/* ══════════════════════════════════════════
+   RENDER — STEP COUNT
+══════════════════════════════════════════ */
+var scPlatform = "both";
+
+function stepWidget(steps, goal, isIos) {
+  var pct = goal > 0 ? Math.min(steps / goal, 1) : 0;
+  var remaining = goal - steps;
+  if (remaining < 0) { remaining = 0; }
+  var cx = 158, cy = 158, r = 140;
+  var circumference = 2 * Math.PI * r;
+  var strokeDash = circumference;
+  var strokeOffset = circumference * (1 - pct);
+  var arcRotate = -90;
+  var gradId = "grad" + (isIos ? "ios" : "and") + steps;
+  var svgHtml = '<svg viewBox="0 0 316 316" fill="none" xmlns="http://www.w3.org/2000/svg">'
+    + '<defs><linearGradient id="' + gradId + '" x1="0%" y1="0%" x2="100%" y2="0%">'
+    + '<stop offset="0%" stop-color="#0E98BE"/>'
+    + '<stop offset="100%" stop-color="#0080A3"/>'
+    + '</linearGradient></defs>'
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" stroke="rgba(255,255,255,0.12)" stroke-width="12" fill="none"/>';
+  if (pct > 0) {
+    svgHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"'
+      + ' stroke="url(#' + gradId + ')" stroke-width="12" fill="none"'
+      + ' stroke-dasharray="' + strokeDash + '"'
+      + ' stroke-dashoffset="' + strokeOffset + '"'
+      + ' stroke-linecap="round"'
+      + ' transform="rotate(' + arcRotate + ' ' + cx + ' ' + cy + ')"/>';
+  }
+  svgHtml += '</svg>';
+  var stepsFont = isIos ? "sc-steps ios" : "sc-steps";
+  var countdownFont = isIos ? "sc-countdown ios" : "sc-countdown";
+  var goalNumFont = isIos ? "sc-goal-num ios" : "sc-goal-num";
+  return '<div class="sc-widget">'
+    + svgHtml
+    + '<div class="sc-inner">'
+    + '<div class="' + stepsFont + '">' + steps
+    + '<span class="sc-edit"><span class="material-icons">edit</span></span>'
+    + '</div>'
+    + '<div class="sc-divider"></div>'
+    + '<div class="' + countdownFont + '">' + remaining.toLocaleString() + ' to goal</div>'
+    + '<div class="sc-goal-row">'
+    + '<span class="' + goalNumFont + '">' + goal.toLocaleString() + '</span>'
+    + '<span class="sc-edit"><span class="material-icons">edit</span></span>'
+    + '</div>'
+    + '<div class="sc-goal-label">Step Goal</div>'
+    + '</div>'
+    + '</div>';
+}
+
+function renderStepCount() {
+  var html = "";
+  var variants = [
+    { label: "Zero (0 steps)", steps: 0,    goal: 5000 },
+    { label: "25% (1,250 steps)", steps: 1250, goal: 5000 },
+    { label: "50% (2,500 steps)", steps: 2500, goal: 5000 },
+    { label: "75% (3,750 steps)", steps: 3750, goal: 5000 },
+    { label: "Complete (5,000)", steps: 5000, goal: 5000 }
+  ];
+  html += '<div style="display:flex;flex-direction:column;gap:36px">';
+  var vi, v;
+  for (vi = 0; vi < variants.length; vi++) {
+    v = variants[vi];
+    html += '<div class="sc-variant"><div class="sc-variant-label">' + v.label + '</div>';
+    html += '<div class="sc-pair">';
+    if (scPlatform !== "ios") {
+      html += '<div><div class="tf-plat-name">Android · Roboto</div>' + stepWidget(v.steps, v.goal, false) + '</div>';
+    }
+    if (scPlatform !== "android") {
+      html += '<div><div class="tf-plat-name">iOS · SF Pro</div>' + stepWidget(v.steps, v.goal, true) + '</div>';
+    }
+    html += '</div></div>';
+  }
+  html += '</div>';
+  document.getElementById("sc-content").innerHTML = html;
+}
+renderStepCount();
+
+/* ══════════════════════════════════════════
+   RENDER — CONTROLS
+══════════════════════════════════════════ */
+var ctrlPlatform = "both";
+
+function segAndroid(activeIdx, labels) {
+  var html = "<div class='wf-seg-android'>";
+  for (var i = 0; i < labels.length; i++) {
+    html += "<div class='seg-opt" + (i === activeIdx ? " active" : "") + "'>" + labels[i] + "</div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+function segIos(activeIdx, labels) {
+  var html = "<div class='wf-seg-ios'>";
+  for (var i = 0; i < labels.length; i++) {
+    html += "<div class='seg-opt" + (i === activeIdx ? " active" : "") + "'>" + labels[i] + "</div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+function tabsAndroid(activeIdx, labels) {
+  var html = "<div class='wf-tabs-android'>";
+  for (var i = 0; i < labels.length; i++) {
+    var isActive = i === activeIdx;
+    html += "<div class='tab-opt " + (isActive ? "active" : "inactive") + "'>";
+    html += labels[i];
+    html += "<div class='tab-line'></div>";
+    if (i < labels.length - 1) { html += "<div class='tab-separator'></div>"; }
+    html += "</div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+function tabsIos(activeIdx, labels) {
+  var html = "<div class='wf-tabs-ios'>";
+  for (var i = 0; i < labels.length; i++) {
+    var isActive = i === activeIdx;
+    html += "<div class='tab-opt " + (isActive ? "active" : "inactive") + "'>";
+    html += labels[i];
+    html += "<div class='tab-line'></div>";
+    html += "</div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+function progressBar(pct, isIos) {
+  var cls = "wf-progress" + (isIos ? " wf-progress-ios" : "");
+  return "<div class='" + cls + "'><div class='wf-progress-fill' style='width:" + pct + "%'></div></div>";
+}
+
+function onboardingProgress(pct, isIos, disabled) {
+  var cls = "wf-onboarding" + (isIos ? " wf-onboarding-ios" : "");
+  var backCls = "back-btn" + (disabled ? " disabled" : "");
+  return "<div class='" + cls + "'>"
+    + "<div class='" + backCls + "'><span class='material-icons' style='font-size:18px;color:#0080A3'>arrow_back_ios</span></div>"
+    + "<div class='progress-track'><div class='wf-progress-fill' style='width:" + pct + "%'></div></div>"
+    + "</div>";
+}
+
+function ctrlPlatformBlock(androidHtml, iosHtml) {
+  if (ctrlPlatform === "both") {
+    return "<div class='ctrl-row'>"
+      + "<div class='ctrl-item'><div class='ctrl-label'>Android</div>" + androidHtml + "</div>"
+      + "<div class='ctrl-item'><div class='ctrl-label'>iOS</div>" + iosHtml + "</div>"
+      + "</div>";
+  } else if (ctrlPlatform === "android") {
+    return "<div class='ctrl-row'><div class='ctrl-item'>" + androidHtml + "</div></div>";
+  } else {
+    return "<div class='ctrl-row'><div class='ctrl-item'>" + iosHtml + "</div></div>";
+  }
+}
+
+function renderControls() {
+  var html = "";
+  html += "<div class='ctrl-section'>";
+  html += "<div class='section-label'>Segmented Controls</div>";
+  html += "<div class='section-desc'>3-option selector. Android uses filled pill style on gray track; iOS uses native segmented picker with white active pill and separator lines.</div>";
+  html += "<div style='margin-bottom:16px'><div class='ctrl-label' style='margin-bottom:8px'>Tab 1 active</div>";
+  html += ctrlPlatformBlock(segAndroid(0, ["Active Label", "Label", "Label"]), segIos(0, ["Active Label", "Label", "Label"])) + "</div>";
+  html += "<div style='margin-bottom:16px'><div class='ctrl-label' style='margin-bottom:8px'>Tab 2 active</div>";
+  html += ctrlPlatformBlock(segAndroid(1, ["Label", "Active Label", "Label"]), segIos(1, ["Label", "Active Label", "Label"])) + "</div>";
+  html += "<div style='margin-bottom:16px'><div class='ctrl-label' style='margin-bottom:8px'>2-option segmented</div>";
+  html += ctrlPlatformBlock(segAndroid(0, ["Active", "Inactive"]), segIos(0, ["Active", "Inactive"])) + "</div>";
+  html += "</div>";
+  html += "<hr class='btn-divider'>";
+  html += "<div class='ctrl-section'>";
+  html += "<div class='section-label'>Progress Bars</div>";
+  var progSteps = [0, 25, 50, 75, 100];
+  for (var pi = 0; pi < progSteps.length; pi++) {
+    html += "<div style='margin-bottom:12px'><div class='ctrl-label' style='margin-bottom:6px'>" + progSteps[pi] + "%</div>";
+    html += ctrlPlatformBlock(progressBar(progSteps[pi], false), progressBar(progSteps[pi], true)) + "</div>";
+  }
+  html += "</div>";
+  document.getElementById("ctrl-content").innerHTML = html;
+}
+renderControls();
+
+/* ══════════════════════════════════════════
+   RENDER — LIST VIEWS
+══════════════════════════════════════════ */
+var lvPlatform = "both";
+
+function chevronHtml() {
+  return "<span class='material-icons lv-chevron' style='font-size:20px;color:#4E5961'>chevron_right</span>";
+}
+function toggleHtml(isIos) {
+  return isIos ? "<div class='lv-toggle-ios'></div>" : "<div class='lv-toggle-android'></div>";
+}
+function checkmarkHtml() {
+  return "<span class='material-icons lv-checkmark'>check_circle</span>";
+}
+function iconHtml(name, color) {
+  return "<span class='material-icons' style='font-size:22px;color:" + (color || "#0E98BE") + "'>" + name + "</span>";
+}
+
+function lvRow(opts, isIos) {
+  var cls = "lv-row" + (isIos ? " ios" : "");
+  var type = opts.type || "default";
+  if (type === "tall" || opts.bottomSecondary) { cls += " tall"; }
+  if (type === "taller")  { cls += " taller"; }
+  if (type === "tallest") { cls += " tallest"; }
+  if (type === "step")    { cls += " step"; }
+  var mainCls = "lv-main" + (isIos ? " ios" : "");
+  if (opts.link)    { mainCls += " link"; }
+  if (opts.destruct){ mainCls += " destruct"; }
+  var html = "<div class='" + cls + "'>";
+  if (opts.icon) { html += "<div class='lv-icon'>" + iconHtml(opts.icon, opts.iconColor) + "</div>"; }
+  if (type === "step") {
+    html += "<div class='lv-content' style='padding:8px 0'>";
+    html += "<div style='display:flex;align-items:baseline;gap:4px'>";
+    html += "<span class='lv-step-count'>1000</span>";
+    html += "<span class='lv-step-label" + (isIos ? " ios" : "") + "'>steps walked today</span>";
+    html += "</div>";
+    html += "<div class='lv-progress'><div class='lv-progress-fill'></div></div>";
+    html += "</div>";
+  } else {
+    html += "<div class='lv-content'>";
+    html += "<div class='" + mainCls + "'>" + (opts.mainText || "Main Title") + "</div>";
+    if (opts.secondary) { html += "<div class='lv-secondary" + (isIos ? " ios" : "") + "'>" + opts.secondary + "</div>"; }
+    if (opts.dateStart) { html += "<div class='lv-date-start" + (isIos ? " ios" : "") + "'>Starting on 11/22/2022</div>"; }
+    if (opts.dateEnd)   { html += "<div class='lv-date-end" + (isIos ? " ios" : "") + "'>Ending on 11/22/2022</div>"; }
+    html += "</div>";
+  }
+  html += "<div class='lv-right'>";
+  if (opts.rightText) { html += "<span class='lv-right-text" + (isIos ? " ios" : "") + "'>" + opts.rightText + "</span>"; }
+  if (opts.toggle)    { html += toggleHtml(isIos); }
+  if (opts.checkmark) { html += checkmarkHtml(); }
+  if (opts.chevron)   { html += chevronHtml(); }
+  html += "</div>";
+  html += "</div>";
+  return html;
+}
+
+var lvVariants = [
+  { label:"Main Title only",           opts:{ mainText:"Main Title" } },
+  { label:"Main Title + Right Text",   opts:{ mainText:"Main Title", rightText:"Secondary Text" } },
+  { label:"Main Title + Bottom Text",  opts:{ mainText:"Main Title", secondary:"Secondary Text", bottomSecondary:true } },
+  { label:"Main Title + Toggle",       opts:{ mainText:"Main Title", toggle:true } },
+  { label:"Link Title",                opts:{ mainText:"Main Link Title", link:true } },
+  { label:"Destructive Link Title",    opts:{ mainText:"Destructive Link Title", destruct:true } },
+  { label:"Main Title + Chevron",      opts:{ mainText:"Main Title", chevron:true } },
+  { label:"Step Counter + Progress",   opts:{ type:"step" } }
+];
+
+function renderListViews() {
+  var html = "";
+  html += "<div class='lv-section'>";
+  html += "<div class='section-label'>Variants</div>";
+  html += "<div class='section-desc'>Used in Reminders, Resources, and Me Tab.</div>";
+  for (var vi = 0; vi < lvVariants.length; vi++) {
+    var v = lvVariants[vi];
+    html += "<div style='margin-bottom:20px'>";
+    html += "<div class='tf-item-label' style='margin-bottom:8px'>" + v.label + "</div>";
+    if (lvPlatform === "both") {
+      html += "<div style='display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start'>";
+      html += "<div><div class='tf-plat-name'>Android</div><div class='lv-grid'>" + lvRow(v.opts, false) + "</div></div>";
+      html += "<div><div class='tf-plat-name'>iOS</div><div class='lv-grid'>" + lvRow(v.opts, true) + "</div></div>";
+      html += "</div>";
+    } else if (lvPlatform === "android") {
+      html += "<div class='lv-grid'>" + lvRow(v.opts, false) + "</div>";
+    } else {
+      html += "<div class='lv-grid'>" + lvRow(v.opts, true) + "</div>";
+    }
+    html += "</div>";
+  }
+  html += "</div>";
+  document.getElementById("lv-content").innerHTML = html;
+}
+renderListViews();
+
+/* ══════════════════════════════════════════
+   RENDER — TEXT FIELDS
+══════════════════════════════════════════ */
+var tfPlatform = "both";
+
+function androidField(opts) {
+  var hasLabel = opts.label, hasFocus = opts.focus, hasHelper = opts.helper, hasIcon = opts.icon, isError = opts.error, isDisabled = opts.disabled, isDropdown = opts.dropdown;
+  var wrapCls = "field-wrap" + (isDisabled ? " is-disabled" : "");
+  var lineCls = "bottom-line" + (hasFocus && !isError ? " is-focus" : "") + (isError ? " is-error" : "");
+  var html = "<div class='wf-field-android" + (hasHelper ? " has-helper" : "") + "'>";
+  html += "<div class='" + wrapCls + "'><div class='" + lineCls + "'></div>";
+  if (hasLabel) {
+    var lblCls = "field-label" + (hasFocus && !isError ? " is-focus" : "") + (isError ? " is-error" : "");
+    html += "<div class='" + lblCls + "'>Label</div>";
+  }
+  var inputCls = "field-input" + (!hasLabel ? " no-label" : "") + (isError ? " is-error" : "");
+  if (hasFocus && !isError) { html += "<div class='" + inputCls + "'>Input <span class='field-cursor'>|</span></div>"; }
+  else if (isDisabled) { html += "<div class='" + inputCls + " is-placeholder'>Input</div>"; }
+  else { html += "<div class='" + inputCls + "'>Input</div>"; }
+  if (hasIcon || isDropdown) {
+    var iconName = isError ? "error_outline" : isDropdown ? "expand_more" : "visibility";
+    html += "<div class='field-icon'><span class='material-icons' style='font-size:20px;color:" + (isError ? "#F05B60" : "#4E5961") + "'>" + iconName + "</span></div>";
+  }
+  html += "</div>";
+  if (hasHelper) { html += "<div class='field-helper" + (isError ? " is-error" : "") + "'>" + (isError ? "Error helper text" : "Helper text") + "</div>"; }
+  html += "</div>";
+  return html;
+}
+
+function iosField(opts) {
+  var hasLabel = opts.label, hasFocus = opts.focus, hasHelper = opts.helper, hasIcon = opts.icon, isError = opts.error, isDisabled = opts.disabled, isDropdown = opts.dropdown;
+  var wrapCls = "field-wrap" + (hasFocus && !isError ? " is-focus" : "") + (isError ? " is-error" : "") + (isDisabled ? " is-disabled" : "");
+  var html = "<div class='wf-field-ios" + (hasHelper ? " has-helper" : "") + "'>";
+  html += "<div class='" + wrapCls + "'>";
+  if (hasFocus) { html += "<div class='focus-bar" + (isError ? " is-error" : "") + "'></div>"; }
+  if (hasLabel) { html += "<div class='field-label" + (isError ? " is-error" : "") + "'>Label</div>"; }
+  var inputCls = "field-input" + (!hasLabel ? " no-label" : "") + (isDisabled ? " is-placeholder" : "");
+  if (hasFocus && !isError) { html += "<div class='" + inputCls + "'>Input <span class='field-cursor'>|</span></div>"; }
+  else { html += "<div class='" + inputCls + "'>Input</div>"; }
+  if (hasIcon || isDropdown) {
+    var iconName = isError ? "error_outline" : isDropdown ? "expand_more" : "visibility";
+    html += "<div class='field-icon'><span class='material-icons' style='font-size:20px;color:" + (isError ? "#F05B60" : "#4E5961") + "'>" + iconName + "</span></div>";
+  }
+  html += "</div>";
+  if (hasHelper) { html += "<div class='field-helper" + (isError ? " is-error" : "") + "'>" + (isError ? "Error helper text" : "Helper text") + "</div>"; }
+  html += "</div>";
+  return html;
+}
+
+var tfVariants = [
+  { label:"Default",              opts:{ label:false, focus:false, helper:false, icon:false, error:false, disabled:false, dropdown:false } },
+  { label:"With Label",           opts:{ label:true,  focus:false, helper:false, icon:false, error:false, disabled:false, dropdown:false } },
+  { label:"With Label + Helper",  opts:{ label:true,  focus:false, helper:true,  icon:false, error:false, disabled:false, dropdown:false } },
+  { label:"Focus",                opts:{ label:true,  focus:true,  helper:false, icon:false, error:false, disabled:false, dropdown:false } },
+  { label:"Focus + Icon",         opts:{ label:true,  focus:true,  helper:false, icon:true,  error:false, disabled:false, dropdown:false } },
+  { label:"Error",                opts:{ label:true,  focus:true,  helper:true,  icon:true,  error:true,  disabled:false, dropdown:false } },
+  { label:"Disabled",             opts:{ label:true,  focus:false, helper:false, icon:false, error:false, disabled:true,  dropdown:false } },
+  { label:"Dropdown",             opts:{ label:true,  focus:false, helper:false, icon:false, error:false, disabled:false, dropdown:true  } }
+];
+
+function renderTextFields() {
+  var html = "<div class='tf-section'>";
+  html += "<div class='section-label'>Variants</div>";
+  html += "<div class='tf-grid'>";
+  for (var vi = 0; vi < tfVariants.length; vi++) {
+    var v = tfVariants[vi];
+    html += "<div class='tf-item'><div class='tf-item-label'>" + v.label + "</div>";
+    if (tfPlatform === "both") {
+      html += "<div class='tf-plat-row'>";
+      html += "<div class='tf-plat-col'><div class='tf-plat-name'>Android</div>" + androidField(v.opts) + "</div>";
+      html += "<div class='tf-plat-col'><div class='tf-plat-name'>iOS</div>" + iosField(v.opts) + "</div>";
+      html += "</div>";
+    } else if (tfPlatform === "android") {
+      html += androidField(v.opts);
+    } else {
+      html += iosField(v.opts);
+    }
+    html += "</div>";
+  }
+  html += "</div></div>";
+  document.getElementById("tf-content").innerHTML = html;
+}
+renderTextFields();
+
+/* ══════════════════════════════════════════
+   RENDER — BUTTONS
+══════════════════════════════════════════ */
+function makeWfBtn(row, plat) {
+  var isAnd = plat === "android";
+  var cls = "wf-btn";
+  if (isAnd) { cls += " is-android"; }
+  if (row.tertiary) { cls += " is-tertiary"; }
+  if (row.disabled) { cls += " is-disabled"; }
+  cls += " " + (isAnd ? row.andCls : row.iosCls);
+  var inner = "";
+  if (row.icon && row.iconFirst) { inner += "<span class='material-icons' style='font-size:19px'>" + row.icon + "</span>"; }
+  inner += "<span>" + row.text + "</span>";
+  if (row.icon && !row.iconFirst) { inner += "<span class='material-icons' style='font-size:19px'>" + row.icon + "</span>"; }
+  var btn = "<div class='" + cls + "'>" + inner + "</div>";
+  if (row.darkBg) { return "<div class='dark-bg'>" + btn + "</div>"; }
+  return btn;
+}
+
+function renderButtons() {
+  var html = "";
+  for (var si = 0; si < btnSections.length; si++) {
+    var sec = btnSections[si];
+    html += "<div class='btn-section'>";
+    html += "<div class='section-label'>" + sec.title + "</div>";
+    html += "<div class='section-desc'>" + sec.desc + "</div>";
+    for (var ri = 0; ri < sec.rows.length; ri++) {
+      var row = sec.rows[ri];
+      html += "<div class='btn-row'><span class='btn-row-label'>" + row.label + "</span>";
+      if (bplatform === "both" || bplatform === "ios") {
+        html += "<div style='display:flex;align-items:center;gap:6px'>";
+        if (bplatform === "both") { html += "<span class='btn-plat-label'>iOS</span>"; }
+        html += makeWfBtn(row, "ios") + "</div>";
+      }
+      if (bplatform === "both" || bplatform === "android") {
+        html += "<div style='display:flex;align-items:center;gap:6px'>";
+        if (bplatform === "both") { html += "<span class='btn-plat-label'>Android</span>"; }
+        html += makeWfBtn(row, "android") + "</div>";
+      }
+      html += "</div>";
+    }
+    html += "<div class='spec-grid'>";
+    for (var pi = 0; pi < sec.specs.length; pi++) {
+      html += "<div class='spec-card'><strong>" + sec.specs[pi].label + "</strong><br>" + sec.specs[pi].value + "</div>";
+    }
+    html += "</div>";
+    if (si < btnSections.length - 1) { html += "<hr class='btn-divider'>"; }
+    html += "</div>";
+  }
+  document.getElementById("btn-content").innerHTML = html;
+}
+renderButtons();
+
+/* ══════════════════════════════════════════
+   RENDER — WIDGETS
+══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   RENDER — NOTIFICATIONS
+══════════════════════════════════════════ */
+function warningIconSvg() {
+  return '<svg class="warning-triangle" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">'
+    + '<path d="M19 4L35.5 32H2.5L19 4Z" fill="#F05B60" fill-opacity="0.15" stroke="#F05B60" stroke-width="2" stroke-linejoin="round"/>'
+    + '<rect x="18" y="14" width="2" height="10" rx="1" fill="#F05B60"/>'
+    + '<rect x="18" y="26" width="2" height="2" rx="1" fill="#F05B60"/>'
+    + '</svg>';
+}
+
+function androidModal(opts) {
+  // opts: { primaryLabel, secondaryLabel?, linkText?, title, body }
+  return '<div class="modal-card">'
+    // top bar
+    + '<div class="modal-top-bar">'
+    + '<div class="modal-header-spacer"></div>'
+    + '<div class="modal-close-btn"><span class="material-icons" style="font-size:18px;color:#4E5961">close</span></div>'
+    + '</div>'
+    // warning icon
+    + '<div class="modal-icon-zone"><div class="modal-warning-wrap">' + warningIconSvg() + '</div></div>'
+    // body
+    + '<div class="modal-body-zone">'
+    + '<div class="modal-title-text">' + opts.title + '</div>'
+    + '<div class="modal-body-text">' + opts.body + '</div>'
+    + (opts.linkText ? '<div class="modal-link-text">' + opts.linkText + '</div>' : '')
+    + '</div>'
+    // footer
+    + '<div class="modal-footer-zone">'
+    + '<div class="modal-btn-primary"><span>' + opts.primaryLabel + '</span></div>'
+    + (opts.secondaryLabel ? '<div class="modal-btn-secondary"><span>' + opts.secondaryLabel + '</span></div>' : '')
+    + '</div>'
+    + '</div>';
+}
+
+function renderNotifications() {
+  var title = 'This email address is already associated with an account';
+  var body  = 'Sign up with a different email address, or log in to an existing account.';
+  var html  = '';
+
+  // ── Rules ──
+  html += '<div class="widget-rule-block">'
+    + '<div class="widget-rule"><strong>Structure</strong> Top bar (close ×) → Warning icon → Body (title + body text + optional link) → Footer (primary + optional secondary CTA)</div>'
+    + '<div class="widget-rule"><strong>Width</strong> 328px fixed</div>'
+    + '<div class="widget-rule"><strong>Radius</strong> 4px (Android modal)</div>'
+    + '<div class="widget-rule"><strong>Shadow</strong> 0 11px 15px rgba(0,0,0,.2), 0 9px 46px rgba(0,0,0,.12), 0 24px 38px rgba(0,0,0,.14)</div>'
+    + '<div class="widget-rule"><strong>Title</strong> Merriweather Light 20pt · #0080A3 · centered</div>'
+    + '<div class="widget-rule"><strong>Body text</strong> Roboto Regular 16sp · #4F4F4F · centered</div>'
+    + '<div class="widget-rule"><strong>Link text</strong> Roboto Medium 15sp · #0080A3 · centered · optional</div>'
+    + '<div class="widget-rule"><strong>Warning icon</strong> 38px · #F05B60 triangle + ! mark</div>'
+    + '</div>';
+
+  // ── 4 Variants ──
+  html += '<hr class="btn-divider">';
+  html += '<div class="section-label">Variants</div>';
+  html += '<div class="section-desc">Four combinations of the optional link and optional secondary button.</div>';
+
+  html += '<div class="modal-wrap">';
+
+  // V1: link + secondary
+  html += '<div><div class="modal-variant-label">Link + Secondary Button</div>'
+    + androidModal({ title, body, linkText: 'This is a link', primaryLabel: 'Try Again', secondaryLabel: 'Log In' })
+    + '</div>';
+
+  // V2: link, no secondary
+  html += '<div><div class="modal-variant-label">Link · No Secondary Button</div>'
+    + androidModal({ title, body, linkText: 'This is a link', primaryLabel: 'Try Again' })
+    + '</div>';
+
+  // V3: no link + secondary
+  html += '<div><div class="modal-variant-label">No Link · Secondary Button</div>'
+    + androidModal({ title, body, primaryLabel: 'Try Again', secondaryLabel: 'Log In' })
+    + '</div>';
+
+  // V4: no link, no secondary
+  html += '<div><div class="modal-variant-label">Primary CTA Only</div>'
+    + androidModal({ title, body, primaryLabel: 'Try Again' })
+    + '</div>';
+
+  html += '</div>';
+
+  // ── Specs ──
+  html += '<hr class="btn-divider">';
+  html += '<div class="section-label">Specs</div>';
+  html += '<div class="spec-grid">';
+  var specs = [
+    { label:'Modal width',         value:'328px' },
+    { label:'Border radius',       value:'4px (Android)' },
+    { label:'Shadow',              value:'3-layer elevation: 11/9/24px rgba(0,0,0,.2/.12/.14)' },
+    { label:'Top bar height',      value:'50px · padding 0 24px' },
+    { label:'Close icon',          value:'24px · close · #4E5961' },
+    { label:'Warning icon',        value:'38px · #F05B60 triangle · centered in icon zone' },
+    { label:'Icon zone padding',   value:'8px 24px 0' },
+    { label:'Body padding',        value:'16px 24px 20px' },
+    { label:'Body gap',            value:'16px between title / body / link' },
+    { label:'Title',               value:'Merriweather Light 20pt · lh 25px · #0080A3 · centered' },
+    { label:'Body text',           value:'Roboto Regular 16sp · lh 21px · #4F4F4F · centered' },
+    { label:'Link text',           value:'Roboto Medium 15sp · lh 20px · #0080A3 · centered · optional' },
+    { label:'Footer padding',      value:'0 24px 17px · gap 16px between buttons' },
+    { label:'Primary button',      value:'#0E98BE bg · 30px radius · 56px height · full width' },
+    { label:'Primary label',       value:'SF Pro Text Medium 16pt · white · ls -0.32px · centered' },
+    { label:'Secondary button',    value:'1px solid #0E98BE · transparent bg · 30px radius · 56px height' },
+    { label:'Secondary label',     value:'SF Pro Text Medium 16pt · #0E98BE · ls -0.32px · centered' },
+  ];
+  for (var si = 0; si < specs.length; si++) {
+    html += '<div class="spec-card"><strong>' + specs[si].label + '</strong><br>' + specs[si].value + '</div>';
+  }
+  html += '</div>';
+
+  document.getElementById('notif-content').innerHTML = html;
+}
+renderNotifications();
+
+/* ══════════════════════════════════════════
+   RENDER — CHAT ATTACHMENTS
+══════════════════════════════════════════ */
+function chatScreen(title, bodyHtml, inputBarHtml) {
+  return "<div class='chat-screen'>"
+    + "<div class='chat-screen-header'>"
+    + "<span class='material-icons chat-screen-icon' style='font-size:20px'>info_outline</span>"
+    + "<div class='chat-screen-title'>" + title + "</div>"
+    + "<span class='material-icons chat-screen-icon' style='font-size:20px'>call</span>"
+    + "</div>"
+    + "<div class='chat-body'>" + bodyHtml + "</div>"
+    + (inputBarHtml || "")
+    + "</div>";
+}
+
+function defaultInputBar() {
+  return "<div class='chat-input-bar'>"
+    + "<span class='material-icons chat-attach-btn'>add_circle_outline</span>"
+    + "<div class='chat-input-field'>Send a message</div>"
+    + "<span class='material-icons chat-send-btn' style='color:#B0DEEA'>send</span>"
+    + "</div>";
+}
+
+function imgPlaceholder(label) {
+  return "<div class='attach-img-placeholder'>"
+    + "<span class='material-icons' style='color:#0080A3;font-size:36px'>image</span>"
+    + "</div>";
+}
+
+function pdfBubble(name, size, state) {
+  var extraCls = state === "sending" ? " sending" : state === "error" ? " error" : "";
+  return "<div class='pdf-bubble user" + extraCls + "'>"
+    + "<div class='pdf-icon'><span class='material-icons' style='font-size:18px'>picture_as_pdf</span></div>"
+    + "<div class='pdf-info'><div class='pdf-name'>" + name + "</div><div class='pdf-size'>" + size + "</div></div>"
+    + "</div>";
+}
+
+function renderChatAttachments() {
+  var html = "";
+
+  // ── Intro ──
+  html += "<div class='chat-section'>";
+  html += "<div class='section-label'>Attachment Types</div>";
+  html += "<div class='section-desc'>HEIC, JPG, PNG · PDFs under 2 MB · Up to 10 items per send · Images auto-scaled · PDF opens in scrollable preview</div>";
+  html += "<div class='chat-scenario-grid'>";
+
+  // Image attachment
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Image attachment (sent)</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + "<div class='attach-bubble user'>" + imgPlaceholder() + "</div>"
+    + "<div class='bubble-timestamp right'>5:40pm</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+
+  // PDF attachment
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>PDF attachment (sent)</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + pdfBubble("diabetes_worksheet-finished-long-na...pdf", "1.2 MB")
+    + "<div class='bubble-timestamp right'>5:40pm</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+  html += "</div></div>";
+
+  // ── Error State ──
+  html += "<hr class='btn-divider'>";
+  html += "<div class='chat-section'>";
+  html += "<div class='section-label'>Error State — No Internet</div>";
+  html += "<div class='section-desc'>Attachment failed to send. Image or PDF shown at 50% opacity. Tap to retry.</div>";
+  html += "<div class='chat-scenario-grid'>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Image — error</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + "<div class='attach-bubble user' style='opacity:0.5'>" + imgPlaceholder() + "</div>"
+    + "<div class='error-row'>"
+    + "<span class='material-icons retry-icon'>refresh</span>"
+    + "<span class='error-text'>Attachment failed to send. Tap to retry.</span>"
+    + "</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>PDF — error</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + pdfBubble("diabetes_worksheet-finished-long-na...pdf", "1.2 MB", "error")
+    + "<div class='error-row'>"
+    + "<span class='material-icons retry-icon'>refresh</span>"
+    + "<span class='error-text'>Attachment failed to send. Tap to retry.</span>"
+    + "</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+  html += "</div></div>";
+
+  // ── Sending State ──
+  html += "<hr class='btn-divider'>";
+  html += "<div class='chat-section'>";
+  html += "<div class='section-label'>Sending State</div>";
+  html += "<div class='section-desc'>If upload takes time, a spinner overlays the attachment at 50% opacity.</div>";
+  html += "<div class='chat-scenario-grid'>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Image — sending</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + "<div class='attach-bubble user' style='opacity:0.5'>"
+    + imgPlaceholder()
+    + "<div class='attach-overlay sending'><div class='sending-spinner'></div></div>"
+    + "</div>"
+    + "</div>"
+    + "<div class='chat-input-bar'>"
+    + "<span class='material-icons chat-attach-btn'>add_circle_outline</span>"
+    + "<div class='chat-input-field'>Send a message that can span several lines here.</div>"
+    + "<span class='material-icons' style='color:#A6B4BA;font-size:22px'>more_horiz</span>"
+    + "</div>"
+  );
+  html += "</div>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>PDF — sending</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + "<div style='opacity:0.5'>" + pdfBubble("diabetes_worksheet...pdf", "1.2 MB", "sending") + "</div>"
+    + "<div style='display:flex;justify-content:flex-end;margin-top:4px'><div class='sending-spinner'></div></div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+  html += "</div></div>";
+
+  // ── Share / Remove ──
+  html += "<hr class='btn-divider'>";
+  html += "<div class='chat-section'>";
+  html += "<div class='section-label'>Share &amp; Remove Actions</div>";
+  html += "<div class='section-desc'>Long-press or tap on a sent attachment reveals Share and Remove options. Share opens the native share sheet.</div>";
+  html += "<div class='chat-scenario-grid'>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Action sheet on attachment</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user' style='position:relative'>"
+    + "<div class='attach-bubble user' style='opacity:0.6'>"
+    + "<div class='attach-img-placeholder'>"
+    + "<div class='pdf-bubble' style='background:transparent;border:none;box-shadow:none'>"
+    + "<div class='pdf-icon'><span class='material-icons' style='font-size:18px'>picture_as_pdf</span></div>"
+    + "<div class='pdf-info'><div class='pdf-name'>diabetes_worksheet-finished-long-na...pdf</div></div>"
+    + "</div>"
+    + "</div>"
+    + "</div>"
+    + "<div style='margin-top:8px;align-self:flex-end'>"
+    + "<div class='action-sheet'>"
+    + "<div class='action-sheet-row'><span class='material-icons action-sheet-icon'>share</span><span class='action-sheet-text'>Share</span></div>"
+    + "<div class='action-sheet-row'><span class='material-icons action-sheet-icon destruct'>delete_outline</span><span class='action-sheet-text destruct'>Remove</span></div>"
+    + "</div>"
+    + "</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+  html += "</div></div>";
+
+  // ── Removed State ──
+  html += "<hr class='btn-divider'>";
+  html += "<div class='chat-section'>";
+  html += "<div class='section-label'>Removed State</div>";
+  html += "<div class='section-desc'>Removed attachments show a tombstone message with timestamp and who removed it (user or care manager).</div>";
+  html += "<div class='chat-scenario-grid'>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Removed by user</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + "<div class='removed-bubble user'>"
+    + "<div class='removed-row'>"
+    + "<span class='material-icons removed-icon'>cancel</span>"
+    + "<span class='removed-text'><strong>Attachment was removed</strong> by you on 12/20/2020 at 12:20pm</span>"
+    + "</div>"
+    + "</div>"
+    + "<div class='bubble-timestamp right'>5:40pm</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Removed by care manager</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap care'>"
+    + "<div class='removed-bubble'>"
+    + "<div class='removed-row'>"
+    + "<span class='material-icons removed-icon'>cancel</span>"
+    + "<span class='removed-text'><strong>Attachment was removed</strong> by your care manager on 12/20/2020 at 12:20pm</span>"
+    + "</div>"
+    + "</div>"
+    + "<div class='bubble-timestamp'>5:40pm</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+  html += "</div></div>";
+
+  // ── Security Failure ──
+  html += "<hr class='btn-divider'>";
+  html += "<div class='chat-section'>";
+  html += "<div class='section-label'>Security Check Failure</div>";
+  html += "<div class='section-desc'>If the attachment fails a security scan, the user sees this error in the conversation thread.</div>";
+  html += "<div class='chat-scenario-grid'>";
+
+  html += "<div class='chat-scenario-col'><div class='chat-scenario-label'>Security error</div>";
+  html += chatScreen("Chat",
+    "<div class='bubble-wrap user'>"
+    + "<div class='security-bubble'>"
+    + "<div class='security-row'>"
+    + "<span class='material-icons security-icon'>warning_amber</span>"
+    + "<span class='security-text'>&ldquo;IMG_10982.jpg&rdquo; cannot be sent because it does not pass security requirements.</span>"
+    + "</div>"
+    + "</div>"
+    + "<div class='bubble-timestamp right'>5:40pm</div>"
+    + "</div>",
+    defaultInputBar()
+  );
+  html += "</div>";
+  html += "</div></div>";
+
+  // ── Specs ──
+  html += "<hr class='btn-divider'>";
+  html += "<div class='section-label'>Specs</div>";
+  html += "<div class='spec-grid'>";
+  var specs = [
+    { label:"Max items per send",   value:"10 (HEIC, JPG, PNG, PDF)" },
+    { label:"PDF size limit",       value:"Under 2 MB" },
+    { label:"Image size limit",     value:"None — auto-scaled" },
+    { label:"PDF preview",          value:"Opens in scrollable preview window" },
+    { label:"Error opacity",        value:"50% on image/PDF bubble" },
+    { label:"Sending opacity",      value:"50% on image/PDF bubble + spinner" },
+    { label:"Spinner",              value:"36px · 3px border · #0080A3 top arc" },
+    { label:"Error text color",     value:"#F05B60 (error icon)" },
+    { label:"Retry icon",           value:"refresh · #F05B60 · 16px" },
+    { label:"Action sheet radius",  value:"12px · border #D9E3E7 · shadow" },
+    { label:"Remove text color",    value:"#923133 (destructive)" },
+    { label:"Removed tombstone bg", value:"#F0F4F5 · border-radius 10px" },
+    { label:"Removed text color",   value:"#4E5961 italic · #282F35 strong" },
+    { label:"Security error bg",    value:"#FFF3F3 · border 1px #F05B60" },
+    { label:"Security text color",  value:"#923133 · 500 weight · 13pt" },
+    { label:"PDF icon bg",          value:"#F05B60 · 36×36px · radius 6px" }
+  ];
+  for (var si = 0; si < specs.length; si++) {
+    html += "<div class='spec-card'><strong>" + specs[si].label + "</strong><br>" + specs[si].value + "</div>";
+  }
+  html += "</div>";
+
+  document.getElementById("chat-attach-content").innerHTML = html;
+}
+renderChatAttachments();
+
+/* ══════════════════════════════════════════
+   EVENTS
+══════════════════════════════════════════ */
+document.getElementById("icon-search").addEventListener("input", renderIcons);
+
+document.addEventListener("click", function(e) {
+  var t = e.target;
+  var v, btns, i;
+
+  v = t.getAttribute("data-tab");
+  if (v) {
+    btns = document.querySelectorAll(".nav-btn");
+    for (i = 0; i < btns.length; i++) { btns[i].className = "nav-btn"; }
+    t.className = "nav-btn active";
+    btns = document.querySelectorAll(".panel");
+    for (i = 0; i < btns.length; i++) { btns[i].className = "panel"; }
+    document.getElementById("panel-" + v).className = "panel active";
+    return;
+  }
+
+  v = t.getAttribute("data-typetab");
+  if (v) {
+    activeTypeTab = v;
+    btns = document.querySelectorAll("[data-typetab]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-typetab") === v ? "seg-btn active" : "seg-btn"; }
+    renderType(); return;
+  }
+
+  v = t.getAttribute("data-iplatform");
+  if (v) {
+    iplatform = v;
+    btns = document.querySelectorAll("[data-iplatform]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-iplatform") === v ? "seg-btn active" : "seg-btn"; }
+    renderIcons(); return;
+  }
+
+  v = t.getAttribute("data-igroup");
+  if (v) {
+    iconGroup = v;
+    btns = document.querySelectorAll("[data-igroup]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-igroup") === v ? "ifbtn active" : "ifbtn"; }
+    renderIcons(); return;
+  }
+
+  v = t.getAttribute("data-cardplat");
+  if (v) {
+    cardPlatform = v;
+    btns = document.querySelectorAll("[data-cardplat]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-cardplat") === v ? "seg-btn active" : "seg-btn"; }
+    renderCards(); return;
+  }
+
+  v = t.getAttribute("data-cardsection");
+  if (v) {
+    cardSection = v;
+    btns = document.querySelectorAll("[data-cardsection]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-cardsection") === v ? "ifbtn active" : "ifbtn"; }
+    renderCards(); return;
+  }
+
+  v = t.getAttribute("data-scplat");
+  if (v) {
+    scPlatform = v;
+    btns = document.querySelectorAll("[data-scplat]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-scplat") === v ? "seg-btn active" : "seg-btn"; }
+    renderStepCount(); return;
+  }
+
+  v = t.getAttribute("data-ctrlplat");
+  if (v) {
+    ctrlPlatform = v;
+    btns = document.querySelectorAll("[data-ctrlplat]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-ctrlplat") === v ? "seg-btn active" : "seg-btn"; }
+    renderControls(); return;
+  }
+
+  v = t.getAttribute("data-lvplat");
+  if (v) {
+    lvPlatform = v;
+    btns = document.querySelectorAll("[data-lvplat]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-lvplat") === v ? "seg-btn active" : "seg-btn"; }
+    renderListViews(); return;
+  }
+
+  v = t.getAttribute("data-tfplat");
+  if (v) {
+    tfPlatform = v;
+    btns = document.querySelectorAll("[data-tfplat]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-tfplat") === v ? "seg-btn active" : "seg-btn"; }
+    renderTextFields(); return;
+  }
+
+  v = t.getAttribute("data-bplatform");
+  if (v) {
+    bplatform = v;
+    btns = document.querySelectorAll("[data-bplatform]");
+    for (i = 0; i < btns.length; i++) { btns[i].className = btns[i].getAttribute("data-bplatform") === v ? "seg-btn active" : "seg-btn"; }
+    renderButtons(); return;
+  }
+
+  v = t.getAttribute("data-hex");
+  if (v) {
+    if (navigator.clipboard) { navigator.clipboard.writeText(v); }
+    showToast("Copied " + v); return;
+  }
+
+  v = t.getAttribute("data-copy");
+  if (v) {
+    if (navigator.clipboard) { navigator.clipboard.writeText(v); }
+    resetCopied();
+    t.className = "cbtn copied";
+    t.querySelector(".cbtn-label").textContent = "Copied!";
+    lastCopiedBtn = t;
+    setTimeout(resetCopied, 1500); return;
+  }
+});
+</script>
+</body>
+</html>

@@ -3,8 +3,8 @@ import GmailInbox from './components/GmailInbox'
 import Assessment from './components/Assessment'
 
 export default function App() {
-  const [view, setView] = useState('inbox')
+  const [view, setView] = useState('email')
 
-  if (view === 'assessment') return <Assessment />
+  if (view === 'assessment') return <Assessment onBackToEmail={() => setView('email')} />
   return <GmailInbox onOpenAssessment={() => setView('assessment')} />
 }

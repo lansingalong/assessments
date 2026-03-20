@@ -48,7 +48,7 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
   }
 }
 
-export default function Assessment() {
+export default function Assessment({ onBackToEmail }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [answers, setAnswers] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -104,6 +104,7 @@ export default function Assessment() {
         submitDisabled={false}
         autosaveVisible={autosaveVisible}
         onPageSelect={(page) => { setCurrentPage(page); window.scrollTo(0, 0) }}
+        onBackToEmail={onBackToEmail}
       />
 
       <div className="flex-1 py-8 px-4 flex flex-col items-center">
