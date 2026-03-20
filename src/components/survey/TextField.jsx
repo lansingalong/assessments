@@ -48,7 +48,7 @@ export default function TextField({ question, placeholder = 'Type your answer he
         style={ctaStyle(filled)}
         onClick={() => filled && onSubmit?.(value.trim())}
       >
-        Submit Answer
+        Next
       </button>
     </div>
   )

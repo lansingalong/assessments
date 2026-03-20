@@ -71,7 +71,7 @@ export default function SubQuestions({ question, questions = [], onSubmit, answe
         style={ctaStyle(allAnswered)}
         onClick={() => allAnswered && onSubmit?.(answers)}
       >
-        Submit Answer
+        Next
       </button>
     </div>
   )

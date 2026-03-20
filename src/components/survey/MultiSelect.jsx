@@ -51,7 +51,7 @@ export default function MultiSelect({ question, options = [], onSubmit, answer, 
         style={ctaStyle(selected.size > 0)}
         onClick={() => selected.size > 0 && onSubmit?.([...selected])}
       >
-        Submit Answer
+        Next
       </button>
     </div>
   )

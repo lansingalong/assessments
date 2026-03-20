@@ -92,7 +92,7 @@ export default function SurveyQuestion({ question, options = [], onSubmit }) {
           letterSpacing: '-0.32px',
         }}
       >
-        Submit Answer
+        Next
       </button>
     </div>
   )
