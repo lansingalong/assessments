@@ -64,12 +64,30 @@ export const PAGES = [
     title: 'Chronic Conditions & Medications',
     questions: [
       {
-        id: 11, number: 11, type: 'multi', required: true,
+        id: 51, number: 11, type: 'nested', required: true,
+        question: 'Are you experiencing pain?',
+        options: ['Yes', 'No'],
+        expandValue: 'Yes',
+        subQuestions: [
+          {
+            id: '51a', type: 'multi', required: true,
+            question: 'Which of the following are you currently experiencing?',
+            options: ['Sharp or stabbing pain', 'Dull or aching pain', 'Burning sensation', 'Throbbing pain', 'Stiffness or tension', 'Other'],
+          },
+          {
+            id: '51b', type: 'single', required: true,
+            question: 'Does it interfere with your daily activities?',
+            options: ['Yes', 'No'],
+          },
+        ],
+      },
+      {
+        id: 11, number: 12, type: 'multi', required: true,
         question: 'Have you ever been told by a doctor or health professional that you have any of the following conditions?',
         options: ['High blood pressure', 'High cholesterol', 'Diabetes or pre-diabetes', 'Heart disease or heart attack', 'Asthma or COPD', 'Arthritis', 'Chronic kidney disease', 'Cancer (current or past)', 'Obesity', 'None of the above'],
       },
       {
-        id: 12, number: 12, type: 'sub',
+        id: 12, number: 13, type: 'sub',
         question: 'Have you been told by a doctor, nurse, or other health professional that you have or had any of the following?',
         subQuestions: [
           { id: '12a', label: 'High blood pressure (hypertension)', options: ['Yes', 'No', 'Not sure'] },
@@ -79,41 +97,41 @@ export const PAGES = [
         ],
       },
       {
-        id: 13, number: 13, type: 'single', required: true,
+        id: 13, number: 14, type: 'single', required: true,
         question: 'Do you currently take any prescription medications?',
         options: ['Yes, one or more daily', 'Yes, but only as needed', 'No'],
       },
       {
-        id: 14, number: 14, type: 'single',
+        id: 14, number: 15, type: 'single',
         question: 'How often do you take your medications exactly as prescribed by your doctor?',
         options: ['Always', 'Most of the time', 'Sometimes', 'Rarely', 'I do not take prescription medications'],
       },
       {
-        id: 15, number: 15, type: 'multi',
+        id: 15, number: 16, type: 'multi',
         question: 'What are the main reasons you sometimes miss taking your medications? (Select all that apply)',
         options: ['I forget', 'Side effects', 'Cost / can\'t afford them', 'I feel better and think I don\'t need them', 'I don\'t have a way to pick them up', 'I have no problem taking my medications'],
       },
       {
-        id: 16, number: 16, type: 'single',
+        id: 16, number: 17, type: 'single',
         question: 'Do you currently have a primary care provider (doctor, nurse practitioner, or physician assistant)?',
         options: ['Yes', 'No, but I am looking for one', 'No'],
       },
       {
-        id: 17, number: 17, type: 'single',
+        id: 17, number: 18, type: 'single',
         question: 'How well do you feel your chronic health conditions are currently being managed?',
         options: ['Very well', 'Well', 'Somewhat well', 'Not well', 'I have no chronic conditions'],
       },
       {
-        id: 18, number: 18, type: 'multi',
+        id: 18, number: 19, type: 'multi',
         question: 'Have you had any of the following healthcare encounters in the past 12 months?',
         options: ['Emergency room visit', 'Hospitalization (overnight stay)', 'Specialist visit', 'Urgent care visit', 'Telehealth visit', 'None of the above'],
       },
       {
-        id: 19, number: 19, type: 'calendar',
+        id: 19, number: 20, type: 'calendar',
         question: 'When were you most recently hospitalized or seen in an emergency room?',
       },
       {
-        id: 20, number: 20, type: 'text',
+        id: 20, number: 21, type: 'text',
         question: 'Please list any current diagnoses or medical conditions, including any medications and dosages you are currently taking.',
       },
     ],

@@ -9,6 +9,7 @@ import SubQuestions from './survey/SubQuestions'
 import { sfPro } from './survey/shared'
 import { WellframeModal } from './WellframeModal'
 import ConditionalGroup from './survey/ConditionalGroup'
+import NestedQuestion from './survey/NestedQuestion'
 
 // Returns 0–100 for how many questions on a page are answered
 function pageProgress(pageQuestions, answers) {
@@ -46,6 +47,8 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
       return <SubQuestions {...sharedProps} question={questionWithNum} questions={q.subQuestions} answer={answer} />
     case 'conditional':
       return <ConditionalGroup q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} />
+    case 'nested':
+      return <NestedQuestion q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} />
     default:
       return null
   }
