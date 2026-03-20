@@ -124,7 +124,35 @@ export const PAGES = [
     title: 'Mental & Behavioral Health',
     questions: [
       {
-        id: 21, number: 21, type: 'sub', required: true,
+        id: 29, number: 21, type: 'conditional', required: true,
+        question: 'Are you a smoker?',
+        options: ['Yes', 'No'],
+        skipValue: 'No',
+        followUps: [
+          {
+            id: '29a', number: '21a', type: 'single',
+            question: 'How long have you been smoking?',
+            options: ['Less than 1 year', '1–5 years', '6–10 years', '11–20 years', 'More than 20 years'],
+          },
+          {
+            id: '29b', number: '21b', type: 'single',
+            question: 'About how many cigarettes do you smoke per day?',
+            options: ['1–5', '6–10', '11–20', 'More than 20', "I don't smoke cigarettes"],
+          },
+          {
+            id: '29c', number: '21c', type: 'multi',
+            question: 'What do you usually smoke?',
+            options: ['Cigarettes', 'Cigars', 'Pipe', 'E-cigarettes / vaping', 'Other'],
+          },
+          {
+            id: '29d', number: '21d', type: 'single',
+            question: 'Do you smoke other tobacco products?',
+            options: ['Yes', 'No'],
+          },
+        ],
+      },
+      {
+        id: 21, number: 22, type: 'sub', required: true,
         question: 'Over the last 2 weeks, how often have you been bothered by any of the following problems? (PHQ-4)',
         subQuestions: [
           { id: '21a', label: 'Little interest or pleasure in doing things',  options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
@@ -134,7 +162,7 @@ export const PAGES = [
         ],
       },
       {
-        id: 22, number: 22, type: 'sub',
+        id: 22, number: 23, type: 'sub',
         question: 'Over the last 2 weeks, how often have you been bothered by any of the following?',
         subQuestions: [
           { id: '22a', label: 'Trouble falling or staying asleep, or sleeping too much', options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
@@ -144,62 +172,34 @@ export const PAGES = [
         ],
       },
       {
-        id: 23, number: 23, type: 'single',
+        id: 23, number: 24, type: 'single',
         question: 'How would you rate your current overall stress level?',
         options: ['No stress', 'Low stress', 'Moderate stress', 'High stress', 'Very high stress'],
       },
       {
-        id: 24, number: 24, type: 'single',
+        id: 24, number: 25, type: 'single',
         question: 'How well are you able to manage stress in your daily life?',
         options: ['Very well', 'Well', 'Somewhat well', 'Not very well', 'Not at all well'],
       },
       {
-        id: 25, number: 25, type: 'multi',
+        id: 25, number: 26, type: 'multi',
         question: 'Which of the following have you experienced during the past month?',
         options: ['Difficulty sleeping', 'Loss of interest in activities you used to enjoy', 'Withdrawing from friends or family', 'Changes in appetite or weight', 'Difficulty concentrating or making decisions', 'None of the above'],
       },
       {
-        id: 26, number: 26, type: 'single',
+        id: 26, number: 27, type: 'single',
         question: 'Are you currently seeing a mental health professional (therapist, counselor, or psychiatrist)?',
         options: ['Yes, regularly', 'Yes, occasionally', 'No, but I would like to', 'No'],
       },
       {
-        id: 27, number: 27, type: 'single',
+        id: 27, number: 28, type: 'single',
         question: 'In the past year, have you used alcohol or drugs more than you intended to, or in a way that caused problems for you?',
         options: ['Yes', 'No', 'Prefer not to answer'],
       },
       {
-        id: 28, number: 28, type: 'single',
+        id: 28, number: 29, type: 'single',
         question: 'How often do you have a drink containing alcohol?',
         options: ['Never', 'Monthly or less', '2–4 times per month', '2–3 times per week', '4 or more times per week'],
-      },
-      {
-        id: 29, number: 29, type: 'conditional', required: true,
-        question: 'Are you a smoker?',
-        options: ['Yes', 'No'],
-        skipValue: 'No',
-        followUps: [
-          {
-            id: '29a', number: '29a', type: 'single',
-            question: 'How long have you been smoking?',
-            options: ['Less than 1 year', '1–5 years', '6–10 years', '11–20 years', 'More than 20 years'],
-          },
-          {
-            id: '29b', number: '29b', type: 'single',
-            question: 'About how many cigarettes do you smoke per day?',
-            options: ['1–5', '6–10', '11–20', 'More than 20', "I don't smoke cigarettes"],
-          },
-          {
-            id: '29c', number: '29c', type: 'multi',
-            question: 'What do you usually smoke?',
-            options: ['Cigarettes', 'Cigars', 'Pipe', 'E-cigarettes / vaping', 'Other'],
-          },
-          {
-            id: '29d', number: '29d', type: 'single',
-            question: 'Do you smoke other tobacco products?',
-            options: ['Yes', 'No'],
-          },
-        ],
       },
       {
         id: 30, number: 30, type: 'text',
