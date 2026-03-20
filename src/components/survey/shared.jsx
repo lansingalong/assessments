@@ -5,6 +5,7 @@ export const cardStyle = {
   borderRadius: 10,
   boxShadow: '0 1px 4px #D9E3E7',
   padding: '20px 16px 16px',
+  margin: 34,
 }
 
 export const questionStyle = {
