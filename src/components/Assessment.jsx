@@ -48,7 +48,7 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
     case 'conditional':
       return <ConditionalGroup q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} />
     case 'nested':
-      return <NestedQuestion q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} />
+      return <NestedQuestion q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} nextId={nextId} />
     default:
       return null
   }

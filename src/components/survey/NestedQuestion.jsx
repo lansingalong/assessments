@@ -113,12 +113,22 @@ function SubCard({ sq, answer, onAnswer }) {
 
 // ── Main component ─────────────────────────────────────────────────────────
 
-export default function NestedQuestion({ q, answer = {}, onSubmit }) {
+export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
   const triggerAnswer = answer.trigger ?? null
   const subAnswers = answer.sub ?? {}
   const expanded = triggerAnswer === q.expandValue
 
   const expandIdx = q.options.indexOf(q.expandValue)
+
+  // Next is enabled when: trigger is answered AND all required sub-questions
+  // (if expanded) have at least one selection
+  const requiredSubsDone = !expanded || q.subQuestions
+    .filter(sq => sq.required)
+    .every(sq => {
+      const a = subAnswers[sq.id]
+      return sq.type === 'multi' ? Array.isArray(a) && a.length > 0 : a != null
+    })
+  const canProceed = triggerAnswer !== null && requiredSubsDone
 
   const handleTrigger = (opt) => {
     onSubmit?.({ trigger: opt, sub: subAnswers })
@@ -126,6 +136,15 @@ export default function NestedQuestion({ q, answer = {}, onSubmit }) {
 
   const handleSub = (id, val) => {
     onSubmit?.({ trigger: triggerAnswer, sub: { ...subAnswers, [id]: val } })
+  }
+
+  const handleNext = () => {
+    if (!canProceed || !nextId) return
+    const el = document.getElementById(`question-${nextId}`)
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 80
+      window.scrollTo({ top, behavior: 'smooth' })
+    }
   }
 
   return (
@@ -171,6 +190,28 @@ export default function NestedQuestion({ q, answer = {}, onSubmit }) {
           </div>
         ))}
       </div>
+
+      {/* Next button */}
+      <button
+        onClick={handleNext}
+        disabled={!canProceed}
+        style={{
+          marginTop: 20,
+          width: '100%',
+          height: 48,
+          borderRadius: 30,
+          border: 'none',
+          fontSize: 16,
+          fontWeight: 500,
+          fontFamily: 'Roboto, system-ui, sans-serif',
+          color: '#fff',
+          background: canProceed ? '#8BBFD0' : '#C5D8DF',
+          cursor: canProceed ? 'pointer' : 'not-allowed',
+          transition: 'background 0.2s',
+        }}
+      >
+        Next
+      </button>
     </div>
   )
 }
