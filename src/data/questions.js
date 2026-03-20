@@ -174,9 +174,32 @@ export const PAGES = [
         options: ['Never', 'Monthly or less', '2–4 times per month', '2–3 times per week', '4 or more times per week'],
       },
       {
-        id: 29, number: 29, type: 'single', required: true,
-        question: 'Do you currently use tobacco products (cigarettes, cigars, chewing tobacco, e-cigarettes)?',
-        options: ['Yes, daily', 'Yes, occasionally', 'No, I quit within the last year', 'No, I quit more than a year ago', 'Never used'],
+        id: 29, number: 29, type: 'conditional', required: true,
+        question: 'Are you a smoker?',
+        options: ['Yes', 'No'],
+        skipValue: 'No',
+        followUps: [
+          {
+            id: '29a', number: '29a', type: 'single',
+            question: 'How long have you been smoking?',
+            options: ['Less than 1 year', '1–5 years', '6–10 years', '11–20 years', 'More than 20 years'],
+          },
+          {
+            id: '29b', number: '29b', type: 'single',
+            question: 'About how many cigarettes do you smoke per day?',
+            options: ['1–5', '6–10', '11–20', 'More than 20', "I don't smoke cigarettes"],
+          },
+          {
+            id: '29c', number: '29c', type: 'multi',
+            question: 'What do you usually smoke?',
+            options: ['Cigarettes', 'Cigars', 'Pipe', 'E-cigarettes / vaping', 'Other'],
+          },
+          {
+            id: '29d', number: '29d', type: 'single',
+            question: 'Do you smoke other tobacco products?',
+            options: ['Yes', 'No'],
+          },
+        ],
       },
       {
         id: 30, number: 30, type: 'text',

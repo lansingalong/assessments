@@ -8,6 +8,7 @@ import CalendarSelector from './survey/CalendarSelector'
 import SubQuestions from './survey/SubQuestions'
 import { sfPro } from './survey/shared'
 import { WellframeModal } from './WellframeModal'
+import ConditionalGroup from './survey/ConditionalGroup'
 
 // Returns 0–100 for how many questions on a page are answered
 function pageProgress(pageQuestions, answers) {
@@ -43,6 +44,8 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
       return <CalendarSelector {...sharedProps} question={questionWithNum} answer={answer} />
     case 'sub':
       return <SubQuestions {...sharedProps} question={questionWithNum} questions={q.subQuestions} answer={answer} />
+    case 'conditional':
+      return <ConditionalGroup q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} />
     default:
       return null
   }
