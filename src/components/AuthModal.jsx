@@ -1,9 +1,15 @@
 import { useState } from 'react'
 import loginBg from '../assets/login-bg.png'
 
-const VALID = { dob: '01/01/1980', email: 'jane.doe@bcbs.com' }
+const VALID = { firstName: 'Jane', lastName: 'Doe', dob: '01/01/1980' }
 
 // ── Validation ───────────────────────────────────────────────────────────────
+function validateName(val, label) {
+  if (!val.trim()) return `${label} is required`
+  if (!/^[A-Za-z\s'\-]+$/.test(val.trim())) return `${label} can only contain letters`
+  return null
+}
+
 function validateDob(val) {
   if (!val.trim()) return 'Date of birth is required'
   if (!/^\d{2}\/\d{2}\/\d{4}$/.test(val)) return 'Enter a valid date (MM/DD/YYYY)'
@@ -12,12 +18,6 @@ function validateDob(val) {
   if (d.getFullYear() !== yyyy || d.getMonth() !== mm - 1 || d.getDate() !== dd)
     return 'Enter a valid calendar date'
   if (d > new Date()) return 'Date of birth cannot be in the future'
-  return null
-}
-
-function validateEmail(val) {
-  if (!val.trim()) return 'Email address is required'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())) return 'Enter a valid email address'
   return null
 }
 
@@ -92,11 +92,12 @@ function WellframeMark() {
 
 // ── Main component ───────────────────────────────────────────────────────────
 export default function AuthModal({ onSuccess, onBack }) {
-  const [dob,      setDob]      = useState('')
-  const [email,    setEmail]    = useState('')
-  const [errors,   setErrors]   = useState({})
+  const [firstName, setFirstName] = useState('')
+  const [lastName,  setLastName]  = useState('')
+  const [dob,       setDob]       = useState('')
+  const [errors,    setErrors]    = useState({})
   const [authError, setAuthError] = useState(null)
-  const [loading,  setLoading]  = useState(false)
+  const [loading,   setLoading]   = useState(false)
 
   const handleDob = (raw) => {
     const digits = raw.replace(/\D/g, '').slice(0, 8)
@@ -108,27 +109,28 @@ export default function AuthModal({ onSuccess, onBack }) {
     if (authError) setAuthError(null)
   }
 
-  const handleEmailChange = (val) => {
-    setEmail(val)
-    if (errors.email) setErrors(e => ({ ...e, email: null }))
+  const clearError = (field) => {
+    if (errors[field]) setErrors(e => ({ ...e, [field]: null }))
     if (authError) setAuthError(null)
   }
 
   const handleSubmit = () => {
     const e = {
-      dob:   validateDob(dob),
-      email: validateEmail(email),
+      firstName: validateName(firstName, 'First name'),
+      lastName:  validateName(lastName,  'Last name'),
+      dob:       validateDob(dob),
     }
     setErrors(e)
     setAuthError(null)
-    if (e.dob || e.email) return
+    if (e.firstName || e.lastName || e.dob) return
 
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
       const match =
-        dob.trim() === VALID.dob &&
-        email.trim().toLowerCase() === VALID.email.toLowerCase()
+        firstName.trim().toLowerCase() === VALID.firstName.toLowerCase() &&
+        lastName.trim().toLowerCase()  === VALID.lastName.toLowerCase()  &&
+        dob.trim()                     === VALID.dob
       if (match) {
         onSuccess()
       } else {
@@ -178,7 +180,7 @@ export default function AuthModal({ onSuccess, onBack }) {
           lineHeight: 1.35,
           margin: '0 0 36px',
         }}>
-          Enter your date of birth<br />and email to get started
+          Enter your name and date<br />of birth to get started
         </h1>
 
         {/* Auth error banner */}
@@ -200,19 +202,25 @@ export default function AuthModal({ onSuccess, onBack }) {
         {/* Fields */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }} onKeyDown={handleKeyDown}>
           <Field
+            label="First name"
+            value={firstName}
+            onChange={v => { setFirstName(v); clearError('firstName') }}
+            error={errors.firstName}
+            placeholder="First name"
+          />
+          <Field
+            label="Last name"
+            value={lastName}
+            onChange={v => { setLastName(v); clearError('lastName') }}
+            error={errors.lastName}
+            placeholder="Last name"
+          />
+          <Field
             label="Date of birth"
             value={dob}
             onChange={handleDob}
             error={errors.dob}
             placeholder="MM/DD/YYYY"
-          />
-          <Field
-            label="Email address"
-            value={email}
-            onChange={handleEmailChange}
-            error={errors.email}
-            placeholder="Email address"
-            type="email"
           />
         </div>
 
