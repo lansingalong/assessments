@@ -114,6 +114,8 @@ export default function AuthModal({ onSuccess, onBack }) {
     if (authError) setAuthError(null)
   }
 
+  const allFilled = firstName.trim().length > 0 && lastName.trim().length > 0 && dob.trim().length > 0
+
   const handleSubmit = () => {
     const e = {
       firstName: validateName(firstName, 'First name'),
@@ -227,20 +229,20 @@ export default function AuthModal({ onSuccess, onBack }) {
         {/* Next button */}
         <button
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={!allFilled || loading}
           style={{
             display: 'block',
             width: '100%',
             height: 52,
             marginTop: 32,
-            background: loading ? '#A8D4DF' : '#8BBFD0',
+            background: !allFilled || loading ? '#C5D8DF' : '#8BBFD0',
             border: 'none',
             borderRadius: 30,
             fontSize: 17,
             fontWeight: 500,
             color: '#fff',
             fontFamily: 'Roboto, system-ui, sans-serif',
-            cursor: loading ? 'not-allowed' : 'pointer',
+            cursor: !allFilled || loading ? 'not-allowed' : 'pointer',
             letterSpacing: '0.01em',
             transition: 'background .2s',
           }}
