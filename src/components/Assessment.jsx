@@ -26,10 +26,11 @@ function scrollToQuestion(id) {
   }
 }
 
-function QuestionBlock({ q, answer, onAnswer, nextId, isReview = false }) {
+function QuestionBlock({ q, answer, onAnswer, nextId, isReview = false, isLastOnLastPage = false }) {
+  const suppressNext = isLastOnLastPage || isReview
   const handleSubmit = (val) => {
     onAnswer(q.id, val)
-    if (!isReview && nextId) {
+    if (!isReview && !isLastOnLastPage && nextId) {
       setTimeout(() => scrollToQuestion(nextId), 300)
     }
   }
@@ -39,13 +40,13 @@ function QuestionBlock({ q, answer, onAnswer, nextId, isReview = false }) {
 
   switch (q.type) {
     case 'single':
-      return <SingleSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
+      return <SingleSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} hideSubmit={suppressNext} onSelect={suppressNext ? (val) => onAnswer(q.id, val) : undefined} />
     case 'multi':
-      return <MultiSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
+      return <MultiSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} hideSubmit={suppressNext} onSelect={suppressNext ? (val) => onAnswer(q.id, val) : undefined} />
     case 'text':
-      return <TextField {...sharedProps} question={questionWithNum} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
+      return <TextField {...sharedProps} question={questionWithNum} answer={answer} hideSubmit={suppressNext} onSelect={suppressNext ? (val) => onAnswer(q.id, val) : undefined} />
     case 'calendar':
-      return <CalendarSelector {...sharedProps} question={questionWithNum} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
+      return <CalendarSelector {...sharedProps} question={questionWithNum} answer={answer} hideSubmit={suppressNext} onSelect={suppressNext ? (val) => onAnswer(q.id, val) : undefined} />
     case 'sub':
       if (isReview) {
         return <SubQuestions {...sharedProps} question={questionWithNum} questions={q.subQuestions} answer={answer} />
@@ -527,16 +528,20 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
 
           {/* Questions */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {page.questions.map((q, idx) => (
-              <div key={q.id} id={`question-${q.id}`}>
-                <QuestionBlock
-                  q={q}
-                  answer={answers[q.id]}
-                  onAnswer={setAnswer}
-                  nextId={page.questions[idx + 1]?.id}
-                />
-              </div>
-            ))}
+            {page.questions.map((q, idx) => {
+              const isLastOnLastPage = currentPage === totalPages && idx === page.questions.length - 1
+              return (
+                <div key={q.id} id={`question-${q.id}`}>
+                  <QuestionBlock
+                    q={q}
+                    answer={answers[q.id]}
+                    onAnswer={setAnswer}
+                    nextId={page.questions[idx + 1]?.id}
+                    isLastOnLastPage={isLastOnLastPage}
+                  />
+                </div>
+              )
+            })}
           </div>
 
           {/* Page navigation */}
@@ -559,7 +564,7 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
           </div>
 
           {/* Bottom spacer for scroll-to-top on last questions */}
-          {currentPage < totalPages && <div style={{ height: '70vh' }} />}
+          <div style={{ height: '100vh' }} />
 
         </div>
       </div>

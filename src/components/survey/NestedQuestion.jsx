@@ -132,6 +132,16 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
 
   const handleTrigger = (opt) => {
     onSubmit?.({ trigger: opt, sub: subAnswers })
+    // If non-expand value selected (no sub-questions needed), auto-scroll to next
+    if (opt !== q.expandValue && nextId) {
+      setTimeout(() => {
+        const el = document.getElementById(`question-${nextId}`)
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 20
+          window.scrollTo({ top, behavior: 'smooth' })
+        }
+      }, 300)
+    }
   }
 
   const handleSub = (id, val) => {
