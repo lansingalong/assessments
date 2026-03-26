@@ -10,6 +10,7 @@ import { sfPro } from './survey/shared'
 import { WellframeModal } from './WellframeModal'
 import ConditionalGroup from './survey/ConditionalGroup'
 import NestedQuestion from './survey/NestedQuestion'
+import completionImg from '../assets/completion-illustration.png'
 
 // Returns 0–100 for how many questions on a page are answered
 function pageProgress(pageQuestions, answers) {
@@ -17,17 +18,19 @@ function pageProgress(pageQuestions, answers) {
   return Math.round((answered / pageQuestions.length) * 100)
 }
 
-function QuestionBlock({ q, answer, onAnswer, nextId }) {
+function scrollToQuestion(id) {
+  const el = document.getElementById(`question-${id}`)
+  if (el) {
+    const top = el.getBoundingClientRect().top + window.scrollY - 20
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+}
+
+function QuestionBlock({ q, answer, onAnswer, nextId, isReview = false }) {
   const handleSubmit = (val) => {
     onAnswer(q.id, val)
-    if (nextId) {
-      setTimeout(() => {
-        const el = document.getElementById(`question-${nextId}`)
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 80
-          window.scrollTo({ top, behavior: 'smooth' })
-        }
-      }, 300)
+    if (!isReview && nextId) {
+      setTimeout(() => scrollToQuestion(nextId), 300)
     }
   }
   const sharedProps = { onSubmit: handleSubmit, required: q.required }
@@ -36,18 +39,27 @@ function QuestionBlock({ q, answer, onAnswer, nextId }) {
 
   switch (q.type) {
     case 'single':
-      return <SingleSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} />
+      return <SingleSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
     case 'multi':
-      return <MultiSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} />
+      return <MultiSelect {...sharedProps} question={questionWithNum} options={q.options} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
     case 'text':
-      return <TextField {...sharedProps} question={questionWithNum} answer={answer} />
+      return <TextField {...sharedProps} question={questionWithNum} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
     case 'calendar':
-      return <CalendarSelector {...sharedProps} question={questionWithNum} answer={answer} />
+      return <CalendarSelector {...sharedProps} question={questionWithNum} answer={answer} hideSubmit={isReview} onSelect={isReview ? (val) => onAnswer(q.id, val) : undefined} />
     case 'sub':
+      if (isReview) {
+        return <SubQuestions {...sharedProps} question={questionWithNum} questions={q.subQuestions} answer={answer} />
+      }
       return <SubQuestions {...sharedProps} question={questionWithNum} questions={q.subQuestions} answer={answer} />
     case 'conditional':
-      return <ConditionalGroup q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} />
+      if (isReview) {
+        return <SingleSelect {...sharedProps} question={questionWithNum} options={q.options} answer={typeof answer === 'object' ? answer?.trigger : answer} hideSubmit={true} onSelect={(val) => onAnswer(q.id, { trigger: val, followUps: {} })} />
+      }
+      return <ConditionalGroup q={q} answer={answer} onSubmit={(val) => { onAnswer(q.id, val); }} nextId={nextId} />
     case 'nested':
+      if (isReview) {
+        return <SingleSelect {...sharedProps} question={questionWithNum} options={q.options} answer={typeof answer === 'object' ? answer?.trigger : answer} hideSubmit={true} onSelect={(val) => onAnswer(q.id, { trigger: val })} />
+      }
       return <NestedQuestion q={q} answer={answer} onSubmit={(val) => onAnswer(q.id, val)} nextId={nextId} />
     default:
       return null
@@ -218,10 +230,11 @@ function SuccessIllustration() {
   )
 }
 
-export default function Assessment({ onBackToEmail }) {
+export default function Assessment({ onBackToEmail, onBackToLogin }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [answers, setAnswers] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [savedClosed, setSavedClosed] = useState(false)
   const [autosaveVisible, setAutosaveVisible] = useState(false)
   const autosaveHide = useRef(null)
   const [activeModal, setActiveModal] = useState(null) // 'saveClose' | 'submit'
@@ -237,19 +250,240 @@ export default function Assessment({ onBackToEmail }) {
   // Clear autosave timer on unmount
   useEffect(() => () => clearTimeout(autosaveHide.current), [])
 
+  const advanceTimer = useRef(null)
+
   const setAnswer = (qId, val) => {
     setAnswers(prev => ({ ...prev, [qId]: val }))
+
+    // Auto-advance to next page if this is the last question on the current page
+    const lastQ = page.questions[page.questions.length - 1]
+    if (lastQ && lastQ.id === qId && currentPage < totalPages) {
+      clearTimeout(advanceTimer.current)
+      advanceTimer.current = setTimeout(() => {
+        setCurrentPage(currentPage + 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 400)
+    }
+
     clearTimeout(autosaveHide.current)
     setAutosaveVisible(true)
     autosaveHide.current = setTimeout(() => setAutosaveVisible(false), 2000)
   }
 
+  // Check for skipped required and optional questions
+  const { skippedRequired, skippedOptional } = useMemo(() => {
+    let req = 0, opt = 0
+    PAGES.forEach(p => p.questions.forEach(q => {
+      if (answers[q.id] === undefined) {
+        if (q.required) req++
+        else opt++
+      }
+    }))
+    return { skippedRequired: req, skippedOptional: opt }
+  }, [answers])
+
+  const [skipModal, setSkipModal] = useState(null) // 'required' | 'optional'
+  const [reviewMode, setReviewMode] = useState(false)
+  const [reviewIdx, setReviewIdx] = useState(0)
+  const [reviewList, setReviewList] = useState([]) // stable list captured on enter
+  const [reviewSelections, setReviewSelections] = useState({}) // local selections before Next
+
+  const enterReviewMode = () => {
+    // Capture the unanswered list at this moment — it won't change as user selects
+    const list = []
+    PAGES.forEach((p, pi) => {
+      p.questions.forEach(q => {
+        if (answers[q.id] === undefined) {
+          list.push({ ...q, pageIdx: pi, pageTitle: p.title, pageNum: pi + 1 })
+        }
+      })
+    })
+    setReviewList(list)
+    setReviewSelections({})
+    setSkipModal(null)
+    setReviewMode(true)
+    setReviewIdx(0)
+    window.scrollTo(0, 0)
+  }
+
+  // Track selection locally — does NOT save to answers yet
+  const handleReviewSelect = (qId, val) => {
+    setReviewSelections(prev => ({ ...prev, [qId]: val }))
+  }
+
+  // Next button: commit the selection to answers, then advance
+  const handleReviewNext = () => {
+    const rq = reviewList[reviewIdx]
+    if (rq && reviewSelections[rq.id] !== undefined) {
+      setAnswers(prev => ({ ...prev, [rq.id]: reviewSelections[rq.id] }))
+    }
+    setReviewIdx(prev => prev + 1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSubmit = () => {
+    // Merge any pending review selections into answers first
+    const merged = { ...answers, ...reviewSelections }
+
+    // Recount skipped with merged answers
+    let reqSkipped = 0, optSkipped = 0
+    PAGES.forEach(p => p.questions.forEach(q => {
+      if (merged[q.id] === undefined) {
+        if (q.required) reqSkipped++
+        else optSkipped++
+      }
+    }))
+
+    if (reqSkipped > 0) {
+      // Commit review selections before showing modal
+      if (Object.keys(reviewSelections).length > 0) {
+        setAnswers(prev => ({ ...prev, ...reviewSelections }))
+        setReviewSelections({})
+      }
+      setReviewMode(false)
+      setSkipModal('required')
+    } else if (optSkipped > 0) {
+      if (Object.keys(reviewSelections).length > 0) {
+        setAnswers(prev => ({ ...prev, ...reviewSelections }))
+        setReviewSelections({})
+      }
+      setReviewMode(false)
+      setSkipModal('optional')
+    } else {
+      // All answered — commit and submit
+      if (Object.keys(reviewSelections).length > 0) {
+        setAnswers(prev => ({ ...prev, ...reviewSelections }))
+      }
+      setReviewMode(false)
+      setSubmitted(true)
+      window.scrollTo(0, 0)
+    }
+  }
+
   const goNext = () => { if (currentPage < totalPages) { setCurrentPage(p => p + 1); window.scrollTo(0, 0) } }
   const goPrev = () => { if (currentPage > 1) { setCurrentPage(p => p - 1); window.scrollTo(0, 0) } }
 
+  // When review finishes all questions, auto-submit
+  useEffect(() => {
+    if (reviewMode && reviewList.length > 0 && reviewIdx >= reviewList.length) {
+      setReviewMode(false)
+      setSubmitted(true)
+      window.scrollTo(0, 0)
+    }
+  }, [reviewMode, reviewIdx, reviewList.length])
+
+  if (reviewMode && reviewIdx < reviewList.length) {
+
+    const rq = reviewList[reviewIdx]
+
+    // Compute page progress for the header (uses live answers + current selections)
+    const mergedAnswers = { ...answers, ...reviewSelections }
+    const reviewPageProgress = PAGES.map(p => pageProgress(p.questions, mergedAnswers))
+
+    return (
+      <div className="min-h-screen bg-[#F2F8FA] flex flex-col">
+        <AssessmentHeader
+          currentPage={rq.pageNum}
+          totalPages={totalPages}
+          pageProgress={reviewPageProgress}
+          onSaveAndClose={() => { setSavedClosed(true); setReviewMode(false); window.scrollTo(0, 0) }}
+          onSubmit={() => { setReviewMode(false); handleSubmit() }}
+          submitDisabled={false}
+          autosaveVisible={autosaveVisible}
+          onPageSelect={(pg) => {
+            const idx = reviewList.findIndex(uq => uq.pageNum === pg)
+            if (idx >= 0) { setReviewIdx(idx); window.scrollTo(0, 0) }
+          }}
+        />
+
+        {/* Current question */}
+        <div className="flex-1 py-8 px-4 flex flex-col items-center">
+          <div className="w-full max-w-lg">
+            <QuestionBlock
+              key={`review-${rq.id}-${reviewIdx}`}
+              q={rq}
+              answer={reviewSelections[rq.id]}
+              onAnswer={handleReviewSelect}
+              nextId={null}
+              isReview={true}
+            />
+
+            {/* Next button */}
+            <button
+              onClick={handleReviewNext}
+              disabled={reviewSelections[rq.id] === undefined}
+              style={{
+                display: 'block',
+                width: '100%',
+                height: 52,
+                marginTop: 24,
+                background: reviewSelections[rq.id] !== undefined ? '#0E98BE' : '#86CBDF',
+                border: 'none',
+                borderRadius: 30,
+                fontSize: 17,
+                fontWeight: 500,
+                color: '#fff',
+                fontFamily: sfPro,
+                cursor: reviewSelections[rq.id] !== undefined ? 'pointer' : 'not-allowed',
+                letterSpacing: '-0.32px',
+              }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (savedClosed) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 24, paddingLeft: 24, paddingRight: 24 }}>
+        <button
+          onClick={() => { setSavedClosed(false); window.scrollTo(0, 0) }}
+          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6, fontFamily: sfPro, fontSize: 14, color: '#78868E' }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#78868E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Back
+        </button>
+        <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#73BE5E', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexShrink: 0 }}>
+          <svg width="26" height="20" viewBox="0 0 26 20" fill="none">
+            <path d="M2 10L9 17L24 2" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <h1 style={{ fontFamily: sfPro, fontSize: 26, fontWeight: 700, color: '#0E98BE', textAlign: 'center', margin: '0 0 16px', maxWidth: 440, lineHeight: 1.3 }}>
+          Your assessment has been saved<br />and closed.
+        </h1>
+        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#4E5961', textAlign: 'center', margin: '0 0 32px', maxWidth: 360, lineHeight: 1.7 }}>
+          Your assessment is not yet complete, you can<br />return to finish it at any time.
+        </p>
+        <button
+          onClick={onBackToLogin}
+          style={{
+            fontFamily: sfPro, fontSize: 15, fontWeight: 500,
+            color: '#4E5961', background: '#F0F0F0',
+            border: 'none', borderRadius: 30,
+            height: 44, padding: '0 32px', cursor: 'pointer',
+          }}
+        >
+          Back Home
+        </button>
+      </div>
+    )
+  }
+
   if (submitted) {
     return (
-      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 64, paddingBottom: 40, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 24, paddingBottom: 40, paddingLeft: 24, paddingRight: 24 }}>
+
+        {/* Back arrow */}
+        <button
+          onClick={() => { setSubmitted(false); setCurrentPage(totalPages); window.scrollTo(0, 0) }}
+          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6, fontFamily: sfPro, fontSize: 14, color: '#78868E' }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#78868E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Back
+        </button>
 
         {/* Green checkmark */}
         <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#73BE5E', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexShrink: 0 }}>
@@ -269,7 +503,7 @@ export default function Assessment({ onBackToEmail }) {
         </p>
 
         {/* Illustration */}
-        <SuccessIllustration />
+        <img src={completionImg} alt="Assessment complete" style={{ width: '100%', maxWidth: 720, marginTop: 40 }} />
       </div>
     )
   }
@@ -280,8 +514,8 @@ export default function Assessment({ onBackToEmail }) {
         currentPage={currentPage}
         totalPages={totalPages}
         pageProgress={allPageProgress}
-        onSaveAndClose={() => setActiveModal('saveClose')}
-        onSubmit={() => setActiveModal('submit')}
+        onSaveAndClose={() => { setSavedClosed(true); window.scrollTo(0, 0) }}
+        onSubmit={() => handleSubmit()}
         submitDisabled={false}
         autosaveVisible={autosaveVisible}
         onPageSelect={(page) => { setCurrentPage(page); window.scrollTo(0, 0) }}
@@ -306,36 +540,10 @@ export default function Assessment({ onBackToEmail }) {
           </div>
 
           {/* Page navigation */}
-          <div style={{ display: 'flex', gap: 12, marginTop: 32, marginBottom: 48 }}>
-            {currentPage > 1 && (
+          <div style={{ display: 'flex', gap: 12, marginTop: 24, marginBottom: 16 }}>
+            {currentPage === totalPages && (
               <button
-                onClick={goPrev}
-                style={{
-                  fontFamily: sfPro, fontSize: 16, fontWeight: 500,
-                  color: '#0E98BE', background: 'transparent',
-                  border: '1px solid #0E98BE', borderRadius: 30,
-                  height: 51, flex: 1, cursor: 'pointer', letterSpacing: '-0.32px',
-                }}
-              >
-                ← Previous
-              </button>
-            )}
-            {currentPage < totalPages ? (
-              <button
-                onClick={goNext}
-                style={{
-                  fontFamily: sfPro, fontSize: 16, fontWeight: 500,
-                  color: '#FFFFFF', background: '#0E98BE',
-                  border: 'none', borderRadius: 30,
-                  height: 51, flex: 1, cursor: 'pointer', letterSpacing: '-0.32px',
-                  opacity: 1,
-                }}
-              >
-                Next →
-              </button>
-            ) : (
-              <button
-                onClick={() => setActiveModal('submit')}
+                onClick={() => handleSubmit()}
                 style={{
                   fontFamily: sfPro, fontSize: 16, fontWeight: 500,
                   color: '#FFFFFF', background: '#0E98BE',
@@ -350,29 +558,59 @@ export default function Assessment({ onBackToEmail }) {
             )}
           </div>
 
+          {/* Bottom spacer for scroll-to-top on last questions */}
+          {currentPage < totalPages && <div style={{ height: '70vh' }} />}
+
         </div>
       </div>
-      <WellframeModal
-        visible={activeModal === 'saveClose'}
-        title="Save and close?"
-        body="Your progress has been saved. You can return to complete the assessment at any time."
-        primaryLabel="Keep going"
-        onPrimaryPress={() => setActiveModal(null)}
-        secondaryLabel="Close assessment"
-        onSecondaryPress={() => { setActiveModal(null); window.history.back() }}
-        onClose={() => setActiveModal(null)}
-      />
 
-      <WellframeModal
-        visible={activeModal === 'submit'}
-        title="Submit assessment?"
-        body="Once submitted, you won't be able to make changes to your answers."
-        primaryLabel="Submit"
-        onPrimaryPress={() => { setActiveModal(null); setSubmitted(true) }}
-        secondaryLabel="Go back"
-        onSecondaryPress={() => setActiveModal(null)}
-        onClose={() => setActiveModal(null)}
-      />
+      {/* Skipped Optional Questions Modal */}
+      {skipModal === 'optional' && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 420, padding: '28px 28px 32px', position: 'relative', boxShadow: '0 -4px 30px rgba(0,0,0,0.15)' }}>
+            <button onClick={() => setSkipModal(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="#999" strokeWidth="2" strokeLinecap="round"/></svg>
+            </button>
+            <h2 style={{ fontFamily: sfPro, fontSize: 24, fontWeight: 400, color: '#282F35', margin: '0 0 12px', lineHeight: 1.3 }}>You Have Skipped Questions</h2>
+            <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#78868E', margin: '0 0 28px', lineHeight: 1.6 }}>
+              Answering these questions helps us match care to you. Please complete these questions before submitting your assessment.
+            </p>
+            <button
+              onClick={enterReviewMode}
+              style={{ display: 'block', width: '100%', height: 52, background: '#0E98BE', color: '#fff', border: 'none', borderRadius: 30, fontSize: 17, fontWeight: 500, fontFamily: sfPro, cursor: 'pointer', marginBottom: 16 }}
+            >
+              Finish Questions
+            </button>
+            <button
+              onClick={() => { setSkipModal(null); setSubmitted(true); window.scrollTo(0, 0) }}
+              style={{ display: 'block', width: '100%', background: 'none', border: 'none', fontSize: 16, fontWeight: 500, fontFamily: sfPro, color: '#0E98BE', cursor: 'pointer', padding: 8 }}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Skipped Required Questions Modal */}
+      {skipModal === 'required' && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 420, padding: '28px 28px 32px', position: 'relative', boxShadow: '0 -4px 30px rgba(0,0,0,0.15)' }}>
+            <button onClick={() => setSkipModal(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="#999" strokeWidth="2" strokeLinecap="round"/></svg>
+            </button>
+            <h2 style={{ fontFamily: sfPro, fontSize: 24, fontWeight: 400, color: '#282F35', margin: '0 0 12px', lineHeight: 1.3 }}>You Skipped Required Questions</h2>
+            <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#78868E', margin: '0 0 28px', lineHeight: 1.6 }}>
+              You must complete these questions before submitting your assessment.
+            </p>
+            <button
+              onClick={enterReviewMode}
+              style={{ display: 'block', width: '100%', height: 52, background: '#0E98BE', color: '#fff', border: 'none', borderRadius: 30, fontSize: 17, fontWeight: 500, fontFamily: sfPro, cursor: 'pointer' }}
+            >
+              Finish Questions
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

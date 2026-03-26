@@ -1,136 +1,92 @@
 import { useState } from 'react'
 import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
-const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+export default function CalendarSelector({ question, onSubmit, answer, required, hideSubmit = false, onSelect }) {
+  const [value, setValue] = useState(answer || '')
+  const [error, setError] = useState(null)
 
-function daysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate()
-}
-function firstDayOfMonth(year, month) {
-  return new Date(year, month, 1).getDay()
-}
-
-export default function CalendarSelector({ question, onSubmit, answer, required }) {
-  const today = new Date()
-  const [viewYear, setViewYear] = useState(() => {
-    if (!answer) return today.getFullYear()
-    const d = new Date(answer); return isNaN(d) ? today.getFullYear() : d.getFullYear()
-  })
-  const [viewMonth, setViewMonth] = useState(() => {
-    if (!answer) return today.getMonth()
-    const d = new Date(answer); return isNaN(d) ? today.getMonth() : d.getMonth()
-  })
-  const [selected, setSelected] = useState(() => {
-    if (!answer) return null
-    const d = new Date(answer); return isNaN(d) ? null : { day: d.getDate(), month: d.getMonth(), year: d.getFullYear() }
-  })
-
-  const prevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) }
-    else setViewMonth(m => m - 1)
-  }
-  const nextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1) }
-    else setViewMonth(m => m + 1)
+  const handleChange = (raw) => {
+    const digits = raw.replace(/\D/g, '').slice(0, 8)
+    let formatted = digits
+    if (digits.length > 4) formatted = digits.slice(0, 2) + '/' + digits.slice(2, 4) + '/' + digits.slice(4)
+    else if (digits.length > 2) formatted = digits.slice(0, 2) + '/' + digits.slice(2)
+    setValue(formatted)
+    if (error) setError(null)
+    // In review mode, track valid dates via onSelect
+    if (hideSubmit && /^\d{2}\/\d{2}\/\d{4}$/.test(formatted)) {
+      const [mm, dd, yyyy] = formatted.split('/').map(Number)
+      const d = new Date(yyyy, mm - 1, dd)
+      if (d.getFullYear() === yyyy && d.getMonth() === mm - 1 && d.getDate() === dd && d <= new Date()) {
+        onSelect?.(`${yyyy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`)
+      }
+    }
   }
 
-  const totalDays = daysInMonth(viewYear, viewMonth)
-  const startDay = firstDayOfMonth(viewYear, viewMonth)
-  const cells = []
-  for (let i = 0; i < startDay; i++) cells.push(null)
-  for (let d = 1; d <= totalDays; d++) cells.push(d)
-
-  const isToday = (d) =>
-    d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear()
-
-  const isSelected = (d) =>
-    selected && d === selected.day && viewMonth === selected.month && viewYear === selected.year
-
-  const selectDay = (d) => {
-    if (!d) return
-    setSelected({ day: d, month: viewMonth, year: viewYear })
+  const validate = () => {
+    if (!value.trim()) { setError('Date is required'); return false }
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) { setError('Enter a valid date (MM/DD/YYYY)'); return false }
+    const [mm, dd, yyyy] = value.split('/').map(Number)
+    const d = new Date(yyyy, mm - 1, dd)
+    if (d.getFullYear() !== yyyy || d.getMonth() !== mm - 1 || d.getDate() !== dd) {
+      setError('Enter a valid calendar date'); return false
+    }
+    if (d > new Date()) { setError('Date cannot be in the future'); return false }
+    return true
   }
 
-  const selectedLabel = selected
-    ? `${MONTHS[selected.month]} ${selected.day}, ${selected.year}`
-    : null
+  const handleSubmit = () => {
+    if (validate()) {
+      const [mm, dd, yyyy] = value.split('/')
+      onSubmit?.(`${yyyy}-${mm}-${dd}`)
+    }
+  }
 
-  // Store as ISO 8601 for cross-browser safety; display locale label to user
-  const selectedISO = selected
-    ? `${selected.year}-${String(selected.month + 1).padStart(2, '0')}-${String(selected.day).padStart(2, '0')}`
-    : null
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSubmit()
+  }
 
   return (
     <div style={cardStyle}>
       <QuestionLabel text={question} required={required} />
 
-      {/* Month navigation */}
-      <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} style={{ color: '#0080A3', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}>
-          <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
-            <path d="M7 1L1 7L7 13" stroke="#0080A3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+      <input
+        type="text"
+        value={value}
+        onChange={e => handleChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="MM/DD/YYYY"
+        style={{
+          display: 'block',
+          width: '100%',
+          height: 48,
+          padding: '0 14px',
+          fontSize: 16,
+          color: '#282F35',
+          fontFamily: sfPro,
+          background: '#fff',
+          border: `1px solid ${error ? '#923133' : '#B8CDD4'}`,
+          borderRadius: 4,
+          outline: 'none',
+          boxSizing: 'border-box',
+          marginBottom: 8,
+        }}
+      />
+
+      {error && (
+        <p style={{ margin: '0 0 8px', fontSize: 12, color: '#923133', fontFamily: sfPro }}>
+          {error}
+        </p>
+      )}
+
+      {!hideSubmit && (
+        <button
+          disabled={!value.trim()}
+          style={ctaStyle(!!value.trim())}
+          onClick={handleSubmit}
+        >
+          Next
         </button>
-        <span style={{ fontFamily: sfPro, fontSize: 16, fontWeight: 500, color: '#282F35', letterSpacing: '-0.32px' }}>
-          {MONTHS[viewMonth]} {viewYear}
-        </span>
-        <button onClick={nextMonth} style={{ color: '#0080A3', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}>
-          <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
-            <path d="M1 1L7 7L1 13" stroke="#0080A3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-      </div>
-
-      {/* Day headers */}
-      <div className="grid grid-cols-7 mb-1">
-        {DAYS.map(d => (
-          <div key={d} style={{ fontFamily: sfPro, fontSize: 13, color: '#78868E', textAlign: 'center', paddingBottom: 6 }}>
-            {d}
-          </div>
-        ))}
-      </div>
-
-      {/* Day cells */}
-      <div className="grid grid-cols-7 gap-y-1 mb-5">
-        {cells.map((d, i) => {
-          const sel = isSelected(d)
-          const tod = isToday(d)
-          return (
-            <button
-              key={i}
-              onClick={() => selectDay(d)}
-              disabled={!d}
-              style={{
-                fontFamily: sfPro,
-                fontSize: 15,
-                fontWeight: sel ? 500 : 400,
-                color: sel ? '#FFFFFF' : tod ? '#0E98BE' : d ? '#282F35' : 'transparent',
-                background: sel ? '#0E98BE' : 'transparent',
-                border: tod && !sel ? '1.5px solid #0E98BE' : 'none',
-                borderRadius: '50%',
-                width: 36,
-                height: 36,
-                margin: '0 auto',
-                cursor: d ? 'pointer' : 'default',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {d || ''}
-            </button>
-          )
-        })}
-      </div>
-
-      <button
-        disabled={!selected}
-        style={ctaStyle(!!selected)}
-        onClick={() => selected && onSubmit?.(selectedISO)}
-      >
-        {selected ? `Confirm — ${selectedLabel}` : 'Select a date'}
-      </button>
+      )}
     </div>
   )
 }

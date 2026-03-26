@@ -153,23 +153,6 @@ export default function AssessmentHeader({
     >
       {/* LEFT — back to email + autosave + book icon + page label */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12 }}>
-        {onBackToEmail && (
-          <button
-            onClick={onBackToEmail}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: 'none', border: 'none', cursor: 'pointer',
-              fontFamily: sfPro, fontSize: 13, fontWeight: 500,
-              color: '#0E98BE', letterSpacing: '-0.1px', padding: 0,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Back to Email
-          </button>
-        )}
         <AutosaveIndicator visible={autosaveVisible} />
         <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 1.5C1 1.5 4 0.5 9 2.5C14 0.5 17 1.5 17 1.5V14.5C17 14.5 14 13.5 9 15.5C4 13.5 1 14.5 1 14.5V1.5Z" stroke="#4E5961" strokeWidth="1.4" strokeLinejoin="round"/>

@@ -19,12 +19,16 @@ function RadioOption({ label, selected, onClick }) {
   )
 }
 
-export default function SingleSelect({ question, options = [], onSubmit, answer = null, required }) {
+export default function SingleSelect({ question, options = [], onSubmit, answer = null, required, hideSubmit = false, onSelect }) {
   const [selected, setSelected] = useState(answer)
 
   const handleSelect = (opt) => {
     setSelected(opt)
-    onSubmit?.(opt)
+    if (hideSubmit) {
+      onSelect?.(opt)
+    } else {
+      onSubmit?.(opt)
+    }
   }
 
   return (

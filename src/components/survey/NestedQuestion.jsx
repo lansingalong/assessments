@@ -142,7 +142,7 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
     if (!canProceed || !nextId) return
     const el = document.getElementById(`question-${nextId}`)
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 80
+      const top = el.getBoundingClientRect().top + window.scrollY - 20
       window.scrollTo({ top, behavior: 'smooth' })
     }
   }

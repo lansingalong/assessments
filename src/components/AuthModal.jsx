@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import loginBg from '../assets/login-bg.png'
+import wellframeLogo from '../assets/wellframe-logo.png'
 
-const VALID = { firstName: 'Jane', lastName: 'Doe', dob: '01/01/1980' }
+
 
 // ── Validation ───────────────────────────────────────────────────────────────
 function validateName(val, label) {
@@ -129,15 +130,7 @@ export default function AuthModal({ onSuccess, onBack }) {
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
-      const match =
-        firstName.trim().toLowerCase() === VALID.firstName.toLowerCase() &&
-        lastName.trim().toLowerCase()  === VALID.lastName.toLowerCase()  &&
-        dob.trim()                     === VALID.dob
-      if (match) {
-        onSuccess()
-      } else {
-        setAuthError('The information you entered doesn\'t match our records.')
-      }
+      onSuccess()
     }, 800)
   }
 
@@ -258,7 +251,7 @@ export default function AuthModal({ onSuccess, onBack }) {
           gap: 7,
           marginTop: 20,
         }}>
-          <WellframeMark />
+          <img src={wellframeLogo} alt="Wellframe" style={{ width: 20, height: 20 }} />
           <span style={{
             fontFamily: 'Roboto, system-ui, sans-serif',
             fontSize: 13,

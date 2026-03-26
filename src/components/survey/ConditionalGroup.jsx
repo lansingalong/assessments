@@ -82,28 +82,42 @@ function FollowUpCard({ fq, answer, onAnswer }) {
 
 // ── Main component ─────────────────────────────────────────────────────────
 
-export default function ConditionalGroup({ q, answer = {}, onSubmit }) {
+export default function ConditionalGroup({ q, answer = {}, onSubmit, nextId }) {
   const triggerAnswer = answer.trigger ?? null
   const followUpAnswers = answer.followUps ?? {}
   const collapsed = triggerAnswer === q.skipValue
 
   const firstFollowUpRef = useRef(null)
 
-  const handleTrigger = (opt) => {
-    onSubmit?.({ trigger: opt, followUps: followUpAnswers })
-    if (opt !== q.skipValue && firstFollowUpRef.current) {
-      setTimeout(() => {
-        const el = firstFollowUpRef.current
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 80
-          window.scrollTo({ top, behavior: 'smooth' })
-        }
-      }, 350)
+  const scrollToEl = (el) => {
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 20
+      window.scrollTo({ top, behavior: 'smooth' })
     }
   }
 
-  const handleFollowUp = (id, val) => {
+  const scrollToNextQuestion = () => {
+    if (nextId) {
+      const el = document.getElementById(`question-${nextId}`)
+      if (el) scrollToEl(el)
+    }
+  }
+
+  const handleTrigger = (opt) => {
+    onSubmit?.({ trigger: opt, followUps: followUpAnswers })
+    if (opt === q.skipValue) {
+      // Skip value selected — scroll to next question
+      setTimeout(scrollToNextQuestion, 350)
+    } else if (firstFollowUpRef.current) {
+      setTimeout(() => scrollToEl(firstFollowUpRef.current), 350)
+    }
+  }
+
+  const handleFollowUp = (id, val, isLast) => {
     onSubmit?.({ trigger: triggerAnswer, followUps: { ...followUpAnswers, [id]: val } })
+    if (isLast) {
+      setTimeout(scrollToNextQuestion, 350)
+    }
   }
 
   return (
@@ -124,26 +138,44 @@ export default function ConditionalGroup({ q, answer = {}, onSubmit }) {
         </div>
       </div>
 
-      {/* Follow-up questions — collapse when skipValue is selected */}
+      {/* Follow-up questions — disabled & collapsed when skipValue is selected */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: 16,
-          overflow: 'hidden',
-          maxHeight: collapsed ? 0 : 9999,
-          opacity: collapsed ? 0 : 1,
+          transition: 'opacity 0.3s ease',
+          opacity: collapsed ? 0.45 : 1,
           pointerEvents: collapsed ? 'none' : 'auto',
-          transition: 'max-height 0.45s ease, opacity 0.3s ease',
         }}
       >
         {q.followUps.map((fq, idx) => (
           <div key={fq.id} ref={idx === 0 ? firstFollowUpRef : null}>
-            <FollowUpCard
-              fq={fq}
-              answer={followUpAnswers[fq.id]}
-              onAnswer={(val) => handleFollowUp(fq.id, val)}
-            />
+            {collapsed ? (
+              <div style={{
+                ...cardStyle,
+                background: '#F5F7F8',
+                border: '1px solid #E0E4E7',
+                cursor: 'not-allowed',
+                padding: '14px 20px',
+              }}>
+                <div style={{
+                  fontFamily: 'Roboto, system-ui, sans-serif',
+                  fontSize: 16,
+                  fontWeight: 500,
+                  color: '#9AA5AD',
+                  lineHeight: 1.4,
+                }}>
+                  {fq.number}. {fq.question}
+                </div>
+              </div>
+            ) : (
+              <FollowUpCard
+                fq={fq}
+                answer={followUpAnswers[fq.id]}
+                onAnswer={(val) => handleFollowUp(fq.id, val, idx === q.followUps.length - 1)}
+              />
+            )}
           </div>
         ))}
       </div>

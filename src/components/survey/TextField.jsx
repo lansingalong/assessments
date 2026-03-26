@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
-export default function TextField({ question, placeholder = 'Type your answer here…', multiline = true, onSubmit, answer = '', required }) {
+export default function TextField({ question, placeholder = 'Type your answer here…', multiline = true, onSubmit, answer = '', required, hideSubmit = false, onSelect }) {
   const [value, setValue] = useState(answer)
   const filled = value.trim().length > 0
+
+  const handleChange = (e) => {
+    setValue(e.target.value)
+    if (hideSubmit) onSelect?.(e.target.value.trim() || undefined)
+  }
 
   const inputStyle = {
     fontFamily: sfPro,
@@ -26,7 +31,7 @@ export default function TextField({ question, placeholder = 'Type your answer he
         <textarea
           rows={4}
           value={value}
-          onChange={e => setValue(e.target.value)}
+          onChange={handleChange}
           placeholder={placeholder}
           style={{ ...inputStyle, marginBottom: 20 }}
           onFocus={e => (e.target.style.borderColor = '#0080A3')}
@@ -36,20 +41,22 @@ export default function TextField({ question, placeholder = 'Type your answer he
         <input
           type="text"
           value={value}
-          onChange={e => setValue(e.target.value)}
+          onChange={handleChange}
           placeholder={placeholder}
           style={{ ...inputStyle, height: 51, marginBottom: 20 }}
           onFocus={e => (e.target.style.borderColor = '#0080A3')}
           onBlur={e => (e.target.style.borderColor = '#E8EDF0')}
         />
       )}
-      <button
-        disabled={!filled}
-        style={ctaStyle(filled)}
-        onClick={() => filled && onSubmit?.(value.trim())}
-      >
-        Next
-      </button>
+      {!hideSubmit && (
+        <button
+          disabled={!filled}
+          style={ctaStyle(filled)}
+          onClick={() => filled && onSubmit?.(value.trim())}
+        >
+          Next
+        </button>
+      )}
     </div>
   )
 }
