@@ -125,8 +125,8 @@ export default function GmailInbox({ onOpenAssessment }) {
               {/* Sender info */}
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: 600, fontSize: 14, color: '#202124' }}>BlueCrossBlueShield</span>
-                  <span style={{ fontSize: 13, color: '#5f6368' }}>&lt;bluecrossblushield@bcbs.com&gt;</span>
+                  <span style={{ fontWeight: 600, fontSize: 14, color: '#202124' }}>YourHealthPlan</span>
+                  <span style={{ fontSize: 13, color: '#5f6368' }}>&lt;care@yourhealthplan.com&gt;</span>
                   <span style={{ fontSize: 13, color: '#1a73e8', cursor: 'pointer', textDecoration: 'underline' }}>Unsubscribe</span>
                   <span style={{ marginLeft: 'auto', fontSize: 13, color: '#5f6368', whiteSpace: 'nowrap' }}>9:14 AM (8 hours ago)</span>
                   <button style={iconBtn}><StarOutlineIcon /></button>
@@ -168,11 +168,11 @@ export default function GmailInbox({ onOpenAssessment }) {
 
               <p style={{ margin: '0 0 16px' }}>Thank you!</p>
 
-              {/* BCBS Logo */}
+              {/* Health Plan Logo */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '16px 0 24px' }}>
-                <BcbsLogo />
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#003087', lineHeight: 1.2 }}>
-                  BlueCross<br />BlueShield
+                <HealthPlanLogo />
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#1a6b4a', lineHeight: 1.2 }}>
+                  Your<br />HealthPlan
                 </div>
               </div>
             </div>
@@ -278,13 +278,15 @@ function GmailLogo() {
   )
 }
 
-// ── BCBS Logo ──
-function BcbsLogo() {
+// ── Health Plan Logo ──
+function HealthPlanLogo() {
   return (
     <svg width="48" height="48" viewBox="0 0 48 48">
-      <rect width="48" height="48" rx="6" fill="#003087"/>
-      <path d="M14 8h20a6 6 0 0 1 6 6v8c0 10-8 18-16 22C16 40 8 32 8 22v-8a6 6 0 0 1 6-6z" fill="#fff" opacity="0.15"/>
-      <path d="M24 12v24M12 24h24" stroke="#fff" strokeWidth="4" strokeLinecap="round"/>
+      <rect width="48" height="48" rx="10" fill="#1a6b4a"/>
+      <path d="M24 10c-3.5 0-6.5 2-8 5-1.5-1-3.5-1-5 .5s-1.5 3.5-.5 5c-3 1.5-4 5-2.5 8s5 4 8 2.5c1.5 3 5 4 8 2.5s4-5 2.5-8c3-1.5 4-5 2.5-8s-5-4-8-2.5c-1.5-3-5-5-7-5z" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.2"/>
+      <path d="M24 15l2.5 5 5.5.8-4 3.9.9 5.3-4.9-2.6-4.9 2.6.9-5.3-4-3.9 5.5-.8z" fill="#fff"/>
+      <path d="M17 34h14" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+      <path d="M19 37h10" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.4"/>
     </svg>
   )
 }
