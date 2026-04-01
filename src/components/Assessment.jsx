@@ -353,6 +353,49 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
     [answers]
   )
 
+  // Demo fill / clear
+  useEffect(() => {
+    const DEMO = {
+      1:  'Good',
+      2:  'About the same',
+      3:  { trigger: 'No', followUps: {} },
+      5:  'None',
+      6:  'Yes',
+      7:  ['None of the above'],
+      8:  { trigger: 'None', followUps: {} },
+      10: 'None.',
+      11: '11/15/2025',
+      12: 'No, nothing at this time',
+      13: { trigger: 'No', sub: {} },
+      14: '3–4 days',
+      15: 'Mostly healthy with occasional processed foods',
+      16: '7–8 hours',
+      17: { trigger: 'Never used', followUps: {} },
+      19: 'Never',
+      20: 'No falls and no balance concerns',
+      21: ['I do not need help with any of these'],
+      22: 'Yes',
+      23: 'No additional concerns.',
+      24: 'No, and I do not feel I need to',
+      25: { trigger: 'Not at all', followUps: {} },
+      27: 'Not at all',
+      28: 'Hardly ever',
+      29: 'Yes',
+      30: 'Never',
+      31: 'No',
+      32: ['No specific goals at this time'],
+      33: 'No additional notes.',
+    }
+    const handleFill = () => setAnswers(DEMO)
+    const handleClear = () => setAnswers({})
+    window.addEventListener('demoFillAll', handleFill)
+    window.addEventListener('demoClearAll', handleClear)
+    return () => {
+      window.removeEventListener('demoFillAll', handleFill)
+      window.removeEventListener('demoClearAll', handleClear)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Clear autosave timer on unmount
   useEffect(() => () => clearTimeout(autosaveHide.current), [])
 

@@ -52,6 +52,20 @@ export default function RemoteControl({ onGoEmail, onGoAssessment, onGoLogin, on
           Login
         </button>
 
+        <button onClick={() => { window.dispatchEvent(new CustomEvent('demoFillAll')); setOpen(false) }} style={itemStyle}>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 11l3 3L22 4"/><rect x="3" y="3" width="18" height="18" rx="2"/>
+          </svg>
+          Fill All Questions
+        </button>
+
+        <button onClick={() => { window.dispatchEvent(new CustomEvent('demoClearAll')); setOpen(false) }} style={itemStyle}>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4l16 16M4 20L20 4"/>
+          </svg>
+          Clear All Questions
+        </button>
+
         <button onClick={() => { onReset(); setOpen(false) }} style={{...itemStyle, borderBottom: 'none', color: '#f87171'}}>
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
