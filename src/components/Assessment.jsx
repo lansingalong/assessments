@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react'
+import { useState, useRef, useMemo, useEffect, useId } from 'react'
 import { PAGES } from '../data/questions'
 import AssessmentHeader from './AssessmentHeader'
 import SingleSelect from './survey/SingleSelect'
@@ -231,6 +231,91 @@ function SuccessIllustration() {
   )
 }
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+function SkipModal({ type, open, onClose, onReview, onSubmit }) {
+  const titleId = useId()
+  const modalRef = useRef(null)
+  const triggerRef = useRef(null)
+  const isOptional = type === 'optional'
+
+  useEffect(() => {
+    if (open) {
+      triggerRef.current = document.activeElement
+      requestAnimationFrame(() => {
+        const focusable = modalRef.current?.querySelectorAll(FOCUSABLE)
+        focusable?.[0]?.focus()
+      })
+    } else {
+      triggerRef.current?.focus()
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const focusable = Array.from(modalRef.current?.querySelectorAll(FOCUSABLE) ?? [])
+      if (!focusable.length) return
+      const first = focusable[0], last = focusable[focusable.length - 1]
+      if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus() } }
+      else { if (document.activeElement === last) { e.preventDefault(); first.focus() } }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [open, onClose])
+
+  if (!open) return null
+
+  return (
+    <div
+      aria-hidden="true"
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, background: 'var(--color-overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }}
+    >
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        onClick={e => e.stopPropagation()}
+        style={{ background: 'var(--color-white)', borderRadius: 16, width: '100%', maxWidth: 420, padding: '28px 28px 32px', position: 'relative', boxShadow: '0 -4px 30px rgba(0,0,0,0.15)' }}
+      >
+        <button
+          aria-label="Close dialog"
+          onClick={onClose}
+          style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', cursor: 'pointer', padding: 12, minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="var(--color-text-sub)" strokeWidth="2" strokeLinecap="round"/></svg>
+        </button>
+        <h2 id={titleId} style={{ fontFamily: sfPro, fontSize: 24, fontWeight: 400, color: 'var(--color-text)', margin: '0 0 12px', lineHeight: 1.3 }}>
+          {isOptional ? 'You Have Skipped Questions' : 'You Skipped Required Questions'}
+        </h2>
+        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: 'var(--color-text-sub)', margin: '0 0 28px', lineHeight: 1.6 }}>
+          {isOptional
+            ? 'Answering these questions helps us match care to you. Please complete these questions before submitting your assessment.'
+            : 'You must complete these questions before submitting your assessment.'}
+        </p>
+        <button
+          onClick={onReview}
+          style={{ display: 'block', width: '100%', height: 52, background: 'var(--color-brand-accent)', color: 'var(--color-white)', border: 'none', borderRadius: 30, fontSize: 17, fontWeight: 500, fontFamily: sfPro, cursor: 'pointer', marginBottom: isOptional ? 16 : 0 }}
+        >
+          Finish Questions
+        </button>
+        {isOptional && onSubmit && (
+          <button
+            onClick={onSubmit}
+            style={{ display: 'block', width: '100%', background: 'none', border: 'none', fontSize: 16, fontWeight: 500, fontFamily: sfPro, color: 'var(--color-brand-accent)', cursor: 'pointer', padding: 8 }}
+          >
+            Submit
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Assessment({ onBackToEmail, onBackToLogin }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [answers, setAnswers] = useState({})
@@ -413,17 +498,18 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
             <button
               onClick={handleReviewNext}
               disabled={reviewSelections[rq.id] === undefined}
+              aria-disabled={reviewSelections[rq.id] === undefined}
               style={{
                 display: 'block',
                 width: '100%',
                 height: 52,
                 marginTop: 24,
-                background: reviewSelections[rq.id] !== undefined ? '#0E98BE' : '#86CBDF',
+                background: reviewSelections[rq.id] !== undefined ? 'var(--color-brand-accent)' : 'var(--color-brand-disabled)',
                 border: 'none',
                 borderRadius: 30,
                 fontSize: 17,
                 fontWeight: 500,
-                color: '#fff',
+                color: 'var(--color-white)',
                 fontFamily: sfPro,
                 cursor: reviewSelections[rq.id] !== undefined ? 'pointer' : 'not-allowed',
                 letterSpacing: '-0.32px',
@@ -442,27 +528,27 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
       <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 24, paddingLeft: 24, paddingRight: 24 }}>
         <button
           onClick={() => { setSavedClosed(false); window.scrollTo(0, 0) }}
-          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6, fontFamily: sfPro, fontSize: 14, color: '#78868E' }}
+          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6, fontFamily: sfPro, fontSize: 14, color: 'var(--color-text-sub)' }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#78868E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="var(--color-text-sub)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           Back
         </button>
-        <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#73BE5E', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexShrink: 0 }}>
+        <div aria-hidden="true" style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexShrink: 0 }}>
           <svg width="26" height="20" viewBox="0 0 26 20" fill="none">
             <path d="M2 10L9 17L24 2" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <h1 style={{ fontFamily: sfPro, fontSize: 26, fontWeight: 700, color: '#0E98BE', textAlign: 'center', margin: '0 0 16px', maxWidth: 440, lineHeight: 1.3 }}>
+        <h1 style={{ fontFamily: sfPro, fontSize: 26, fontWeight: 700, color: 'var(--color-brand-accent)', textAlign: 'center', margin: '0 0 16px', maxWidth: 440, lineHeight: 1.3 }}>
           Your assessment has been saved<br />and closed.
         </h1>
-        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#4E5961', textAlign: 'center', margin: '0 0 32px', maxWidth: 360, lineHeight: 1.7 }}>
+        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: 'var(--color-text-mid)', textAlign: 'center', margin: '0 0 32px', maxWidth: 360, lineHeight: 1.7 }}>
           Your assessment is not yet complete, you can<br />return to finish it at any time.
         </p>
         <button
           onClick={onBackToLogin}
           style={{
             fontFamily: sfPro, fontSize: 15, fontWeight: 500,
-            color: '#4E5961', background: '#F0F0F0',
+            color: 'var(--color-text-mid)', background: 'var(--color-bg-second)',
             border: 'none', borderRadius: 30,
             height: 44, padding: '0 32px', cursor: 'pointer',
           }}
@@ -480,26 +566,23 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
         {/* Back arrow */}
         <button
           onClick={() => { setSubmitted(false); setCurrentPage(totalPages); window.scrollTo(0, 0) }}
-          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6, fontFamily: sfPro, fontSize: 14, color: '#78868E' }}
+          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6, fontFamily: sfPro, fontSize: 14, color: 'var(--color-text-sub)' }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#78868E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="var(--color-text-sub)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           Back
         </button>
 
-        {/* Green checkmark */}
-        <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#73BE5E', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexShrink: 0 }}>
+        <div aria-hidden="true" style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, flexShrink: 0 }}>
           <svg width="26" height="20" viewBox="0 0 26 20" fill="none">
             <path d="M2 10L9 17L24 2" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
 
-        {/* Title */}
-        <h1 style={{ fontFamily: sfPro, fontSize: 26, fontWeight: 700, color: '#0E98BE', textAlign: 'center', margin: '0 0 16px', maxWidth: 440, lineHeight: 1.3 }}>
+        <h1 style={{ fontFamily: sfPro, fontSize: 26, fontWeight: 700, color: 'var(--color-brand-accent)', textAlign: 'center', margin: '0 0 16px', maxWidth: 440, lineHeight: 1.3 }}>
           Thank you for completing your<br />Comprehensive Assessment!
         </h1>
 
-        {/* Subtitle */}
-        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#4E5961', textAlign: 'center', margin: 0, maxWidth: 360, lineHeight: 1.7 }}>
+        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: 'var(--color-text-mid)', textAlign: 'center', margin: 0, maxWidth: 360, lineHeight: 1.7 }}>
           Your responses have been recorded and will help<br />us better support your care and next steps.
         </p>
 
@@ -551,10 +634,9 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
                 onClick={() => handleSubmit()}
                 style={{
                   fontFamily: sfPro, fontSize: 16, fontWeight: 500,
-                  color: '#FFFFFF', background: '#0E98BE',
+                  color: 'var(--color-white)', background: 'var(--color-brand-accent)',
                   border: 'none', borderRadius: 30,
                   height: 51, flex: 1, letterSpacing: '-0.32px',
-                  opacity: 1,
                   cursor: 'pointer',
                 }}
               >
@@ -569,53 +651,20 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
         </div>
       </div>
 
-      {/* Skipped Optional Questions Modal */}
-      {skipModal === 'optional' && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 420, padding: '28px 28px 32px', position: 'relative', boxShadow: '0 -4px 30px rgba(0,0,0,0.15)' }}>
-            <button onClick={() => setSkipModal(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="#999" strokeWidth="2" strokeLinecap="round"/></svg>
-            </button>
-            <h2 style={{ fontFamily: sfPro, fontSize: 24, fontWeight: 400, color: '#282F35', margin: '0 0 12px', lineHeight: 1.3 }}>You Have Skipped Questions</h2>
-            <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#78868E', margin: '0 0 28px', lineHeight: 1.6 }}>
-              Answering these questions helps us match care to you. Please complete these questions before submitting your assessment.
-            </p>
-            <button
-              onClick={enterReviewMode}
-              style={{ display: 'block', width: '100%', height: 52, background: '#0E98BE', color: '#fff', border: 'none', borderRadius: 30, fontSize: 17, fontWeight: 500, fontFamily: sfPro, cursor: 'pointer', marginBottom: 16 }}
-            >
-              Finish Questions
-            </button>
-            <button
-              onClick={() => { setSkipModal(null); setSubmitted(true); window.scrollTo(0, 0) }}
-              style={{ display: 'block', width: '100%', background: 'none', border: 'none', fontSize: 16, fontWeight: 500, fontFamily: sfPro, color: '#0E98BE', cursor: 'pointer', padding: 8 }}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      )}
+      <SkipModal
+        type="optional"
+        open={skipModal === 'optional'}
+        onClose={() => setSkipModal(null)}
+        onReview={enterReviewMode}
+        onSubmit={() => { setSkipModal(null); setSubmitted(true); window.scrollTo(0, 0) }}
+      />
 
-      {/* Skipped Required Questions Modal */}
-      {skipModal === 'required' && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 420, padding: '28px 28px 32px', position: 'relative', boxShadow: '0 -4px 30px rgba(0,0,0,0.15)' }}>
-            <button onClick={() => setSkipModal(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="#999" strokeWidth="2" strokeLinecap="round"/></svg>
-            </button>
-            <h2 style={{ fontFamily: sfPro, fontSize: 24, fontWeight: 400, color: '#282F35', margin: '0 0 12px', lineHeight: 1.3 }}>You Skipped Required Questions</h2>
-            <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: '#78868E', margin: '0 0 28px', lineHeight: 1.6 }}>
-              You must complete these questions before submitting your assessment.
-            </p>
-            <button
-              onClick={enterReviewMode}
-              style={{ display: 'block', width: '100%', height: 52, background: '#0E98BE', color: '#fff', border: 'none', borderRadius: 30, fontSize: 17, fontWeight: 500, fontFamily: sfPro, cursor: 'pointer' }}
-            >
-              Finish Questions
-            </button>
-          </div>
-        </div>
-      )}
+      <SkipModal
+        type="required"
+        open={skipModal === 'required'}
+        onClose={() => setSkipModal(null)}
+        onReview={enterReviewMode}
+      />
     </div>
   )
 }

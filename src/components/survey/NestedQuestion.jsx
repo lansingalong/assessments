@@ -1,54 +1,11 @@
+import { useId } from 'react'
 import { cardStyle, QuestionLabel } from './shared'
-
-// ── Option renderers ───────────────────────────────────────────────────────
-
-function RadioOption({ label, selected, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{ fontFamily: 'Roboto, system-ui, sans-serif', minHeight: 44, width: '100%' }}
-      className="flex items-center gap-3 text-left py-[7px] px-2 rounded-xl"
-    >
-      <div
-        className="flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center"
-        style={{ borderColor: '#0E98BE' }}
-      >
-        {selected && <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#0E98BE' }} />}
-      </div>
-      <span style={{ fontSize: 16, fontWeight: 400, color: '#282F35' }}>{label}</span>
-    </button>
-  )
-}
-
-function CheckOption({ label, checked, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{ fontFamily: 'Roboto, system-ui, sans-serif', minHeight: 40, width: '100%' }}
-      className="flex items-center gap-3 text-left py-[6px] px-2 rounded-xl"
-    >
-      <div
-        className="flex-shrink-0 w-5 h-5 flex items-center justify-center border-2"
-        style={{
-          borderColor: '#0E98BE',
-          borderRadius: 4,
-          background: checked ? '#0E98BE' : 'transparent',
-        }}
-      >
-        {checked && (
-          <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
-            <path d="M1 4L4 7L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )}
-      </div>
-      <span style={{ fontSize: 16, fontWeight: 400, color: '#282F35' }}>{label}</span>
-    </button>
-  )
-}
-
-// ── Sub-question card ──────────────────────────────────────────────────────
+import RadioOption from '../ui/RadioOption'
+import CheckOption from '../ui/CheckOption'
 
 function SubCard({ sq, answer, onAnswer }) {
+  const groupId = useId()
+
   if (sq.type === 'multi') {
     const selected = new Set(Array.isArray(answer) ? answer : [])
     const toggle = (opt) => {
@@ -58,23 +15,24 @@ function SubCard({ sq, answer, onAnswer }) {
     }
     return (
       <div style={{
-        border: '1px solid #D4E3E9',
+        border: '1px solid var(--color-border-mid)',
         borderRadius: 10,
         padding: '14px 16px',
-        background: '#fff',
+        background: 'var(--color-white)',
       }}>
-        <p style={{
+        <p id={groupId} style={{
           fontFamily: 'Roboto, system-ui, sans-serif',
           fontSize: 15,
           fontWeight: 400,
-          color: '#282F35',
+          color: 'var(--color-text)',
           margin: '0 0 10px',
           lineHeight: 1.4,
         }}>
           {sq.question}
-          {sq.required && <span style={{ color: '#F05B60' }}> *</span>}
+          {sq.required && <span aria-hidden="true" style={{ color: 'var(--color-error-light)' }}> *</span>}
+          {sq.required && <span className="sr-only"> (required)</span>}
         </p>
-        <div className="flex flex-col">
+        <div role="group" aria-labelledby={groupId} className="flex flex-col">
           {sq.options.map(opt => (
             <CheckOption key={opt} label={opt} checked={selected.has(opt)} onClick={() => toggle(opt)} />
           ))}
@@ -83,26 +41,26 @@ function SubCard({ sq, answer, onAnswer }) {
     )
   }
 
-  // single-select
   return (
     <div style={{
-      border: '1px solid #D4E3E9',
+      border: '1px solid var(--color-border-mid)',
       borderRadius: 10,
       padding: '14px 16px',
-      background: '#fff',
+      background: 'var(--color-white)',
     }}>
-      <p style={{
+      <p id={groupId} style={{
         fontFamily: 'Roboto, system-ui, sans-serif',
         fontSize: 15,
         fontWeight: 400,
-        color: '#282F35',
+        color: 'var(--color-text)',
         margin: '0 0 6px',
         lineHeight: 1.4,
       }}>
         {sq.question}
-        {sq.required && <span style={{ color: '#F05B60' }}> *</span>}
+        {sq.required && <span aria-hidden="true" style={{ color: 'var(--color-error-light)' }}> *</span>}
+        {sq.required && <span className="sr-only"> (required)</span>}
       </p>
-      <div className="flex flex-col">
+      <div role="radiogroup" aria-labelledby={groupId} className="flex flex-col">
         {sq.options.map(opt => (
           <RadioOption key={opt} label={opt} selected={answer === opt} onClick={() => onAnswer(opt)} />
         ))}
@@ -111,17 +69,13 @@ function SubCard({ sq, answer, onAnswer }) {
   )
 }
 
-// ── Main component ─────────────────────────────────────────────────────────
-
 export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
   const triggerAnswer = answer.trigger ?? null
   const subAnswers = answer.sub ?? {}
   const expanded = triggerAnswer === q.expandValue
-
   const expandIdx = q.options.indexOf(q.expandValue)
+  const headingId = useId()
 
-  // Next is enabled when: trigger is answered AND all required sub-questions
-  // (if expanded) have at least one selection
   const requiredSubsDone = !expanded || q.subQuestions
     .filter(sq => sq.required)
     .every(sq => {
@@ -132,7 +86,6 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
 
   const handleTrigger = (opt) => {
     onSubmit?.({ trigger: opt, sub: subAnswers })
-    // If non-expand value selected (no sub-questions needed), auto-scroll to next
     if (opt !== q.expandValue && nextId) {
       setTimeout(() => {
         const el = document.getElementById(`question-${nextId}`)
@@ -159,9 +112,9 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
 
   return (
     <div style={cardStyle}>
-      <QuestionLabel text={`${q.number}. ${q.question}`} required={q.required} />
+      <QuestionLabel text={`${q.number}. ${q.question}`} required={q.required} id={headingId} />
 
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div role="radiogroup" aria-labelledby={headingId} style={{ display: 'flex', flexDirection: 'column' }}>
         {q.options.map((opt, idx) => (
           <div key={opt}>
             <RadioOption
@@ -170,9 +123,9 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
               onClick={() => handleTrigger(opt)}
             />
 
-            {/* Sub-questions appear after the expandValue option */}
             {idx === expandIdx && (
               <div
+                aria-hidden={!expanded}
                 style={{
                   marginLeft: 32,
                   display: 'flex',
@@ -201,10 +154,10 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
         ))}
       </div>
 
-      {/* Next button */}
       <button
         onClick={handleNext}
         disabled={!canProceed}
+        aria-disabled={!canProceed}
         style={{
           marginTop: 20,
           width: '100%',
@@ -214,8 +167,8 @@ export default function NestedQuestion({ q, answer = {}, onSubmit, nextId }) {
           fontSize: 16,
           fontWeight: 500,
           fontFamily: 'Roboto, system-ui, sans-serif',
-          color: '#fff',
-          background: canProceed ? '#0E98BE' : '#86CBDF',
+          color: 'var(--color-white)',
+          background: canProceed ? 'var(--color-brand-accent)' : 'var(--color-brand-disabled)',
           cursor: canProceed ? 'pointer' : 'not-allowed',
           transition: 'background 0.2s',
         }}

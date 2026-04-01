@@ -1,26 +1,10 @@
-import { useState } from 'react'
-import { sfPro, cardStyle, QuestionLabel } from './shared'
-
-function RadioOption({ label, selected, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{ fontFamily: 'Roboto, system-ui, sans-serif', minHeight: 44, width: '100%' }}
-      className="flex items-center gap-3 text-left py-[7px] px-4 rounded-xl bg-white"
-    >
-      <div
-        className="flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center"
-        style={{ borderColor: '#0080A3' }}
-      >
-        {selected && <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#0080A3' }} />}
-      </div>
-      <span style={{ fontSize: 16, fontWeight: 400, color: '#282F35' }}>{label}</span>
-    </button>
-  )
-}
+import { useState, useId } from 'react'
+import { cardStyle, QuestionLabel } from './shared'
+import RadioOption from '../ui/RadioOption'
 
 export default function SingleSelect({ question, options = [], onSubmit, answer = null, required, hideSubmit = false, onSelect }) {
   const [selected, setSelected] = useState(answer)
+  const groupId = useId()
 
   const handleSelect = (opt) => {
     setSelected(opt)
@@ -33,8 +17,8 @@ export default function SingleSelect({ question, options = [], onSubmit, answer 
 
   return (
     <div style={cardStyle}>
-      <QuestionLabel text={question} required={required} />
-      <div className="flex flex-col gap-[6px]">
+      <QuestionLabel text={question} required={required} id={groupId} />
+      <div role="radiogroup" aria-labelledby={groupId} className="flex flex-col gap-[6px]">
         {options.map(opt => (
           <RadioOption key={opt} label={opt} selected={selected === opt} onClick={() => handleSelect(opt)} />
         ))}

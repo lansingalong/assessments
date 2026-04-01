@@ -2,32 +2,15 @@ import { useState, useEffect, useRef } from 'react'
 import { sfPro } from './survey/shared'
 import AutosaveIndicator from './AutosaveIndicator'
 
-/**
- * AssessmentHeader
- *
- * Props:
- *   currentPage     {number}   1-indexed current page number
- *   totalPages      {number}   total number of pages
- *   pageProgress    {number[]} 0–100 completion % per page, length === totalPages
- *   onSaveAndClose  {fn}       called when "Save and Close" is clicked
- *   onSubmit        {fn}       called when "Submit" is clicked
- *   submitDisabled  {boolean}  disables the Submit button (default false)
- */
-
-// ─── Circle indicators ──────────────────────────────────────────────────────
-
-// Single-ring design: one arc ring shows progress, no separate selection ring
-// 10% larger than previous (46 → 51)
 const SIZE = 51
-const C = 25.5          // center
-const FILL_R = 20       // white/green fill radius
-const RING_R = 23       // single progress ring radius (sits outside fill)
+const C = 25.5
+const FILL_R = 20
+const RING_R = 23
 const RING_STROKE = 3.5
 const CIRC = 2 * Math.PI * RING_R
 
 const NUM_STYLE = { fontFamily: 'Roboto, system-ui, sans-serif', fontSize: '20', fontWeight: '500' }
 
-// Shared arc helper
 function Arc({ pct, color }) {
   const offset = CIRC * (1 - Math.min(Math.max(pct, 0), 100) / 100)
   return (
@@ -38,40 +21,38 @@ function Arc({ pct, color }) {
   )
 }
 
-// Completed (100%): green fill + white checkmark + full blue ring
-function Completed() {
+function Completed({ pageNum }) {
   return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
-      <circle cx={C} cy={C} r={FILL_R} fill="#73BE5E" />
-      <circle cx={C} cy={C} r={RING_R} stroke="#0E98BE" strokeWidth={RING_STROKE} fill="none" />
+    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none"
+      aria-label={`Page ${pageNum}, complete`} role="img">
+      <circle cx={C} cy={C} r={FILL_R} fill="var(--color-success)" />
+      <circle cx={C} cy={C} r={RING_R} stroke="var(--color-brand-accent)" strokeWidth={RING_STROKE} fill="none" />
       <path d="M17.5 26.5L22.5 31.5L33 20" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
 
-// Full ring (just-completed animation): complete blue ring + number
 function FullRing({ pageNum }) {
   return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
+    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none"
+      aria-label={`Page ${pageNum}, complete`} role="img">
       <circle cx={C} cy={C} r={FILL_R} fill="white" />
-      <circle cx={C} cy={C} r={RING_R} stroke="#0E98BE" strokeWidth={RING_STROKE} fill="none" />
-      <text x={C} y={C + 5.5} textAnchor="middle" fill="#78868E" {...NUM_STYLE}>{pageNum}</text>
+      <circle cx={C} cy={C} r={RING_R} stroke="var(--color-brand-accent)" strokeWidth={RING_STROKE} fill="none" />
+      <text x={C} y={C + 5.5} textAnchor="middle" fill="var(--color-text-sub)" {...NUM_STYLE}>{pageNum}</text>
     </svg>
   )
 }
 
-// Partial progress: track + filled arc + number
-// selected (current page) → gray number; unselected → dark number
 function ProgressCircle({ pageNum, pct, selected }) {
+  const label = pct > 0 ? `Page ${pageNum}, ${pct}% complete` : `Page ${pageNum}, not started`
   return (
-    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none">
+    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none"
+      aria-label={label} role="img">
       <circle cx={C} cy={C} r={FILL_R} fill="white" />
-      {/* track */}
-      <circle cx={C} cy={C} r={RING_R} stroke="#B0DEEA" strokeWidth={RING_STROKE} fill="none" />
-      {/* progress arc */}
-      {pct > 0 && <Arc pct={pct} color="#0E98BE" />}
+      <circle cx={C} cy={C} r={RING_R} stroke="var(--color-brand-disabled)" strokeWidth={RING_STROKE} fill="none" />
+      {pct > 0 && <Arc pct={pct} color="var(--color-brand-accent)" />}
       <text x={C} y={C + 5.5} textAnchor="middle"
-        fill={selected ? '#78868E' : '#282F35'} {...NUM_STYLE}>{pageNum}</text>
+        fill={selected ? 'var(--color-text-sub)' : 'var(--color-text)'} {...NUM_STYLE}>{pageNum}</text>
     </svg>
   )
 }
@@ -79,14 +60,11 @@ function ProgressCircle({ pageNum, pct, selected }) {
 function PageCircle({ index, currentPage, pageProgress, justCompleted }) {
   const pageNum = index + 1
   const pct = pageProgress?.[index] ?? 0
-  const isCurrent = pageNum === currentPage
 
   if (justCompleted.has(index)) return <FullRing pageNum={pageNum} />
-  if (pct === 100)              return <Completed />
-  return <ProgressCircle pageNum={pageNum} pct={pct} selected={isCurrent} />
+  if (pct === 100)              return <Completed pageNum={pageNum} />
+  return <ProgressCircle pageNum={pageNum} pct={pct} selected={pageNum === currentPage} />
 }
-
-// ─── Buttons ────────────────────────────────────────────────────────────────
 
 const btnBase = {
   fontFamily: sfPro,
@@ -103,8 +81,6 @@ const btnBase = {
   alignItems: 'center',
   justifyContent: 'center',
 }
-
-// ─── Component ──────────────────────────────────────────────────────────────
 
 export default function AssessmentHeader({
   currentPage = 1,
@@ -141,29 +117,29 @@ export default function AssessmentHeader({
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
   return (
-    <div
+    <header
       style={{
         display: 'flex',
         alignItems: 'center',
         width: '100%',
         padding: '12px 16px',
-        background: '#FFFFFF',
-        borderBottom: '1px solid #E8EDF0',
+        background: 'var(--color-white)',
+        borderBottom: '1px solid var(--color-border)',
       }}
     >
-      {/* LEFT — back to email + autosave + book icon + page label */}
+      {/* LEFT — autosave + book icon + page label */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12 }}>
         <AutosaveIndicator visible={autosaveVisible} />
-        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 1.5C1 1.5 4 0.5 9 2.5C14 0.5 17 1.5 17 1.5V14.5C17 14.5 14 13.5 9 15.5C4 13.5 1 14.5 1 14.5V1.5Z" stroke="#4E5961" strokeWidth="1.4" strokeLinejoin="round"/>
-          <line x1="9" y1="2.5" x2="9" y2="15.5" stroke="#4E5961" strokeWidth="1.4"/>
+        <svg aria-hidden="true" width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1.5C1 1.5 4 0.5 9 2.5C14 0.5 17 1.5 17 1.5V14.5C17 14.5 14 13.5 9 15.5C4 13.5 1 14.5 1 14.5V1.5Z" stroke="var(--color-text-mid)" strokeWidth="1.4" strokeLinejoin="round"/>
+          <line x1="9" y1="2.5" x2="9" y2="15.5" stroke="var(--color-text-mid)" strokeWidth="1.4"/>
         </svg>
         <span
           style={{
             fontFamily: sfPro,
             fontSize: 13,
             fontWeight: 500,
-            color: '#282F35',
+            color: 'var(--color-text)',
             letterSpacing: '-0.1px',
           }}
         >
@@ -172,10 +148,12 @@ export default function AssessmentHeader({
       </div>
 
       {/* CENTER — progress circles */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+      <nav aria-label="Assessment pages" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         {Array.from({ length: totalPages }).map((_, i) => (
           <button
             key={i}
+            aria-label={`Go to page ${i + 1}`}
+            aria-current={i + 1 === currentPage ? 'page' : undefined}
             onClick={() => onPageSelect?.(i + 1)}
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', lineHeight: 0 }}
           >
@@ -187,7 +165,7 @@ export default function AssessmentHeader({
             />
           </button>
         ))}
-      </div>
+      </nav>
 
       {/* RIGHT — buttons */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
@@ -195,9 +173,9 @@ export default function AssessmentHeader({
           onClick={onSaveAndClose}
           style={{
             ...btnBase,
-            color: '#0E98BE',
+            color: 'var(--color-brand-accent)',
             background: 'transparent',
-            border: '1px solid #0E98BE',
+            border: '1px solid var(--color-brand-accent)',
           }}
         >
           Save and Close
@@ -205,10 +183,11 @@ export default function AssessmentHeader({
         <button
           onClick={onSubmit}
           disabled={submitDisabled}
+          aria-disabled={submitDisabled}
           style={{
             ...btnBase,
-            color: '#FFFFFF',
-            background: '#0E98BE',
+            color: 'var(--color-white)',
+            background: 'var(--color-brand-accent)',
             opacity: submitDisabled ? 0.4 : 1,
             cursor: submitDisabled ? 'not-allowed' : 'pointer',
           }}
@@ -216,6 +195,6 @@ export default function AssessmentHeader({
           Submit
         </button>
       </div>
-    </div>
+    </header>
   )
 }

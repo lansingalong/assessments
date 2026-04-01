@@ -1,8 +1,6 @@
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import loginBg from '../assets/login-bg.png'
 import wellframeLogo from '../assets/wellframe-logo.png'
-
-
 
 // ── Validation ───────────────────────────────────────────────────────────────
 function validateName(val, label) {
@@ -25,69 +23,65 @@ function validateDob(val) {
 // ── Simple bordered field ────────────────────────────────────────────────────
 function Field({ label, value, onChange, error, placeholder, type = 'text' }) {
   const [focused, setFocused] = useState(false)
+  const inputId = useId()
+  const errorId = useId()
   return (
     <div>
-      <label style={{
-        display: 'block',
-        marginBottom: 6,
-        fontSize: 14,
-        fontWeight: 400,
-        color: '#282F35',
-        fontFamily: 'Roboto, system-ui, sans-serif',
-      }}>
+      <label
+        htmlFor={inputId}
+        style={{
+          display: 'block',
+          marginBottom: 6,
+          fontSize: 14,
+          fontWeight: 400,
+          color: 'var(--color-text)',
+          fontFamily: 'Roboto, system-ui, sans-serif',
+        }}
+      >
         {label}
       </label>
       <input
+        id={inputId}
         type={type}
         value={value}
         placeholder={placeholder}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
+        aria-invalid={!!error}
+        aria-describedby={error ? errorId : undefined}
         style={{
           display: 'block',
           width: '100%',
           height: 52,
           padding: '0 14px',
           fontSize: 16,
-          color: '#282F35',
+          color: 'var(--color-text)',
           fontFamily: 'Roboto, system-ui, sans-serif',
-          background: '#fff',
-          border: `1px solid ${error ? '#923133' : focused ? '#0E98BE' : '#B8CDD4'}`,
+          background: 'var(--color-white)',
+          border: `1px solid ${error ? 'var(--color-error)' : focused ? 'var(--color-brand-accent)' : 'var(--color-border-mid)'}`,
           borderRadius: 4,
-          outline: 'none',
+          outline: focused ? '2px solid var(--color-brand-accent)' : 'none',
+          outlineOffset: 2,
           boxSizing: 'border-box',
           transition: 'border-color .15s',
         }}
       />
       {error && (
-        <p style={{
-          margin: '5px 0 0',
-          fontSize: 12,
-          color: '#923133',
-          fontFamily: 'Roboto, system-ui, sans-serif',
-        }}>
+        <p
+          id={errorId}
+          role="alert"
+          style={{
+            margin: '5px 0 0',
+            fontSize: 12,
+            color: 'var(--color-error)',
+            fontFamily: 'Roboto, system-ui, sans-serif',
+          }}
+        >
           {error}
         </p>
       )}
     </div>
-  )
-}
-
-// ── Wellframe logo mark ──────────────────────────────────────────────────────
-function WellframeMark() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="9.5" stroke="#0E98BE" strokeWidth="1"/>
-      <path
-        d="M5 7l2 6 3-4 3 4 2-6"
-        stroke="#0E98BE"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-    </svg>
   )
 }
 
@@ -99,6 +93,7 @@ export default function AuthModal({ onSuccess, onBack }) {
   const [errors,    setErrors]    = useState({})
   const [authError, setAuthError] = useState(null)
   const [loading,   setLoading]   = useState(false)
+  const titleId = useId()
 
   const handleDob = (raw) => {
     const digits = raw.replace(/\D/g, '').slice(0, 8)
@@ -139,19 +134,24 @@ export default function AuthModal({ onSuccess, onBack }) {
   }
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 50,
-    }}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      style={{
+        position: 'fixed', inset: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 50,
+      }}
+    >
       {/* Background */}
-      <div style={{
+      <div aria-hidden="true" style={{
         position: 'absolute', inset: 0,
         backgroundImage: `url(${loginBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center bottom',
       }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(15, 53, 65, 0.15)' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'rgba(15, 53, 65, 0.15)' }} />
 
       {/* Card */}
       <div style={{
@@ -159,42 +159,45 @@ export default function AuthModal({ onSuccess, onBack }) {
         width: '100%',
         maxWidth: 480,
         margin: '0 20px',
-        background: '#fff',
+        background: 'var(--color-white)',
         borderRadius: 12,
         boxShadow: '0 8px 40px rgba(15,53,65,0.18)',
         padding: '40px 40px 28px',
       }}>
 
-        {/* Title */}
-        <h1 style={{
-          fontFamily: 'Roboto, system-ui, sans-serif',
-          fontSize: 26,
-          fontWeight: 400,
-          color: '#0E98BE',
-          textAlign: 'center',
-          lineHeight: 1.35,
-          margin: '0 0 36px',
-        }}>
+        <h1
+          id={titleId}
+          style={{
+            fontFamily: 'Roboto, system-ui, sans-serif',
+            fontSize: 26,
+            fontWeight: 400,
+            color: 'var(--color-brand-accent)',
+            textAlign: 'center',
+            lineHeight: 1.35,
+            margin: '0 0 36px',
+          }}
+        >
           Enter your name and date<br />of birth to get started
         </h1>
 
-        {/* Auth error banner */}
         {authError && (
-          <div style={{
-            background: '#FFF3F3',
-            border: '1px solid #F05B60',
-            borderRadius: 6,
-            padding: '10px 14px',
-            marginBottom: 20,
-            fontSize: 13,
-            color: '#923133',
-            fontFamily: 'Roboto, system-ui, sans-serif',
-          }}>
+          <div
+            role="alert"
+            style={{
+              background: 'var(--color-error-bg)',
+              border: '1px solid var(--color-error-light)',
+              borderRadius: 6,
+              padding: '10px 14px',
+              marginBottom: 20,
+              fontSize: 13,
+              color: 'var(--color-error)',
+              fontFamily: 'Roboto, system-ui, sans-serif',
+            }}
+          >
             {authError}
           </div>
         )}
 
-        {/* Fields */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }} onKeyDown={handleKeyDown}>
           <Field
             label="First name"
@@ -219,21 +222,21 @@ export default function AuthModal({ onSuccess, onBack }) {
           />
         </div>
 
-        {/* Next button */}
         <button
           onClick={handleSubmit}
           disabled={!allFilled || loading}
+          aria-disabled={!allFilled || loading}
           style={{
             display: 'block',
             width: '100%',
             height: 52,
             marginTop: 32,
-            background: !allFilled || loading ? '#86CBDF' : '#0E98BE',
+            background: !allFilled || loading ? 'var(--color-brand-disabled)' : 'var(--color-brand-accent)',
             border: 'none',
             borderRadius: 30,
             fontSize: 17,
             fontWeight: 500,
-            color: '#fff',
+            color: 'var(--color-white)',
             fontFamily: 'Roboto, system-ui, sans-serif',
             cursor: !allFilled || loading ? 'not-allowed' : 'pointer',
             letterSpacing: '0.01em',
@@ -243,20 +246,9 @@ export default function AuthModal({ onSuccess, onBack }) {
           {loading ? 'Verifying…' : 'Next'}
         </button>
 
-        {/* Powered by Wellframe */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 7,
-          marginTop: 20,
-        }}>
-          <img src={wellframeLogo} alt="Wellframe" style={{ width: 20, height: 20 }} />
-          <span style={{
-            fontFamily: 'Roboto, system-ui, sans-serif',
-            fontSize: 13,
-            color: '#4E5961',
-          }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginTop: 20 }}>
+          <img src={wellframeLogo} alt="" aria-hidden="true" style={{ width: 20, height: 20 }} />
+          <span style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 13, color: 'var(--color-text-mid)' }}>
             Powered by Wellframe
           </span>
         </div>

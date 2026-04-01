@@ -3,10 +3,10 @@ export default function GmailInbox({ onOpenAssessment }) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#fff', fontFamily: '"Google Sans", Roboto, Arial, sans-serif', fontSize: 14, color: '#202124' }}>
 
       {/* ── TOP BAR ── */}
-      <div style={{ display: 'flex', alignItems: 'center', height: 64, padding: '0 16px', gap: 8, borderBottom: '1px solid #e0e0e0', flexShrink: 0 }}>
+      <header style={{ display: 'flex', alignItems: 'center', height: 64, padding: '0 16px', gap: 8, borderBottom: '1px solid #e0e0e0', flexShrink: 0 }} aria-label="Gmail header">
         {/* Hamburger + Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, width: 256, flexShrink: 0 }}>
-          <button style={iconBtn}>
+          <button aria-label="Main menu" style={iconBtn}>
             <HamburgerIcon />
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 2, marginLeft: 4 }}>
@@ -26,18 +26,18 @@ export default function GmailInbox({ onOpenAssessment }) {
 
         {/* Right icons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto' }}>
-          <button style={iconBtn}><HelpIcon /></button>
-          <button style={iconBtn}><SettingsIcon /></button>
-          <button style={iconBtn}><AppsIcon /></button>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#1a73e8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 600, marginLeft: 8, cursor: 'pointer' }}>JD</div>
+          <button aria-label="Help" style={iconBtn}><HelpIcon /></button>
+          <button aria-label="Settings" style={iconBtn}><SettingsIcon /></button>
+          <button aria-label="Google apps" style={iconBtn}><AppsIcon /></button>
+          <button aria-label="Google Account: JD" style={{ width: 32, height: 32, borderRadius: '50%', background: '#1a73e8', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 600, marginLeft: 8, cursor: 'pointer' }}>JD</button>
         </div>
-      </div>
+      </header>
 
       {/* ── BODY ── */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
         {/* ── LEFT SIDEBAR ── */}
-        <div style={{ width: 256, flexShrink: 0, overflowY: 'auto', paddingTop: 8, display: 'flex', flexDirection: 'column' }}>
+        <nav aria-label="Gmail navigation" style={{ width: 256, flexShrink: 0, overflowY: 'auto', paddingTop: 8, display: 'flex', flexDirection: 'column' }}>
           {/* Compose */}
           <div style={{ padding: '4px 16px 8px' }}>
             <button style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fce8e6', border: 'none', borderRadius: 20, padding: '16px 20px', fontSize: 14, fontWeight: 500, color: '#202124', cursor: 'pointer', width: '100%' }}>
@@ -76,26 +76,26 @@ export default function GmailInbox({ onOpenAssessment }) {
               Sign in
             </button>
           </div>
-        </div>
+        </nav>
 
         {/* ── MAIN CONTENT ── */}
-        <div style={{ flex: 1, overflowY: 'auto', borderLeft: '1px solid #e0e0e0' }}>
+        <main style={{ flex: 1, overflowY: 'auto', borderLeft: '1px solid #e0e0e0' }}>
 
           {/* Email toolbar */}
-          <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', borderBottom: '1px solid #e0e0e0', gap: 2, position: 'sticky', top: 0, background: '#fff', zIndex: 5 }}>
-            <button style={iconBtn}><BackArrowIcon /></button>
-            <button style={iconBtn}><ArchiveIcon /></button>
-            <button style={iconBtn}><ReportIcon /></button>
-            <button style={iconBtn}><DeleteIcon /></button>
-            <button style={iconBtn}><MarkReadIcon /></button>
-            <button style={iconBtn}><SnoozeIcon /></button>
-            <button style={iconBtn}><TaskIcon /></button>
-            <button style={iconBtn}><MoveToIcon /></button>
-            <button style={iconBtn}><LabelIcon /></button>
-            <button style={iconBtn}><MoreVertIcon /></button>
+          <div role="toolbar" aria-label="Email actions" style={{ display: 'flex', alignItems: 'center', padding: '8px 4px', borderBottom: '1px solid #e0e0e0', gap: 2, position: 'sticky', top: 0, background: '#fff', zIndex: 5 }}>
+            <button aria-label="Back to inbox" style={iconBtn}><BackArrowIcon /></button>
+            <button aria-label="Archive" style={iconBtn}><ArchiveIcon /></button>
+            <button aria-label="Report spam" style={iconBtn}><ReportIcon /></button>
+            <button aria-label="Delete" style={iconBtn}><DeleteIcon /></button>
+            <button aria-label="Mark as read" style={iconBtn}><MarkReadIcon /></button>
+            <button aria-label="Snooze" style={iconBtn}><SnoozeIcon /></button>
+            <button aria-label="Add to tasks" style={iconBtn}><TaskIcon /></button>
+            <button aria-label="Move to" style={iconBtn}><MoveToIcon /></button>
+            <button aria-label="Label" style={iconBtn}><LabelIcon /></button>
+            <button aria-label="More actions" style={iconBtn}><MoreVertIcon /></button>
             <span style={{ marginLeft: 'auto', fontSize: 13, color: '#5f6368', whiteSpace: 'nowrap' }}>1–50 of 2,619</span>
-            <button style={iconBtn}><ChevronLeftIcon /></button>
-            <button style={iconBtn}><ChevronRightIcon /></button>
+            <button aria-label="Newer emails" style={iconBtn}><ChevronLeftIcon /></button>
+            <button aria-label="Older emails" style={iconBtn}><ChevronRightIcon /></button>
           </div>
 
           {/* Email thread */}
@@ -106,19 +106,19 @@ export default function GmailInbox({ onOpenAssessment }) {
               <h1 style={{ fontSize: 22, fontWeight: 400, color: '#202124', margin: 0, flex: 1 }}>
                 Take Your Health Assessment
               </h1>
-              <button style={iconBtn}><ForwardIcon /></button>
+              <button aria-label="Forward" style={iconBtn}><ForwardIcon /></button>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#e8f0fe', border: '1px solid #c5d5f5', borderRadius: 4, padding: '2px 8px', fontSize: 12, color: '#1a73e8', fontWeight: 500 }}>
                 Inbox
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#1a73e8" strokeWidth="2.5" strokeLinecap="round"/></svg>
               </div>
-              <button style={iconBtn}><PrintIcon /></button>
-              <button style={iconBtn}><OpenInNewIcon /></button>
+              <button aria-label="Print" style={iconBtn}><PrintIcon /></button>
+              <button aria-label="Open in new window" style={iconBtn}><OpenInNewIcon /></button>
             </div>
 
             {/* Sender row */}
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20 }}>
               {/* Avatar */}
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#e0e0e0', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div aria-hidden="true" style={{ width: 40, height: 40, borderRadius: '50%', background: '#e0e0e0', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="#9e9e9e"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-8 8-8s8 4 8 8"/></svg>
               </div>
 
@@ -129,9 +129,9 @@ export default function GmailInbox({ onOpenAssessment }) {
                   <span style={{ fontSize: 13, color: '#5f6368' }}>&lt;care@yourhealthplan.com&gt;</span>
                   <span style={{ fontSize: 13, color: '#1a73e8', cursor: 'pointer', textDecoration: 'underline' }}>Unsubscribe</span>
                   <span style={{ marginLeft: 'auto', fontSize: 13, color: '#5f6368', whiteSpace: 'nowrap' }}>9:14 AM (8 hours ago)</span>
-                  <button style={iconBtn}><StarOutlineIcon /></button>
-                  <button style={iconBtn}><ReplyIcon /></button>
-                  <button style={iconBtn}><MoreVertIcon /></button>
+                  <button aria-label="Star" style={iconBtn}><StarOutlineIcon /></button>
+                  <button aria-label="Reply" style={iconBtn}><ReplyIcon /></button>
+                  <button aria-label="More options" style={iconBtn}><MoreVertIcon /></button>
                 </div>
                 <div style={{ fontSize: 13, color: '#5f6368', display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                   to me
@@ -147,12 +147,12 @@ export default function GmailInbox({ onOpenAssessment }) {
               <p style={{ margin: '0 0 12px' }}>Complete your health assessment today:</p>
 
               <p style={{ margin: '0 0 16px' }}>
-                <span
+                <button
                   onClick={onOpenAssessment}
-                  style={{ color: '#1a73e8', cursor: 'pointer', textDecoration: 'underline' }}
+                  style={{ color: '#1a73e8', cursor: 'pointer', textDecoration: 'underline', background: 'none', border: 'none', padding: 0, font: 'inherit', fontSize: 14 }}
                 >
                   https://wellframe.com/altruistalD102911
-                </span>
+                </button>
               </p>
 
               <p style={{ margin: '0 0 8px' }}>Why this matters:</p>
@@ -215,19 +215,19 @@ export default function GmailInbox({ onOpenAssessment }) {
               </button>
             </div>
           </div>
-        </div>
+        </main>
 
         {/* ── RIGHT APP RAIL ── */}
-        <div style={{ width: 56, flexShrink: 0, borderLeft: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8, gap: 4 }}>
-          <button style={railBtn}><CalendarRailIcon /></button>
-          <button style={railBtn}><KeepRailIcon /></button>
-          <button style={railBtn}><TasksRailIcon /></button>
-          <button style={railBtn}><ContactsRailIcon /></button>
-          <div style={{ borderTop: '1px solid #e0e0e0', width: 32, margin: '4px 0' }} />
-          <button style={railBtn}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#5f6368" strokeWidth="1.8"/><path d="M12 8v4M12 16h.01" stroke="#5f6368" strokeWidth="2" strokeLinecap="round"/></svg>
+        <aside aria-label="Google apps" style={{ width: 56, flexShrink: 0, borderLeft: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8, gap: 4 }}>
+          <button aria-label="Google Calendar" style={railBtn}><CalendarRailIcon /></button>
+          <button aria-label="Google Keep" style={railBtn}><KeepRailIcon /></button>
+          <button aria-label="Tasks" style={railBtn}><TasksRailIcon /></button>
+          <button aria-label="Contacts" style={railBtn}><ContactsRailIcon /></button>
+          <div aria-hidden="true" style={{ borderTop: '1px solid #e0e0e0', width: 32, margin: '4px 0' }} />
+          <button aria-label="More apps" style={railBtn}>
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#5f6368" strokeWidth="1.8"/><path d="M12 8v4M12 16h.01" stroke="#5f6368" strokeWidth="2" strokeLinecap="round"/></svg>
           </button>
-        </div>
+        </aside>
       </div>
     </div>
   )
@@ -236,39 +236,41 @@ export default function GmailInbox({ onOpenAssessment }) {
 // ── Shared styles ──
 const iconBtn = {
   background: 'none', border: 'none', cursor: 'pointer',
-  padding: 6, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-  color: '#444746',
+  padding: 12, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  color: '#444746', minWidth: 44, minHeight: 44,
 }
 const railBtn = {
   background: 'none', border: 'none', cursor: 'pointer',
-  width: 40, height: 40, borderRadius: '50%',
+  width: 44, height: 44, borderRadius: '50%',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
 }
 
 // ── Nav item ──
 function NavItem({ icon, label, badge, active }) {
   return (
-    <div style={{
+    <button style={{
       display: 'flex', alignItems: 'center', gap: 16,
       padding: '4px 16px 4px 24px',
       background: active ? '#d3e3fd' : 'transparent',
       borderRadius: '0 20px 20px 0',
-      marginRight: 16, cursor: 'pointer', userSelect: 'none',
+      marginRight: 16, cursor: 'pointer',
       fontWeight: active ? 700 : 400,
       color: active ? '#041e49' : '#202124',
-      fontSize: 14,
-    }}>
-      <span style={{ color: active ? '#041e49' : '#444746', flexShrink: 0, display: 'flex' }}>{icon}</span>
+      fontSize: 14, border: 'none', width: '100%', textAlign: 'left',
+    }}
+    aria-current={active ? 'page' : undefined}
+    >
+      <span aria-hidden="true" style={{ color: active ? '#041e49' : '#444746', flexShrink: 0, display: 'flex' }}>{icon}</span>
       <span style={{ flex: 1 }}>{label}</span>
-      {badge && <span style={{ fontSize: 12, color: active ? '#041e49' : '#5f6368', fontWeight: 700 }}>{badge}</span>}
-    </div>
+      {badge && <span aria-label={`${badge} unread`} style={{ fontSize: 12, color: active ? '#041e49' : '#5f6368', fontWeight: 700 }}>{badge}</span>}
+    </button>
   )
 }
 
 // ── Gmail "M" logo ──
 function GmailLogo() {
   return (
-    <svg width="32" height="32" viewBox="0 0 48 48">
+    <svg aria-hidden="true" width="32" height="32" viewBox="0 0 48 48">
       <path fill="#EA4335" d="M24 24L8 12h32z"/>
       <path fill="#FBBC05" d="M8 12v24l8-8V20z"/>
       <path fill="#34A853" d="M40 12v24l-8-8V20z"/>
@@ -281,7 +283,7 @@ function GmailLogo() {
 // ── Health Plan Logo ──
 function HealthPlanLogo() {
   return (
-    <svg width="48" height="48" viewBox="0 0 48 48">
+    <svg aria-label="YourHealthPlan" role="img" width="48" height="48" viewBox="0 0 48 48">
       <rect width="48" height="48" rx="10" fill="#1a6b4a"/>
       <path d="M24 10c-3.5 0-6.5 2-8 5-1.5-1-3.5-1-5 .5s-1.5 3.5-.5 5c-3 1.5-4 5-2.5 8s5 4 8 2.5c1.5 3 5 4 8 2.5s4-5 2.5-8c3-1.5 4-5 2.5-8s-5-4-8-2.5c-1.5-3-5-5-7-5z" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.2"/>
       <path d="M24 15l2.5 5 5.5.8-4 3.9.9 5.3-4.9-2.6-4.9 2.6.9-5.3-4-3.9 5.5-.8z" fill="#fff"/>

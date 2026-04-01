@@ -1,73 +1,49 @@
-import { useState } from 'react'
-import { sfPro, cardStyle, questionStyle, QuestionLabel, ctaStyle } from './shared'
+import { useState, useId } from 'react'
+import { cardStyle, questionStyle, QuestionLabel, ctaStyle } from './shared'
+import RadioOption from '../ui/RadioOption'
 
-function RadioOption({ label, selected, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{ fontFamily: 'Roboto, system-ui, sans-serif', minHeight: 44, width: '100%' }}
-      className="flex items-center gap-3 text-left py-[5px] px-3 rounded-xl bg-white"
-    >
-      <div
-        className="flex-shrink-0 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center"
-        style={{ borderColor: '#0080A3' }}
-      >
-        {selected && <div className="w-2 h-2 rounded-full" style={{ background: '#0080A3' }} />}
-      </div>
-      <span style={{ fontSize: 16, fontWeight: 400, color: '#282F35' }}>{label}</span>
-    </button>
-  )
-}
-
-/**
- * SubQuestions
- *
- * questions: Array of { id, label, options }
- * Each sub-question is a single-select inside the parent card.
- * The CTA unlocks once all sub-questions are answered.
- */
 export default function SubQuestions({ question, questions = [], onSubmit, answer, required }) {
   const [answers, setAnswers] = useState(answer ?? {})
+  const headingId = useId()
 
   const allAnswered = questions.length > 0 && questions.every(q => answers[q.id] !== undefined)
 
   const setAnswer = (id, value) => setAnswers(prev => ({ ...prev, [id]: value }))
 
-
   return (
     <div style={cardStyle}>
-      {/* Parent question */}
-      <QuestionLabel text={question} required={required} />
+      <QuestionLabel text={question} required={required} id={headingId} />
 
-      {/* Sub-questions */}
       <div className="flex flex-col gap-4 mb-5">
-        {questions.map((q, idx) => (
-          <div key={q.id}>
-            {/* Label */}
-            <div className="flex items-baseline gap-2 mb-2">
-              <span style={{ ...questionStyle, minWidth: 20, flexShrink: 0, marginBottom: 0 }}>
-                {idx + 1}.
-              </span>
-              <p style={questionStyle}>{q.label}</p>
+        {questions.map((q, idx) => {
+          const subId = `${headingId}-sub-${q.id}`
+          return (
+            <div key={q.id}>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span style={{ ...questionStyle, minWidth: 20, flexShrink: 0, marginBottom: 0 }}>
+                  {idx + 1}.
+                </span>
+                <p id={subId} style={questionStyle}>{q.label}</p>
+              </div>
+              <div role="radiogroup" aria-labelledby={subId} className="flex flex-col gap-1.5 pl-7">
+                {q.options.map(opt => (
+                  <RadioOption
+                    key={opt}
+                    label={opt}
+                    selected={answers[q.id] === opt}
+                    onClick={() => setAnswer(q.id, opt)}
+                    size="sm"
+                  />
+                ))}
+              </div>
             </div>
-
-            {/* Options */}
-            <div className="flex flex-col gap-1.5 pl-7">
-              {q.options.map(opt => (
-                <RadioOption
-                  key={opt}
-                  label={opt}
-                  selected={answers[q.id] === opt}
-                  onClick={() => setAnswer(q.id, opt)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <button
         disabled={!allAnswered}
+        aria-disabled={!allAnswered}
         style={ctaStyle(allAnswered)}
         onClick={() => allAnswered && onSubmit?.(answers)}
       >
