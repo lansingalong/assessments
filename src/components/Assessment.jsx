@@ -316,7 +316,7 @@ function SkipModal({ type, open, onClose, onReview, onSubmit }) {
   )
 }
 
-export default function Assessment({ onBackToEmail, onBackToLogin }) {
+export default function Assessment({ firstName = '', onBackToEmail, onBackToLogin }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [answers, setAnswers] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -608,6 +608,14 @@ export default function Assessment({ onBackToEmail, onBackToLogin }) {
 
       <div className="flex-1 py-8 px-4 flex flex-col items-center">
         <div className="w-full max-w-lg">
+
+          {/* Welcome message */}
+          {firstName && (
+            <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 28, fontWeight: 500, marginBottom: 24, lineHeight: 1.2 }}>
+              <span style={{ color: '#282F35' }}>Welcome </span>
+              <span style={{ color: '#0080A3' }}>{firstName}</span>
+            </p>
+          )}
 
           {/* Questions */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
