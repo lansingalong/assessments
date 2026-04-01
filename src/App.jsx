@@ -7,12 +7,14 @@ import RemoteControl from './components/RemoteControl'
 export default function App() {
   const [view, setView] = useState('email')
   const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [dob, setDob] = useState('')
   const [storageKey, setStorageKey] = useState('')
 
   return (
     <>
-      {view === 'assessment' && <Assessment firstName={firstName} storageKey={storageKey} onBackToEmail={() => setView('email')} onBackToLogin={() => setView('auth')} />}
-      {view === 'auth' && <AuthModal onSuccess={(first, last, dob) => { setFirstName(first); setStorageKey(`wf_assessment_${first}_${last}_${dob}`.toLowerCase()); setView('assessment') }} onBack={() => setView('email')} />}
+      {view === 'assessment' && <Assessment firstName={firstName} lastName={lastName} dob={dob} storageKey={storageKey} onBackToEmail={() => setView('email')} onBackToLogin={() => setView('auth')} />}
+      {view === 'auth' && <AuthModal onSuccess={(first, last, d) => { setFirstName(first); setLastName(last); setDob(d); setStorageKey(`wf_assessment_${first}_${last}_${d}`.toLowerCase()); setView('assessment') }} onBack={() => setView('email')} />}
       {view === 'email' && <GmailInbox onOpenAssessment={() => setView('auth')} />}
       <RemoteControl
         onGoEmail={() => setView('email')}
