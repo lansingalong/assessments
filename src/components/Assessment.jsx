@@ -612,7 +612,7 @@ export default function Assessment({ firstName = '', onBackToEmail, onBackToLogi
           {/* Welcome message */}
           {firstName && (
             <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 28, fontWeight: 500, marginBottom: 24, lineHeight: 1.2 }}>
-              <span style={{ color: '#282F35' }}>Welcome </span>
+              <span style={{ color: '#282F35' }}>Welcome, </span>
               <span style={{ color: '#0080A3' }}>{firstName}</span>
             </p>
           )}
