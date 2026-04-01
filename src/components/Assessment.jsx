@@ -324,7 +324,7 @@ function SkipModal({ type, open, onClose, onReview, onSubmit }) {
   )
 }
 
-const GC_URL = 'http://localhost:3003/index.html'
+const GC_URL = 'https://lansingalong.github.io/gc-assessmentscampaign/'
 
 export default function Assessment({ firstName = '', lastName = '', dob = '', storageKey = '', onBackToEmail, onBackToLogin }) {
   const [currentPage, setCurrentPage] = useState(() => {
