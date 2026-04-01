@@ -7,16 +7,25 @@ import RemoteControl from './components/RemoteControl'
 export default function App() {
   const [view, setView] = useState('email')
   const [firstName, setFirstName] = useState('')
+  const [storageKey, setStorageKey] = useState('')
 
   return (
     <>
-      {view === 'assessment' && <Assessment firstName={firstName} onBackToEmail={() => setView('email')} onBackToLogin={() => setView('auth')} />}
-      {view === 'auth' && <AuthModal onSuccess={(name) => { setFirstName(name); setView('assessment') }} onBack={() => setView('email')} />}
+      {view === 'assessment' && <Assessment firstName={firstName} storageKey={storageKey} onBackToEmail={() => setView('email')} onBackToLogin={() => setView('auth')} />}
+      {view === 'auth' && <AuthModal onSuccess={(first, last, dob) => { setFirstName(first); setStorageKey(`wf_assessment_${first}_${last}_${dob}`.toLowerCase()); setView('assessment') }} onBack={() => setView('email')} />}
       {view === 'email' && <GmailInbox onOpenAssessment={() => setView('auth')} />}
       <RemoteControl
         onGoEmail={() => setView('email')}
         onGoAssessment={() => setView('assessment')}
         onGoLogin={() => setView('auth')}
+        onReset={() => {
+          Object.keys(localStorage)
+            .filter(k => k.startsWith('wf_assessment_'))
+            .forEach(k => localStorage.removeItem(k))
+          setFirstName('')
+          setStorageKey('')
+          setView('email')
+        }}
       />
     </>
   )

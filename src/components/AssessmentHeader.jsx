@@ -96,8 +96,16 @@ export default function AssessmentHeader({
   const [justCompleted, setJustCompleted] = useState(new Set())
   const prevProgress = useRef([])
   const timers = useRef([])
+  const hasMounted = useRef(false)
 
   useEffect(() => {
+    // On first mount, record current state without animating — pages already at 100%
+    // (e.g. restored from saved progress) should show Completed immediately.
+    if (!hasMounted.current) {
+      hasMounted.current = true
+      prevProgress.current = pageProgress
+      return
+    }
     pageProgress.forEach((pct, i) => {
       if (pct === 100 && (prevProgress.current[i] ?? 0) < 100) {
         setJustCompleted(prev => new Set([...prev, i]))
@@ -119,6 +127,9 @@ export default function AssessmentHeader({
   return (
     <header
       style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
         display: 'flex',
         alignItems: 'center',
         width: '100%',

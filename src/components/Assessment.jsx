@@ -12,6 +12,14 @@ import ConditionalGroup from './survey/ConditionalGroup'
 import NestedQuestion from './survey/NestedQuestion'
 import completionImg from '../assets/completion-illustration.png'
 
+// Returns the 1-based page number of the first page with any unanswered question
+function getResumePage(savedAnswers) {
+  for (let i = 0; i < PAGES.length; i++) {
+    if (PAGES[i].questions.some(q => savedAnswers[q.id] === undefined)) return i + 1
+  }
+  return PAGES.length
+}
+
 // Returns 0–100 for how many questions on a page are answered
 function pageProgress(pageQuestions, answers) {
   const answered = pageQuestions.filter(q => answers[q.id] !== undefined).length
@@ -316,9 +324,19 @@ function SkipModal({ type, open, onClose, onReview, onSubmit }) {
   )
 }
 
-export default function Assessment({ firstName = '', onBackToEmail, onBackToLogin }) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [answers, setAnswers] = useState({})
+export default function Assessment({ firstName = '', storageKey = '', onBackToEmail, onBackToLogin }) {
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (!storageKey) return 1
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey))
+      if (!saved?.answers) return 1
+      return getResumePage(saved.answers)
+    } catch { return 1 }
+  })
+  const [answers, setAnswers] = useState(() => {
+    if (!storageKey) return {}
+    try { return JSON.parse(localStorage.getItem(storageKey))?.answers ?? {} } catch { return {} }
+  })
   const [submitted, setSubmitted] = useState(false)
   const [savedClosed, setSavedClosed] = useState(false)
   const [autosaveVisible, setAutosaveVisible] = useState(false)
@@ -335,6 +353,30 @@ export default function Assessment({ firstName = '', onBackToEmail, onBackToLogi
 
   // Clear autosave timer on unmount
   useEffect(() => () => clearTimeout(autosaveHide.current), [])
+
+  // Persist progress to localStorage whenever answers or page changes
+  useEffect(() => {
+    if (!storageKey) return
+    localStorage.setItem(storageKey, JSON.stringify({ answers, currentPage }))
+  }, [answers, currentPage, storageKey])
+
+  // On restore: scroll first unanswered question to top of viewport (just below sticky header)
+  const isRestored = useRef(Object.keys(answers).length > 0)
+  useEffect(() => {
+    if (!isRestored.current) return
+    const page = PAGES[currentPage - 1]
+    const firstUnanswered = page?.questions.find(q => answers[q.id] === undefined)
+    if (!firstUnanswered) return
+    const id = setTimeout(() => {
+      const el = document.getElementById(`question-${firstUnanswered.id}`)
+      if (!el) return
+      const headerEl = document.querySelector('header')
+      const headerHeight = headerEl ? headerEl.offsetHeight : 0
+      const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+    }, 150)
+    return () => clearTimeout(id)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const advanceTimer = useRef(null)
 
@@ -441,6 +483,7 @@ export default function Assessment({ firstName = '', onBackToEmail, onBackToLogi
         setAnswers(prev => ({ ...prev, ...reviewSelections }))
       }
       setReviewMode(false)
+      if (storageKey) localStorage.removeItem(storageKey)
       setSubmitted(true)
       window.scrollTo(0, 0)
     }
@@ -610,7 +653,7 @@ export default function Assessment({ firstName = '', onBackToEmail, onBackToLogi
         <div className="w-full max-w-lg">
 
           {/* Welcome message */}
-          {firstName && (
+          {firstName && currentPage === 1 && (
             <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 28, fontWeight: 500, marginBottom: 24, lineHeight: 1.2 }}>
               <span style={{ color: '#282F35' }}>Welcome, </span>
               <span style={{ color: '#0080A3' }}>{firstName}</span>

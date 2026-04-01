@@ -125,7 +125,7 @@ export default function AuthModal({ onSuccess, onBack }) {
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
-      onSuccess(firstName.trim())
+      onSuccess(firstName.trim(), lastName.trim(), dob.trim())
     }, 800)
   }
 

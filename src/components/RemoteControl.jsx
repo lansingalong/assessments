@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const sfPro = "'SF Pro Display', 'SF Pro', system-ui, -apple-system, sans-serif"
 
-export default function RemoteControl({ onGoEmail, onGoAssessment, onGoLogin }) {
+export default function RemoteControl({ onGoEmail, onGoAssessment, onGoLogin, onReset }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -45,11 +45,18 @@ export default function RemoteControl({ onGoEmail, onGoAssessment, onGoLogin }) 
           Assessment
         </button>
 
-        <button onClick={() => { onGoLogin(); setOpen(false) }} style={{...itemStyle, borderBottom: 'none'}}>
+        <button onClick={() => { onGoLogin(); setOpen(false) }} style={itemStyle}>
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>
           </svg>
           Login
+        </button>
+
+        <button onClick={() => { onReset(); setOpen(false) }} style={{...itemStyle, borderBottom: 'none', color: '#f87171'}}>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+          </svg>
+          Reset Demo Data
         </button>
       </div>
 
