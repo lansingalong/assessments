@@ -646,7 +646,7 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
 
         {firstName && lastName && (
           <a
-            href={`${GC_URL}?first=${encodeURIComponent(firstName)}&last=${encodeURIComponent(lastName)}&dob=${encodeURIComponent(dob)}`}
+            href={GC_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -694,7 +694,7 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
 
         {firstName && lastName && (
           <a
-            href={`${GC_URL}?first=${encodeURIComponent(firstName)}&last=${encodeURIComponent(lastName)}&dob=${encodeURIComponent(dob)}&completed=1`}
+            href={GC_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={{
