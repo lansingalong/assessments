@@ -644,23 +644,6 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
           Back Home
         </button>
 
-        {firstName && lastName && (
-          <a
-            href={GC_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: 6,
-              fontFamily: sfPro, fontSize: 13, fontWeight: 500,
-              color: 'var(--color-brand-accent)', textDecoration: 'none',
-            }}
-          >
-            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            Open in GuidingCare
-          </a>
-        )}
       </div>
     )
   }
