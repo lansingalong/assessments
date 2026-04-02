@@ -399,6 +399,11 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
   // Clear autosave timer on unmount
   useEffect(() => () => clearTimeout(autosaveHide.current), [])
 
+  // Signal GuidingCare that the HRA was completed
+  useEffect(() => {
+    if (submitted) localStorage.setItem('hra-completed', 'jane-doe')
+  }, [submitted])
+
   // Persist progress to localStorage whenever answers or page changes
   useEffect(() => {
     if (!storageKey) return
