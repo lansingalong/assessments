@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect, useId } from 'react'
-import { PAGES } from '../data/questions'
+import { ASSESSMENTS } from '../data/questions'
 import AssessmentHeader from './AssessmentHeader'
 import SingleSelect from './survey/SingleSelect'
 import MultiSelect from './survey/MultiSelect'
@@ -13,11 +13,11 @@ import NestedQuestion from './survey/NestedQuestion'
 import completionImg from '../assets/completion-illustration.png'
 
 // Returns the 1-based page number of the first page with any unanswered question
-function getResumePage(savedAnswers) {
-  for (let i = 0; i < PAGES.length; i++) {
-    if (PAGES[i].questions.some(q => savedAnswers[q.id] === undefined)) return i + 1
+function getResumePage(savedAnswers, pages) {
+  for (let i = 0; i < pages.length; i++) {
+    if (pages[i].questions.some(q => savedAnswers[q.id] === undefined)) return i + 1
   }
-  return PAGES.length
+  return pages.length
 }
 
 // Returns 0–100 for how many questions on a page are answered
@@ -324,15 +324,67 @@ function SkipModal({ type, open, onClose, onReview, onSubmit }) {
   )
 }
 
+function buildPartialQA(pages, answers) {
+  const qa = []
+  pages.forEach(page => {
+    page.questions.forEach(q => {
+      const answer = answers[q.id]
+      if (answer === undefined) return
+
+      if (q.type === 'single' || q.type === 'text') {
+        qa.push({ q: q.question, option: String(answer), sub: '', score: 0 })
+      } else if (q.type === 'calendar') {
+        qa.push({ q: q.question, option: String(answer), sub: '', score: 0 })
+      } else if (q.type === 'multi') {
+        qa.push({ q: q.question, option: Array.isArray(answer) ? answer.join(', ') : String(answer), sub: '', score: 0 })
+      } else if (q.type === 'conditional') {
+        const trigger = typeof answer === 'object' ? (answer.trigger ?? '') : String(answer)
+        qa.push({ q: q.question, option: String(trigger), sub: '', score: 0 })
+        if (answer.followUps && q.followUps) {
+          q.followUps.forEach(fq => {
+            const fAnswer = answer.followUps[fq.id]
+            if (fAnswer !== undefined) {
+              qa.push({ q: fq.question, option: Array.isArray(fAnswer) ? fAnswer.join(', ') : String(fAnswer), sub: '', score: 0 })
+            }
+          })
+        }
+      } else if (q.type === 'nested') {
+        const trigger = typeof answer === 'object' ? (answer.trigger ?? '') : String(answer)
+        qa.push({ q: q.question, option: String(trigger), sub: '', score: 0 })
+        if (answer.sub && q.subQuestions) {
+          q.subQuestions.forEach(sq => {
+            const sqAnswer = answer.sub[sq.id]
+            if (sqAnswer !== undefined) {
+              qa.push({ q: sq.question, option: Array.isArray(sqAnswer) ? sqAnswer.join(', ') : String(sqAnswer), sub: '', score: 0 })
+            }
+          })
+        }
+      } else if (q.type === 'sub') {
+        if (q.subQuestions && typeof answer === 'object') {
+          q.subQuestions.forEach(sq => {
+            const sqAnswer = answer[sq.id]
+            if (sqAnswer !== undefined) {
+              qa.push({ q: sq.label || sq.question, option: String(sqAnswer), sub: '', score: 0 })
+            }
+          })
+        }
+      }
+    })
+  })
+  return qa
+}
+
 const GC_URL = 'https://lansingalong.github.io/gc-assessmentscampaign/'
 
-export default function Assessment({ firstName = '', lastName = '', dob = '', storageKey = '', onBackToEmail, onBackToLogin }) {
+export default function Assessment({ firstName = '', lastName = '', dob = '', storageKey = '', assessmentType = 'Health Risk Assessment', onBackToEmail, onBackToLogin }) {
+  const PAGES = ASSESSMENTS[assessmentType] ?? ASSESSMENTS['Health Risk Assessment']
+
   const [currentPage, setCurrentPage] = useState(() => {
     if (!storageKey) return 1
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey))
       if (!saved?.answers) return 1
-      return getResumePage(saved.answers)
+      return getResumePage(saved.answers, PAGES)
     } catch { return 1 }
   })
   const [answers, setAnswers] = useState(() => {
@@ -399,10 +451,29 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
   // Clear autosave timer on unmount
   useEffect(() => () => clearTimeout(autosaveHide.current), [])
 
-  // Signal GuidingCare that the HRA was completed
+  // Signal GuidingCare that the assessment was completed
   useEffect(() => {
-    if (submitted) localStorage.setItem('hra-completed', 'jane-doe')
-  }, [submitted])
+    if (submitted) {
+      localStorage.removeItem('assessment-partial-qa')
+      localStorage.setItem('hra-completed', 'jane-doe')
+      localStorage.setItem('assessment-completed', assessmentType)
+      if (window.opener) {
+        try { window.opener.postMessage({ type: 'ASSESSMENT_COMPLETED', assessmentType }, '*') } catch (_) {}
+      }
+    }
+  }, [submitted]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Signal GuidingCare that the assessment was saved (not yet submitted)
+  useEffect(() => {
+    if (savedClosed) {
+      const partialQA = buildPartialQA(PAGES, answers)
+      localStorage.setItem('assessment-partial-qa', JSON.stringify({ assessmentType, qa: partialQA }))
+      localStorage.setItem('assessment-saved', assessmentType)
+      if (window.opener) {
+        try { window.opener.postMessage({ type: 'ASSESSMENT_SAVED', assessmentType }, '*') } catch (_) {}
+      }
+    }
+  }, [savedClosed]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Persist progress to localStorage whenever answers or page changes
   useEffect(() => {
@@ -673,30 +744,13 @@ export default function Assessment({ firstName = '', lastName = '', dob = '', st
         </div>
 
         <h1 style={{ fontFamily: sfPro, fontSize: 26, fontWeight: 700, color: 'var(--color-brand-accent)', textAlign: 'center', margin: '0 0 16px', maxWidth: 440, lineHeight: 1.3 }}>
-          Thank you for completing your<br />Comprehensive Assessment!
+          Thank you for completing your<br />{assessmentType}!
         </h1>
 
         <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 15, color: 'var(--color-text-mid)', textAlign: 'center', margin: 0, maxWidth: 360, lineHeight: 1.7 }}>
           Your responses have been recorded and will help<br />us better support your care and next steps.
         </p>
 
-        {firstName && lastName && (
-          <a
-            href={GC_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              marginTop: 20, display: 'inline-flex', alignItems: 'center', gap: 6,
-              fontFamily: sfPro, fontSize: 13, fontWeight: 500,
-              color: 'var(--color-brand-accent)', textDecoration: 'none',
-            }}
-          >
-            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            Open in GuidingCare (Demo Purposes Only)
-          </a>
-        )}
 
         {/* Illustration */}
         <img src={completionImg} alt="Assessment complete" style={{ width: '100%', maxWidth: 720, marginTop: 40 }} />

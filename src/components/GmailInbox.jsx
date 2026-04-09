@@ -1,4 +1,4 @@
-export default function GmailInbox({ onOpenAssessment }) {
+export default function GmailInbox({ onOpenAssessment, assessmentType = 'Health Risk Assessment' }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#fff', fontFamily: '"Google Sans", Roboto, Arial, sans-serif', fontSize: 14, color: '#202124' }}>
 
@@ -29,7 +29,7 @@ export default function GmailInbox({ onOpenAssessment }) {
           <button aria-label="Help" style={iconBtn}><HelpIcon /></button>
           <button aria-label="Settings" style={iconBtn}><SettingsIcon /></button>
           <button aria-label="Google apps" style={iconBtn}><AppsIcon /></button>
-          <button aria-label="Google Account: JD" style={{ width: 32, height: 32, borderRadius: '50%', background: '#1a73e8', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 600, marginLeft: 8, cursor: 'pointer' }}>JD</button>
+          <button aria-label="Google Account: Maria Rivera" style={{ width: 32, height: 32, borderRadius: '50%', background: '#1a73e8', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 600, marginLeft: 8, cursor: 'pointer' }}>MR</button>
         </div>
       </header>
 
@@ -104,7 +104,7 @@ export default function GmailInbox({ onOpenAssessment }) {
             {/* Subject line */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
               <h1 style={{ fontSize: 22, fontWeight: 400, color: '#202124', margin: 0, flex: 1 }}>
-                Take Your Health Assessment
+                Complete Your {assessmentType}
               </h1>
               <button aria-label="Forward" style={iconBtn}><ForwardIcon /></button>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#e8f0fe', border: '1px solid #c5d5f5', borderRadius: 4, padding: '2px 8px', fontSize: 12, color: '#1a73e8', fontWeight: 500 }}>
@@ -142,9 +142,9 @@ export default function GmailInbox({ onOpenAssessment }) {
 
             {/* Email body */}
             <div style={{ fontSize: 14, lineHeight: 1.8, color: '#202124', paddingLeft: 52 }}>
-              <p style={{ margin: '0 0 12px' }}>Hi Jane,</p>
+              <p style={{ margin: '0 0 12px' }}>Hi Maria,</p>
               <p style={{ margin: '0 0 4px' }}>We'd like to learn more about your health so we can provide you with the right support and resources.</p>
-              <p style={{ margin: '0 0 12px' }}>Complete your health assessment today:</p>
+              <p style={{ margin: '0 0 12px' }}>Complete your <strong>{assessmentType}</strong> today:</p>
 
               <p style={{ margin: '0 0 16px' }}>
                 <button

@@ -25,7 +25,7 @@ function Completed({ pageNum }) {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} fill="none"
       aria-label={`Page ${pageNum}, complete`} role="img">
-      <circle cx={C} cy={C} r={FILL_R} fill="var(--color-success)" />
+      <circle cx={C} cy={C} r={RING_R} fill="var(--color-success)" />
       <circle cx={C} cy={C} r={RING_R} stroke="var(--color-brand-accent)" strokeWidth={RING_STROKE} fill="none" />
       <path d="M17.5 26.5L22.5 31.5L33 20" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>

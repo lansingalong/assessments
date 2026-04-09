@@ -1,10 +1,12 @@
-import { useState, useId } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { cardStyle, QuestionLabel, ctaStyle } from './shared'
 import CheckOption from '../ui/CheckOption'
 
 export default function MultiSelect({ question, options = [], onSubmit, answer, required, hideSubmit = false, onSelect }) {
   const [selected, setSelected] = useState(() => answer ? new Set(answer) : new Set())
   const groupId = useId()
+
+  useEffect(() => { setSelected(answer ? new Set(answer) : new Set()) }, [answer])
 
   const toggle = (opt) => {
     setSelected(prev => {

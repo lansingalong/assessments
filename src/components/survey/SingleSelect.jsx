@@ -1,10 +1,12 @@
-import { useState, useId } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { cardStyle, QuestionLabel } from './shared'
 import RadioOption from '../ui/RadioOption'
 
 export default function SingleSelect({ question, options = [], onSubmit, answer = null, required, hideSubmit = false, onSelect }) {
   const [selected, setSelected] = useState(answer)
   const groupId = useId()
+
+  useEffect(() => { setSelected(answer) }, [answer])
 
   const handleSelect = (opt) => {
     setSelected(opt)

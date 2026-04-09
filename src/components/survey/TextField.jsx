@@ -1,9 +1,11 @@
-import { useState, useId } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
 export default function TextField({ question, placeholder = 'Type your answer here…', multiline = true, onSubmit, answer = '', required, hideSubmit = false, onSelect }) {
   const [value, setValue] = useState(answer)
   const [focused, setFocused] = useState(false)
+
+  useEffect(() => { setValue(answer || '') }, [answer])
   const inputId = useId()
   const filled = value.trim().length > 0
 

@@ -1,10 +1,12 @@
-import { useState, useId } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { cardStyle, questionStyle, QuestionLabel, ctaStyle } from './shared'
 import RadioOption from '../ui/RadioOption'
 
 export default function SubQuestions({ question, questions = [], onSubmit, answer, required }) {
   const [answers, setAnswers] = useState(answer ?? {})
   const headingId = useId()
+
+  useEffect(() => { setAnswers(answer ?? {}) }, [answer])
 
   const allAnswered = questions.length > 0 && questions.every(q => answers[q.id] !== undefined)
 

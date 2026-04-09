@@ -1,9 +1,11 @@
-import { useState, useId } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { sfPro, cardStyle, QuestionLabel, ctaStyle } from './shared'
 
 export default function CalendarSelector({ question, onSubmit, answer, required, hideSubmit = false, onSelect }) {
   const [value, setValue] = useState(answer || '')
   const [error, setError] = useState(null)
+
+  useEffect(() => { setValue(answer || '') }, [answer])
   const [focused, setFocused] = useState(false)
   const inputId = useId()
   const errorId = useId()
