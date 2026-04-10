@@ -1,3 +1,5 @@
+import gmailLogo from '../assets/gmail.png'
+
 export default function GmailInbox({ onOpenAssessment, assessmentType = 'Health Risk Assessment' }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#fff', fontFamily: '"Google Sans", Roboto, Arial, sans-serif', fontSize: 14, color: '#202124' }}>
@@ -269,15 +271,7 @@ function NavItem({ icon, label, badge, active }) {
 
 // ── Gmail "M" logo ──
 function GmailLogo() {
-  return (
-    <svg aria-hidden="true" width="32" height="32" viewBox="0 0 48 48">
-      <path fill="#EA4335" d="M24 24L8 12h32z"/>
-      <path fill="#FBBC05" d="M8 12v24l8-8V20z"/>
-      <path fill="#34A853" d="M40 12v24l-8-8V20z"/>
-      <path fill="#4285F4" d="M8 36h32v4H8z"/>
-      <path fill="#C5221F" d="M8 12l16 12 16-12"/>
-    </svg>
-  )
+  return <img src={gmailLogo} alt="Gmail" style={{ width: 32, height: 32, objectFit: 'contain' }} />
 }
 
 // ── Health Plan Logo ──
